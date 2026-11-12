@@ -87,35 +87,32 @@
         <span class="login__mark"><svg viewBox="0 0 24 24"><path d="M12 21s-8-4.8-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 16.2 12 21 12 21z"/></svg></span>
         <div><b>安颐院内照护</b><span>PKU CARE · HOSPITAL CARE</span></div>
       </div>
-      <div class="login__hero">
-        <span class="login__badge">${icon('hospital')} 院内陪护 · 独立服务版</span>
-        <h1>住院长辈，<br>交给<em>专业的人</em></h1>
-        <p>登录后直接填写院内照护需求，照护顾问 30 分钟内致电确认；服务进程与订单都在「我的」里。</p>
-      </div>
-      <div class="login__art">
-        <div class="login__art-line"></div>
-        <div class="login__art-tag">${icon('shield')} 持证护理员 · 到院签到</div>
-        <div class="login__art-disc">${icon('hospital')}</div>
-      </div>
       <form class="login__card" data-form="login" novalidate>
-        <h2>登录账号</h2>
-        <p>使用手机号和密码登录，首次登录即创建院内照护账户</p>
+        <div class="login__card-head">
+          <span class="login__card-icon">${icon('hospital')}</span>
+          <div><h2>登录</h2><p>手机号验证码登录，首次登录自动创建院内照护账户</p></div>
+        </div>
         <div class="field">
           <label class="field__label" for="login-phone">手机号</label>
           <div class="input-wrap">${icon('phone')}<input id="login-phone" type="tel" inputmode="numeric" maxlength="11" placeholder="请输入手机号" autocomplete="tel"></div>
         </div>
         <div class="field">
-          <label class="field__label" for="login-password">登录密码</label>
-          <div class="input-wrap">${icon('lock')}<input id="login-password" type="password" placeholder="请输入密码" autocomplete="current-password"><button type="button" class="input-wrap__suffix" data-act="toggle-password">显示</button></div>
+          <label class="field__label" for="login-code">验证码</label>
+          <div class="input-wrap">${icon('shield')}<input id="login-code" type="tel" inputmode="numeric" maxlength="6" placeholder="请输入 6 位验证码" autocomplete="one-time-code"><button type="button" class="code-btn" id="send-code" data-act="send-code">获取验证码</button></div>
         </div>
-        <div class="login__extra"><span>演示账号可直接体验</span><button type="button" data-act="fill-demo">填入演示账号</button></div>
+        <div class="login__extra"><span>未注册手机号验证后自动创建账户</span><button type="button" data-act="fill-demo">填入演示账号</button></div>
         <button class="btn btn--primary btn--block login__submit" type="submit">登录并填写需求</button>
         <div class="login__agree ${state.loginAgree !== false ? 'is-on' : ''}" data-act="toggle-login-agree">
           <span class="agree-box">${icon('check')}</span>
           <span>我已阅读并同意<em>《服务协议》</em>与<a data-act="open-privacy">《隐私政策》</a>，授权平台使用服务所需信息</span>
         </div>
-        <p class="login__hint">演示环境：手机号 <b>13800006721</b>，密码 <b>123456</b></p>
+        <p class="login__hint">演示环境：手机号 <b>13800006721</b>，验证码 <b>123456</b></p>
       </form>
+      <div class="login__trust">
+        <div>${icon('shield')}<b>持证护理员</b><span>实名认证</span></div>
+        <div>${icon('hospital')}<b>到院签到</b><span>服务交接</span></div>
+        <div>${icon('file')}<b>全程记录</b><span>可追溯</span></div>
+      </div>
       <div class="login__foot">安颐照护 · 院内陪护服务由持证护理员提供</div>
     </div>`);
   }
@@ -148,7 +145,9 @@
       <span class="service-opt__top"><b>${esc(s.name)}</b><span class="service-opt__tick">${icon('check')}</span></span>
       <small>${esc(s.short)} · ${esc(s.hours)}</small><p>${esc(s.desc)}</p>
     </button>`).join('');
-    const needs = D.careNeeds.map((n) => `<button type="button" class="chip ${draft.needs.includes(n) ? 'is-on' : ''}" data-act="need" data-value="${esc(n)}">${draft.needs.includes(n) ? icon('check') : ''}${esc(n)}</button>`).join('');
+    const needs = D.careNeeds.map((n) => `<button type="button" class="need-opt ${draft.needs.includes(n) ? 'is-on' : ''}" data-act="need" data-value="${esc(n)}">
+      <span class="need-opt__check">${draft.needs.includes(n) ? icon('check') : ''}</span><span class="need-opt__label">${esc(n)}</span>
+    </button>`).join('');
     return page(`<header class="req-head">
       <div class="req-head__row">
         <div>
@@ -198,8 +197,8 @@
       </section>
 
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num">04</span><span class="form-card__title">照护需求</span><span class="form-card__aside">可多选</span></div>
-        <div class="chips" id="needs">${needs}</div>
+        <div class="form-card__head"><span class="form-card__num">04</span><span class="form-card__title">照护需求</span><span class="form-card__aside" id="needs-count">已选 ${draft.needs.length} 项</span></div>
+        <div class="need-grid" id="needs">${needs}</div>
         <span class="field__err" id="needs-err" style="display:none;margin-top:4px">请至少选择一项照护需求</span>
         <div class="field" style="margin-top:12px"><label class="field__label" for="note">补充说明 <span class="tiny muted">选填</span></label><textarea class="field__box" id="note" placeholder="例如：术后不能下床、夜间需要协助起夜、饮食禁忌等">${esc(draft.note)}</textarea></div>
       </section>
@@ -219,7 +218,7 @@
         <div class="form-foot-note">${icon('shield')} 服务由持证护理员提供，到院签到、护理记录全程可追溯</div>
       </section>
 
-      <div class="actionbar">
+      <div class="actionbar request-actionbar">
         <div class="actionbar__note"><b>提交后 30 分钟内联系</b>照护顾问将致电确认服务安排</div>
         <button class="btn btn--primary" type="submit">提交需求</button>
       </div>
@@ -369,7 +368,7 @@
         <div class="account-card"><div class="account-card__head"><b>登录与身份</b><button class="ph__link" data-act="edit-name">修改姓名</button></div>
           <div class="account-row"><span>姓名</span><b>${esc(state.session.name)}</b></div>
           <div class="account-row"><span>登录手机号</span><b>${phoneMask(state.session.phone)}</b></div>
-          <div class="account-row"><span>登录方式</span><b>手机号 + 密码</b></div>
+          <div class="account-row"><span>登录方式</span><b>手机号 + 验证码</b></div>
           <div class="account-row"><span>会员编号</span><b>${esc(D.account.memberNo)}</b></div>
         </div>
         <div class="account-card"><div class="account-card__head"><b>账户状态</b><span class="pill pill--green">正常</span></div>
@@ -392,7 +391,7 @@
         <div class="privacy__date">更新日期：2026 年 11 月 12 日 · 生效日期：2026 年 11 月 12 日</div>
         <p>安颐院内照护（以下简称“我们”）深知个人信息对您和家人的重要性。本政策说明我们在提供院内陪护服务过程中如何收集、使用、存储和保护信息。</p>
         <h2>一、我们收集的信息</h2>
-        <ul><li>登录信息：手机号、姓名、密码（加密存储）。</li><li>服务信息：医院、科室、床号、住院号、服务时间与照护需求。</li><li>照护对象信息：姓名、性别、年龄、自理能力、照护注意事项。</li><li>联系人信息：联系人姓名、手机号、紧急联系人。</li><li>订单与服务记录：订单状态、护理员接单、到院签到与服务完成记录。</li></ul>
+        <ul><li>登录信息：手机号、姓名、短信验证码校验记录。</li><li>服务信息：医院、科室、床号、住院号、服务时间与照护需求。</li><li>照护对象信息：姓名、性别、年龄、自理能力、照护注意事项。</li><li>联系人信息：联系人姓名、手机号、紧急联系人。</li><li>订单与服务记录：订单状态、护理员接单、到院签到与服务完成记录。</li></ul>
         <h2>二、信息使用目的</h2>
         <p>用于创建和管理院内照护订单、匹配护理员、照护顾问电话确认、服务交接、订单进度展示、客服处理与安全保障。我们不会将健康相关信息用于与服务无关的营销。</p>
         <h2>三、信息共享</h2>
@@ -486,6 +485,7 @@
     tabbar.innerHTML = '';
     document.title = p === 'login' ? '登录 · 安颐院内照护' : p === 'my' ? '我的 · 安颐院内照护' : '院内照护 · 安颐照护';
     window.scrollTo(0, 0);
+    requestAnimationFrame(updateRequestBar);
   }
 
   /* ---------------- validation / submit ---------------- */
@@ -568,6 +568,38 @@
   }
 
   /* ---------------- events ---------------- */
+  let codeTimer = null;
+  let codeLeft = 0;
+  function startCodeCountdown() {
+    clearInterval(codeTimer);
+    codeLeft = 60;
+    const tick = () => {
+      const btn = $('#send-code');
+      if (!btn) { clearInterval(codeTimer); return; }
+      if (codeLeft <= 0) {
+        clearInterval(codeTimer);
+        btn.disabled = false;
+        btn.textContent = '获取验证码';
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = `${codeLeft}s 后重试`;
+      codeLeft -= 1;
+    };
+    tick();
+    codeTimer = setInterval(tick, 1000);
+  }
+
+  function updateRequestBar() {
+    const bar = $('.request-actionbar');
+    if (!bar) return;
+    const doc = document.documentElement;
+    const atBottom = window.scrollY + window.innerHeight >= doc.scrollHeight - 12;
+    bar.classList.toggle('is-visible', atBottom);
+  }
+  window.addEventListener('scroll', updateRequestBar, { passive: true });
+  window.addEventListener('resize', updateRequestBar);
+
   document.addEventListener('click', (e) => {
     const nav = e.target.closest('[data-nav]');
     if (nav && !nav.closest('form')) {
@@ -578,18 +610,16 @@
     const el = e.target.closest('[data-act]');
     if (!el) return;
     const act = el.dataset.act;
-    if (act === 'toggle-password') {
-      const input = $('#login-password');
-      if (input) {
-        const show = input.type === 'password';
-        input.type = show ? 'text' : 'password';
-        el.textContent = show ? '隐藏' : '显示';
-      }
+    if (act === 'send-code') {
+      const phone = $('#login-phone').value.trim();
+      if (!/^1[3-9]\d{9}$/.test(phone)) { toast('请先输入正确的 11 位手机号'); $('#login-phone').focus(); return; }
+      startCodeCountdown();
+      toast('验证码已发送，演示验证码为 123456');
       return;
     }
     if (act === 'fill-demo') {
       $('#login-phone').value = '13800006721';
-      $('#login-password').value = '123456';
+      $('#login-code').value = '123456';
       toast('已填入演示账号');
       return;
     }
@@ -618,8 +648,12 @@
       const v = el.dataset.value;
       if (draft.needs.includes(v)) draft.needs = draft.needs.filter((x) => x !== v);
       else draft.needs.push(v);
-      el.classList.toggle('is-on', draft.needs.includes(v));
-      el.innerHTML = (draft.needs.includes(v) ? icon('check') : '') + esc(v);
+      const selected = draft.needs.includes(v);
+      el.classList.toggle('is-on', selected);
+      const check = el.querySelector('.need-opt__check');
+      if (check) check.innerHTML = selected ? icon('check') : '';
+      const count = $('#needs-count');
+      if (count) count.textContent = `已选 ${draft.needs.length} 项`;
       if (draft.needs.length) $('#needs-err').style.display = 'none';
       return;
     }
@@ -648,6 +682,7 @@
       state.session = null;
       save();
       draft = null;
+      clearInterval(codeTimer);
       closeSheet();
       go('/login');
       return;
@@ -674,14 +709,16 @@
     if (form.dataset.form === 'login') {
       e.preventDefault();
       const phone = $('#login-phone').value.trim();
-      const pwd = $('#login-password').value.trim();
+      const code = $('#login-code').value.trim();
       if (!/^1[3-9]\d{9}$/.test(phone)) { toast('请输入正确的 11 位手机号'); $('#login-phone').focus(); return; }
-      if (pwd.length < 6) { toast('请输入至少 6 位密码'); $('#login-password').focus(); return; }
+      if (!/^\d{6}$/.test(code)) { toast('请输入 6 位短信验证码'); $('#login-code').focus(); return; }
+      if (code !== '123456') { toast('验证码错误，演示验证码为 123456'); $('#login-code').focus(); return; }
       if (state.loginAgree === false) { toast('请先阅读并同意服务协议与隐私政策'); return; }
       const name = phone === D.account.phone ? D.account.name : '家属用户';
       state.session = { phone, name, loginAt: Date.now() };
       save();
       draft = null;
+      clearInterval(codeTimer);
       go('/request');
       toast('登录成功');
       return;
