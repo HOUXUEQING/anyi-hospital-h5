@@ -121,6 +121,15 @@
     if (o.status === 'completed') return { label: '已完成', tone: 'green' };
     return { label: '已取消', tone: 'gray' };
   }
+  function flowSteps(activeStep = 1, tone = 'light') {
+    const labels = ['信息填写', '服务评估', '到院服务', '服务完成'];
+    return `<div class="flow-steps flow-steps--${tone}">${labels.map((label, i) => {
+      const n = i + 1;
+      const done = n < activeStep;
+      const active = n === activeStep;
+      return `<div class="flow-step ${done ? 'is-done' : ''} ${active ? 'is-active' : ''}"><i>${done ? icon('check') : n}</i><span>${label}</span></div>${i < labels.length - 1 ? `<span class="flow-line ${done ? 'is-done' : ''}"></span>` : ''}`;
+    }).join('')}</div>`;
+  }
   const statusPill = (key) => {
     const s = STATUS[key] || { label: key, tone: 'gray' };
     return `<span class="pill pill--${s.tone}">${s.label}</span>`;
@@ -297,24 +306,17 @@
     return page(`<header class="req-head book-hero">
       <div class="req-head__row">
         <div class="book-hero__copy">
-          <span class="req-head__badge">${icon('hospital')} ${isEditing ? '修改预约' : '服务预约'} · 院内照护</span>
           <h1>${isEditing ? '修改预约' : '院内照护预约'}</h1>
           <p>${isEditing ? '修改后预约将重新进入待确认状态。' : '填写信息并提交预约，照护顾问将审核评估后确认<span style="white-space:nowrap">服务安排。</span>'}</p>
         </div>
         <div class="book-hero__art" aria-hidden="true">
           <span class="book-hero__glow"></span>
-          <span class="book-hero__orb">${icon('care')}</span>
-          <span class="book-hero__chip book-hero__chip--a">${icon('shield')}持证</span>
-          <span class="book-hero__chip book-hero__chip--b">${icon('pin')}到院</span>
+          <span class="book-hero__orb">${icon('hospital')}</span>
+          <span class="book-hero__cross">+</span>
         </div>
       </div>
-      <div class="req-progress">
-        <span class="is-on"><i>1</i>信息填写</span><span class="req-progress__line"></span>
-        <span><i>2</i>服务评估</span><span class="req-progress__line"></span>
-        <span><i>3</i>到院服务</span><span class="req-progress__line"></span>
-        <span><i>4</i>服务完成</span>
-      </div>
       <div class="book-assure"><span>${icon('shield')}持证护理员</span><span>${icon('pin')}到院签到</span><span>${icon('file')}全程记录</span></div>
+      ${flowSteps(1, 'light')}
     </header>
     <form id="request-form" class="req-body" novalidate>
       ${activeOrders.length && !isEditing ? `<div class="banner banner--blue">${icon('info')} 您有 ${activeOrders.length} 个进行中预约，另有 ${available.length} 张服务券可用，可继续提交新的预约。</div>` : ''}
@@ -393,11 +395,11 @@
         <div class="appt-card__title"><h3>${esc(o.serviceType || '院内照护')}</h3><div class="appt-card__no">订单号 ${esc(o.no)}</div></div>
         <span class="appt-status appt-status--${st.tone}">${st.label}</span>
       </div>
-      <div class="appt-card__rows">
-        <div class="appt-row">${icon('clock')}<span>${fmtFull(o.startDate)} ${esc(o.startTime)}</span></div>
-        <div class="appt-row">${icon('user')}<span>${esc(o.patient.name)} ${esc(o.patient.gender)} · ${o.patient.age}岁</span></div>
-        <div class="appt-row">${icon('pin')}<span>${esc(o.hospital)} · ${esc(o.department)}</span></div>
+      <div class="appt-meta">
+        <span class="appt-meta__item">${icon('clock')}${fmtFull(o.startDate)} ${esc(o.startTime)}</span>
+        <span class="appt-meta__item">${icon('user')}${esc(o.patient.name)} · ${o.patient.age}岁</span>
       </div>
+      <div class="appt-place">${icon('pin')}${esc(o.hospital)} · ${esc(o.department)}</div>
       <div class="appt-card__actions">
         <button class="appt-action" data-nav="#/order/${o.id}">查看详情</button>
         ${canCancel ? `<button class="appt-action" data-act="cancel" data-id="${o.id}">取消预约</button>` : ''}
@@ -410,6 +412,7 @@
   function myView() {
     const orders = state.orders;
     const active = orders.filter((o) => ['pending', 'accepted', 'serving'].includes(o.status));
+    const pending = orders.filter((o) => o.status === 'pending');
     const completed = orders.filter((o) => o.status === 'completed');
     const vouchers = unusedVouchers().length;
     return page(`<header class="my-hero">
@@ -419,7 +422,7 @@
       </div>
       <div class="my-stats">
         <button class="my-stat" data-nav="#/orders/all"><b>${orders.length}</b><span>全部订单</span></button>
-        <button class="my-stat" data-nav="#/orders/active"><b>${active.length}</b><span>进行中</span></button>
+        <button class="my-stat" data-nav="#/orders/pending"><b>${pending.length}</b><span>待确认</span></button>
         <button class="my-stat" data-nav="#/orders/completed"><b>${completed.length}</b><span>已完成</span></button>
       </div>
     </header>
@@ -439,7 +442,7 @@
   }
 
   function ordersView(tab = 'all') {
-    const tabs = [['all', '全部'], ['active', '进行中'], ['pending', '待确认'], ['confirmed', '已预约'], ['completed', '已完成'], ['cancelled', '已取消']];
+    const tabs = [['all', '全部'], ['pending', '待确认'], ['confirmed', '已预约'], ['completed', '已完成'], ['cancelled', '已取消']];
     let list = state.orders;
     if (tab === 'active') list = list.filter((o) => ['pending', 'accepted', 'serving'].includes(o.status));
     if (tab === 'pending') list = list.filter((o) => o.status === 'pending');
@@ -475,14 +478,18 @@
     const o = state.orders.find((x) => x.id === id);
     if (!o) return page(`${ph('订单详情', { back: '#/my' })}<div class="empty"><div class="empty__ic">${icon('info')}</div><h3>订单不存在</h3><p>请返回我的预约查看</p><button class="btn btn--primary" data-nav="#/my">返回我的</button></div>`);
     const st = STATUS[o.status] || STATUS.pending;
+    const step = o.status === 'pending' ? 2 : ['accepted', 'serving'].includes(o.status) ? 3 : o.status === 'completed' ? 5 : 0;
     const timeline = (o.timeline || []).slice().reverse().map((t, i) => `<div class="tl-item ${i === 0 ? 'is-latest' : ''}"><b>${esc(t.title)}</b><p>${esc(t.desc)}</p><time>${esc(t.time)}</time></div>`).join('');
-    const caregiver = o.caregiver ? `<section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('users')}服务护理员</div><span class="dcard__aside">已接单</span></div><div class="caregiver"><div class="avatar">${esc(o.caregiver.name.slice(0, 1))}</div><div class="caregiver__main"><b>${esc(o.caregiver.name)}</b><span>${esc(o.caregiver.level)} · ${o.caregiver.years} 年经验</span></div><div class="caregiver__right"><b>${o.caregiver.rating}</b><span>服务评分</span></div></div></section>` : '';
+    const caregiver = o.caregiver ? `<section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('users')}服务护理员</div><span class="dcard__aside">已安排</span></div><div class="caregiver"><div class="avatar">${esc(o.caregiver.name.slice(0, 1))}</div><div class="caregiver__main"><b>${esc(o.caregiver.name)}</b><span>${esc(o.caregiver.level)} · ${o.caregiver.years} 年经验</span></div><div class="caregiver__right"><b>${o.caregiver.rating}</b><span>服务评分</span></div></div></section>` : '';
     return page(`<div class="order-hero">
-      <div class="order-hero__nav"><button class="ph__btn" data-nav="#/my" aria-label="返回">${icon('chevL')}</button></div>
-      <span class="order-hero__pill">${st.label}</span>
-      <h1>${esc(st.title)}</h1>
-      <p>${esc(st.desc)}</p>
-      <div class="order-hero__meta">${icon('calendar')}${fmtFull(o.startDate)} ${esc(o.startTime)}</div>
+      <div class="order-hero__nav"><button class="ph__btn" data-nav="#/my" aria-label="返回">${icon('chevL')}</button><span class="order-hero__brand">${icon('hospital')} 院内照护</span></div>
+      <div class="order-hero__glass">
+        <span class="order-hero__pill">${st.label}</span>
+        <h1>${esc(st.title)}</h1>
+        <p>${esc(st.desc)}</p>
+        <div class="order-hero__meta">${icon('calendar')}${fmtFull(o.startDate)} ${esc(o.startTime)}</div>
+        ${flowSteps(step, 'dark')}
+      </div>
     </div>
     <div class="order-body">
       ${o.status === 'pending' ? `<div class="dcard" style="background:linear-gradient(135deg,#FFF9EC,#FFFDF8);border-color:#F6E8C8"><div style="display:flex;gap:7px;font-size:9.5px;color:#8B6A27;line-height:1.7">${icon('clock')}<span>预约已收到，照护顾问将审核评估后与您确认服务安排，请保持电话畅通。</span></div></div>` : ''}

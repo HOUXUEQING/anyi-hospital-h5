@@ -643,6 +643,66 @@ textarea.field__box { height: auto; min-height: 74px; padding: 10px 11px; line-h
 .benefit-card__num { font-size: 16.5px; letter-spacing: .4px; white-space: nowrap; }
 .field__box { background: #F8FAFE; border-color: #E8EFF8; }
 
+/* ---------------- flow, glass hero and compact lists ---------------- */
+.flow-steps { display: flex; align-items: center; gap: 5px; margin-top: 10px; padding: 10px 11px; border-radius: 13px; background: rgba(255, 255, 255, .66); border: 1px solid rgba(255, 255, 255, .9); }
+.flow-step { display: flex; align-items: center; gap: 4px; font-size: 8.2px; color: var(--ink-3); white-space: nowrap; }
+.flow-step i { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 1px solid #DCE7F7; color: var(--ink-3); font-style: normal; font-family: var(--num); font-size: 7.5px; flex: none; }
+.flow-step.is-active { color: var(--brand); font-weight: 600; }
+.flow-step.is-active i { background: var(--brand); border-color: var(--brand); color: #fff; }
+.flow-step.is-done i { background: #E8F8F1; border-color: #C8EEDF; color: #139A72; }
+.flow-step.is-done .ic { width: 9px; height: 9px; }
+.flow-line { flex: 1; min-width: 6px; height: 1px; background: #DCE7F7; }
+.flow-line.is-done { background: #95C9B7; }
+.flow-steps--dark { background: rgba(255, 255, 255, .1); border-color: rgba(255, 255, 255, .22); }
+.flow-steps--dark .flow-step { color: rgba(255, 255, 255, .62); }
+.flow-steps--dark .flow-step.is-active { color: #fff; }
+.flow-steps--dark .flow-step.is-active i { background: #fff; border-color: #fff; color: #1657C5; }
+.flow-steps--dark .flow-step.is-done i { background: rgba(255, 255, 255, .92); border-color: transparent; color: #1657C5; }
+.flow-steps--dark .flow-line { background: rgba(255, 255, 255, .25); }
+.flow-steps--dark .flow-line.is-done { background: rgba(255, 255, 255, .76); }
+.book-hero { padding-bottom: 16px; }
+.book-hero::before { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(36, 108, 210, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(36, 108, 210, .035) 1px, transparent 1px); background-size: 26px 26px; mask-image: linear-gradient(to bottom, #000, transparent 78%); }
+.book-hero__orb { width: 68px; height: 68px; border-radius: 22px; }
+.book-hero__orb .ic { width: 31px; height: 31px; }
+.book-hero__cross { position: absolute; right: 2px; bottom: 2px; width: 27px; height: 27px; border-radius: 9px; background: #fff; color: var(--brand); display: grid; place-items: center; font-size: 18px; font-weight: 700; line-height: 1; box-shadow: 0 7px 14px -10px rgba(27, 99, 213, .45); border: 1px solid #DCEAFB; }
+.book-assure { margin-top: 14px; }
+.book-assure + .flow-steps { margin-top: 8px; }
+.order-hero { padding: 17px 16px 20px; background: radial-gradient(circle at 86% 8%, rgba(255, 255, 255, .24), transparent 30%), linear-gradient(122deg, #0B3E98 0%, #1B63D5 48%, #3F8CF4 78%, #7AC9ED 100%); }
+.order-hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .045) 1px, transparent 1px); background-size: 28px 28px; mask-image: linear-gradient(to bottom, #000, transparent 78%); }
+.order-hero__brand { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 4px; font-size: 8.5px; color: rgba(255, 255, 255, .72); }
+.order-hero__brand .ic { width: 13px; height: 13px; }
+.order-hero__glass { position: relative; z-index: 2; margin-top: 13px; padding: 15px 15px 13px; border-radius: 21px; background: linear-gradient(145deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, .08)); border: 1px solid rgba(255, 255, 255, .28); box-shadow: 0 18px 36px -28px rgba(5, 27, 70, .6), inset 0 1px 0 rgba(255, 255, 255, .18); backdrop-filter: blur(18px); }
+.order-hero__glass .order-hero__pill { margin-top: 0; }
+.order-hero__glass h1 { margin: 10px 0 6px; }
+.order-hero__glass p { max-width: 295px; }
+.order-hero__glass .flow-steps { margin-top: 13px; }
+.order-body { background: linear-gradient(180deg, #F4F8FE, #F7FAFD 260px); }
+.dcard { border-radius: 18px; padding: 14px; box-shadow: 0 12px 28px -26px rgba(20, 54, 98, .45); }
+.dcard__head { margin-bottom: 7px; }
+.dcard__title { font-size: 12.5px; }
+.my-hero { padding: 18px 18px 15px; background: linear-gradient(145deg, #E8F2FF 0%, #F7FBFF 54%, #E9FAF4 100%); }
+.my-hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(36, 108, 210, .03) 1px, transparent 1px), linear-gradient(90deg, rgba(36, 108, 210, .03) 1px, transparent 1px); background-size: 28px 28px; mask-image: linear-gradient(to bottom, #000, transparent 80%); }
+.my-hero__hosp { position: absolute; right: 17px; top: 18px; color: rgba(27, 99, 213, .14); z-index: 0; }
+.my-hero__hosp .ic { width: 46px; height: 46px; stroke-width: 1.2; }
+.my-stat b { font-size: 21px; }
+.my-stat span { font-size: 8.5px; }
+.appt-card { margin-bottom: 9px; padding: 12px 13px 0; border-radius: 16px; box-shadow: 0 10px 24px -24px rgba(20, 54, 98, .45); }
+.appt-card__head { align-items: center; gap: 9px; }
+.appt-icon { width: 38px; height: 38px; border-radius: 12px; }
+.appt-icon .ic { width: 19px; height: 19px; }
+.appt-card__title { padding-top: 0; }
+.appt-card__title h3 { font-size: 13.5px; }
+.appt-card__no { margin-top: 2px; font-size: 8px; }
+.appt-status { padding-top: 0; font-size: 10px; }
+.appt-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 10px; margin-top: 8px; color: var(--ink-3); font-size: 8.7px; }
+.appt-meta__item { display: inline-flex; align-items: center; gap: 4px; line-height: 1.4; }
+.appt-meta__item .ic { width: 12px; height: 12px; color: #A7B4C6; }
+.appt-place { display: flex; align-items: center; gap: 4px; margin-top: 5px; font-size: 8.8px; color: var(--ink-3); line-height: 1.4; }
+.appt-place .ic { width: 12px; height: 12px; color: #A7B4C6; flex: none; }
+.appt-card__actions { padding: 8px 0 9px; margin-top: 8px; }
+.appt-action { height: 28px; padding: 0 11px; font-size: 9px; }
+.appt-action--primary { background: #F4F9FF; }
+
 @media (min-width: 431px) {
   #app { margin: 24px auto 48px; min-height: calc(100vh - 72px); border-radius: 26px; overflow: hidden; }
   .actionbar { bottom: 24px; border-radius: 0 0 26px 26px; }
