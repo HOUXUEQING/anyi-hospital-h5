@@ -71,6 +71,14 @@
       if (!o.patient.idType) o.patient = { ...s.profile.patient, ...o.patient };
       if (!o.contact.idType) o.contact = { ...s.profile.contact, ...o.contact };
       if (!o.syncStatus) o.syncStatus = 'success';
+      if (o.caregiver) {
+        const seed = D.seedOrders.find((x) => x.id === o.id || (x.caregiver && x.caregiver.name === o.caregiver.name));
+        if (seed && seed.caregiver) {
+          ['gender', 'age', 'phone'].forEach((k) => {
+            if ((o.caregiver[k] == null || o.caregiver[k] === '' || o.caregiver[k] === '—') && seed.caregiver[k] != null) o.caregiver[k] = seed.caregiver[k];
+          });
+        }
+      }
     });
     s.vouchers.forEach((v) => {
       const active = s.orders.find((o) => o.voucherId === v.id && o.status !== 'cancelled');
@@ -551,9 +559,14 @@
     const timeline = timelineList.map((t, i) => `<div class="tl-item ${i === 0 ? 'is-latest' : ''}"><b>${esc(t.title)}</b><p>${esc(t.desc)}</p><time>${esc(t.time)}</time></div>`).join('');
     const foldable = timelineList.length > 2;
     const cg = o.caregiver && ['accepted', 'serving', 'completed'].includes(o.status) ? o.caregiver : null;
-    const cgPhone = cg && cg.phone ? String(cg.phone) : '';
+    const cgPhone = cg && cg.phone && String(cg.phone) !== '—' ? String(cg.phone) : '';
+    const cgFacts = cg ? [
+      cg.gender && cg.gender !== '—' ? esc(cg.gender) : '',
+      cg.age && String(cg.age) !== '—' ? `${esc(cg.age)}岁` : '',
+      cgPhone ? esc(cgPhone) : ''
+    ].filter(Boolean) : [];
     const caregiver = cg ? `<section class="dcard">${dhead('users', 'is-blue', '护理员信息')}
-      <div class="caregiver"><div class="avatar">${esc(cg.name.slice(0, 1))}</div><div class="caregiver__main"><b>${esc(cg.name)}</b><span>${esc(cg.level)} · ${cg.years} 年经验</span><div class="caregiver__facts"><span>${esc(cg.gender || '—')}</span><span>${cg.age || '—'}岁</span><span class="caregiver__phone-text">${esc(cgPhone || '—')}</span></div></div></div>
+      <div class="caregiver"><div class="avatar">${esc(cg.name.slice(0, 1))}</div><div class="caregiver__main"><b>${esc(cg.name)}</b><span>${esc(cg.level)}${cg.years ? ` · ${cg.years} 年经验` : ''}</span>${cgFacts.length ? `<div class="caregiver__facts">${cgFacts.map((f) => `<span>${f}</span>`).join('')}</div>` : ''}</div></div>
       ${cgPhone ? `<div class="caregiver-contact"><a class="caregiver-call" href="tel:${esc(cgPhone)}">${icon('phone')}拨打电话</a><button class="caregiver-copy" type="button" data-act="copy-phone" data-phone="${esc(cgPhone)}">${icon('clipboard')}复制手机号</button></div>` : ''}
     </section>` : '';
     return page(`${titlebar('订单详情', '#/my')}
