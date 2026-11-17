@@ -703,6 +703,39 @@ textarea.field__box { height: auto; min-height: 74px; padding: 10px 11px; line-h
 .appt-action { height: 28px; padding: 0 11px; font-size: 9px; }
 .appt-action--primary { background: #F4F9FF; }
 
+.book-hero__scene { position: relative; width: calc(100% + 36px); height: 134px; margin: 4px -18px 0; overflow: hidden; }
+.book-hero__scene svg { display: block; width: 100%; height: 100%; }
+.book-assure { margin-top: 8px; }
+.book-assure + .flow-steps { margin-top: 8px; }
+.dcard__title { align-items: center; gap: 8px; font-size: 14px; }
+.dcard__title .form-card__num { width: 28px; height: 28px; border-radius: 9px; }
+.dcard__title .form-card__num .ic { width: 14px; height: 14px; }
+.dcard__aside { font-size: 9.5px; }
+.detail-kv { font-size: 11.5px; padding: 8px 0; }
+.detail-kv span { font-size: 10.5px; }
+.detail-kv b { font-size: 11.5px; }
+.dcard--notice { display: flex; align-items: flex-start; gap: 7px; padding: 13px 14px; background: linear-gradient(135deg, #FFF9EC, #FFFDF8); border-color: #F6E8C8; color: #8B6A27; font-size: 11px; line-height: 1.7; }
+.dcard--notice .ic { width: 15px; height: 15px; flex: none; margin-top: 2px; }
+.benefit-mini b { font-size: 12px; }
+.benefit-mini span { font-size: 10px; }
+.benefit-mini__period { font-size: 9.5px; }
+.tl-item b { font-size: 11.5px; }
+.tl-item p { font-size: 10.5px; }
+.tl-item time { font-size: 9px; }
+.order-hero__glass h1 { font-size: 24px; }
+.order-hero__glass p { font-size: 11px; line-height: 1.7; }
+.order-hero__glass .order-hero__meta { font-size: 10px; }
+.order-hero__brand { font-size: 9px; }
+.appt-card__no { margin-top: 3px; font-size: 9.5px; }
+.appt-card__title h3 { font-size: 14.5px; }
+.appt-lines { margin-top: 9px; }
+.appt-line { display: flex; align-items: center; gap: 5px; padding: 4px 0; font-size: 10.5px; color: var(--ink-3); min-width: 0; }
+.appt-line .ic { width: 14px; height: 14px; flex: none; color: #A7B4C6; }
+.appt-line__label { flex: none; width: 42px; font-size: 9.5px; color: var(--ink-3); }
+.appt-line b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.8px; font-weight: 500; color: var(--ink-2); }
+.appt-action { height: 30px; font-size: 10px; }
+.appt-card__actions { padding: 8px 0 10px; }
+
 @media (min-width: 431px) {
   #app { margin: 24px auto 48px; min-height: calc(100vh - 72px); border-radius: 26px; overflow: hidden; }
   .actionbar { bottom: 24px; border-radius: 0 0 26px 26px; }

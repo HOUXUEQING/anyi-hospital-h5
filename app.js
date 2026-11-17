@@ -309,12 +309,64 @@
           <h1>${isEditing ? '修改预约' : '院内照护预约'}</h1>
           <p>${isEditing ? '修改后预约将重新进入待确认状态。' : '填写信息并提交预约，照护顾问将审核评估后确认<span style="white-space:nowrap">服务安排。</span>'}</p>
         </div>
-        <div class="book-hero__art" aria-hidden="true">
-          <span class="book-hero__glow"></span>
-          <span class="book-hero__orb">${icon('hospital')}</span>
-          <span class="book-hero__cross">+</span>
-        </div>
       </div>
+      <div class="book-hero__scene" aria-hidden="true">
+          <svg viewBox="0 0 390 145" preserveAspectRatio="xMidYMax slice">
+            <defs>
+              <linearGradient id="sceneSky" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4FAFF"/><stop offset="1" stop-color="#E8F4FF"/></linearGradient>
+              <linearGradient id="sceneBld" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F5FAFF"/><stop offset="1" stop-color="#D7E9FF"/></linearGradient>
+              <linearGradient id="sceneNurse" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5B9DFF"/><stop offset="1" stop-color="#1B63D5"/></linearGradient>
+              <linearGradient id="sceneCare" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9BC7FF"/><stop offset="1" stop-color="#5B96EE"/></linearGradient>
+            </defs>
+            <rect width="390" height="145" fill="url(#sceneSky)"/>
+            <g fill="#FFFFFF" opacity=".78"><ellipse cx="55" cy="30" rx="31" ry="9"/><ellipse cx="86" cy="25" rx="22" ry="7"/><ellipse cx="320" cy="18" rx="26" ry="7"/><ellipse cx="348" cy="24" rx="18" ry="5"/></g>
+            <g fill="#CFE5FF" opacity=".7"><rect x="8" y="82" width="38" height="62" rx="5"/><rect x="50" y="96" width="30" height="48" rx="4"/><rect x="84" y="104" width="24" height="40" rx="4"/></g>
+            <g transform="translate(280 22)">
+              <rect x="0" y="18" width="88" height="112" rx="9" fill="#D3E8FF"/>
+              <rect x="13" y="0" width="62" height="130" rx="7" fill="url(#sceneBld)"/>
+              <rect x="13" y="0" width="62" height="9" fill="#C5E0FF"/>
+              <g fill="#FFFFFF" opacity=".9">
+                <rect x="23" y="52" width="12" height="10" rx="2"/><rect x="42" y="52" width="12" height="10" rx="2"/><rect x="61" y="52" width="9" height="10" rx="2"/>
+                <rect x="23" y="70" width="12" height="10" rx="2"/><rect x="42" y="70" width="12" height="10" rx="2"/><rect x="61" y="70" width="9" height="10" rx="2"/>
+                <rect x="23" y="88" width="12" height="10" rx="2"/><rect x="42" y="88" width="12" height="10" rx="2"/><rect x="61" y="88" width="9" height="10" rx="2"/>
+              </g>
+              <rect x="31" y="19" width="26" height="24" rx="6" fill="#2E6BFF"/>
+              <path d="M44 24v13M37.5 30.5h13" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+              <rect x="6" y="8" width="14" height="10" rx="3" fill="#EAF5FF"/><rect x="68" y="8" width="14" height="10" rx="3" fill="#EAF5FF"/>
+            </g>
+            <path d="M0 126 Q95 112 196 125 T390 120 V145 H0Z" fill="#F3FAFF" opacity=".9"/>
+            <g transform="translate(145 40)">
+              <ellipse cx="32" cy="91" rx="27" ry="6" fill="#B7D6FF" opacity=".55"/>
+              <path d="M6 89c0-25 12-37 26-37s26 12 26 37v27H6z" fill="url(#sceneCare)"/>
+              <path d="M21 84h22v18H21z" fill="#FFFFFF" opacity=".86"/>
+              <path d="M16 91h32" stroke="#D7E9FF" stroke-width="2"/>
+              <circle cx="32" cy="43" r="18" fill="#FFD9C7"/>
+              <path d="M14 41c0-14 8-23 18-23s18 9 18 23c-4-9-10-12-18-12s-14 3-18 12z" fill="#35415A"/>
+              <path d="M15 41c1 7 3 10 5 12M49 41c-1 7-3 10-5 12" stroke="#35415A" stroke-width="4" stroke-linecap="round"/>
+              <rect x="20" y="47" width="24" height="11" rx="5.5" fill="#FFFFFF"/>
+              <path d="M24 53h16" stroke="#C9D9EA" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M32 79c-9-6-15-10-15-17 0-4 3-7 7-7 3 0 5 2 8 5 3-3 5-5 8-5 4 0 7 3 7 7 0 7-6 11-15 17z" fill="#FFFFFF" opacity=".9"/>
+              <path d="M32 82c-6-4-11-7-11-12 0-3 2-5 5-5 2 0 4 1 6 3 2-2 4-3 6-3 3 0 5 2 5 5 0 5-5 8-11 12z" fill="#7DB5FF"/>
+            </g>
+            <g transform="translate(220 27)">
+              <ellipse cx="35" cy="103" rx="28" ry="6" fill="#B7D6FF" opacity=".55"/>
+              <path d="M10 101c0-29 12-44 25-44s25 15 25 44v15H10z" fill="url(#sceneNurse)"/>
+              <path d="M10 101c0-15 5-27 12-35l-8 50H10z" fill="#4C8DF6" opacity=".65"/>
+              <path d="M25 95h20v17H25z" fill="#FFFFFF" opacity=".9"/>
+              <circle cx="35" cy="48" r="18" fill="#FFD9C7"/>
+              <path d="M18 46c0-13 8-21 17-21s17 8 17 21c-4-7-10-10-17-10s-13 3-17 10z" fill="#2F3A50"/>
+              <path d="M18 36c2-8 9-13 17-13s15 5 17 13l-2 5H20z" fill="#FFFFFF"/>
+              <path d="M35 26v8M31 30h8" stroke="#2E6BFF" stroke-width="2.6" stroke-linecap="round"/>
+              <rect x="23" y="51" width="24" height="11" rx="5.5" fill="#FFFFFF"/>
+              <path d="M27 57h16" stroke="#C9D9EA" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M57 78h18v28H57z" fill="#EAF4FF" stroke="#A9CBF2" stroke-width="1.2"/>
+              <path d="M62 84h8M62 89h8M62 94h6" stroke="#8DB7E8" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M12 78c-4 9-5 20-3 31" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+            </g>
+            <g fill="#79B4FF" opacity=".55"><path d="M118 30c-5-4-9-6-9-10 0-2 2-4 4-4 2 0 3 1 5 3 2-2 3-3 5-3 2 0 4 2 4 4 0 4-4 6-9 10z"/><path d="M260 16c-3-2-6-4-6-7 0-2 1-3 3-3 1 0 2 1 3 2 1-1 2-2 3-2 2 0 3 1 3 3 0 3-3 5-6 7z"/></g>
+            <g stroke="#9CC8F5" stroke-width="1.5" opacity=".45"><path d="M118 48v8M114 52h8"/><path d="M273 38v7M269.5 41.5h7"/></g>
+          </svg>
+        </div>
       <div class="book-assure"><span>${icon('shield')}持证护理员</span><span>${icon('pin')}到院签到</span><span>${icon('file')}全程记录</span></div>
       ${flowSteps(1, 'light')}
     </header>
@@ -349,7 +401,7 @@
       </section>
 
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num is-violet">${icon('clock')}</span><span class="form-card__title">预约时间</span><span class="form-card__aside">照护顾问将评估确认</span></div>
+        <div class="form-card__head"><span class="form-card__num is-violet">${icon('clock')}</span><span class="form-card__title">期望服务时间</span><span class="form-card__aside">照护顾问将评估确认</span></div>
         <div class="quick-dates">${[[0, '今天'], [1, '明天'], [2, '后天']].map(([n, label]) => { const d = addDays(today, n); return `<button type="button" class="quick-date ${draft.startDate === d ? 'is-on' : ''}" data-act="quick-date" data-date="${d}">${label}<span>${Number(d.slice(5, 7))}/${Number(d.slice(8))}</span></button>`; }).join('')}</div>
         <div class="field" style="margin-top:10px"><label class="field__label" for="serviceTime">期望服务时间<em>*</em></label><input class="field__box" id="serviceTime" type="datetime-local" min="${today}T00:00" value="${esc(draft.startDate)}T${esc(draft.startTime)}"><span class="field__err">请选择期望服务时间</span></div>
       </section>
@@ -392,14 +444,14 @@
     return `<article class="appt-card">
       <div class="appt-card__head">
         <span class="appt-icon">${icon('care')}</span>
-        <div class="appt-card__title"><h3>${esc(o.serviceType || '院内照护')}</h3><div class="appt-card__no">订单号 ${esc(o.no)}</div></div>
+        <div class="appt-card__title"><h3>院内照护</h3><div class="appt-card__no">订单号 ${esc(o.no)}</div></div>
         <span class="appt-status appt-status--${st.tone}">${st.label}</span>
       </div>
-      <div class="appt-meta">
-        <span class="appt-meta__item">${icon('clock')}${fmtFull(o.startDate)} ${esc(o.startTime)}</span>
-        <span class="appt-meta__item">${icon('user')}${esc(o.patient.name)} · ${o.patient.age}岁</span>
+      <div class="appt-lines">
+        <div class="appt-line">${icon('clock')}<span class="appt-line__label">预约时间</span><b>${fmtFull(o.startDate)} ${esc(o.startTime)}</b></div>
+        <div class="appt-line">${icon('user')}<span class="appt-line__label">护理人</span><b>${esc(o.patient.name)} · ${esc(o.patient.gender)} · ${o.patient.age}岁</b></div>
+        <div class="appt-line">${icon('pin')}<span class="appt-line__label">住院地址</span><b>${esc(o.hospital)} · ${esc(o.department)}</b></div>
       </div>
-      <div class="appt-place">${icon('pin')}${esc(o.hospital)} · ${esc(o.department)}</div>
       <div class="appt-card__actions">
         <button class="appt-action" data-nav="#/order/${o.id}">查看详情</button>
         ${canCancel ? `<button class="appt-action" data-act="cancel" data-id="${o.id}">取消预约</button>` : ''}
@@ -480,7 +532,7 @@
     const st = STATUS[o.status] || STATUS.pending;
     const step = o.status === 'pending' ? 2 : ['accepted', 'serving'].includes(o.status) ? 3 : o.status === 'completed' ? 5 : 0;
     const timeline = (o.timeline || []).slice().reverse().map((t, i) => `<div class="tl-item ${i === 0 ? 'is-latest' : ''}"><b>${esc(t.title)}</b><p>${esc(t.desc)}</p><time>${esc(t.time)}</time></div>`).join('');
-    const caregiver = o.caregiver ? `<section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('users')}服务护理员</div><span class="dcard__aside">已安排</span></div><div class="caregiver"><div class="avatar">${esc(o.caregiver.name.slice(0, 1))}</div><div class="caregiver__main"><b>${esc(o.caregiver.name)}</b><span>${esc(o.caregiver.level)} · ${o.caregiver.years} 年经验</span></div><div class="caregiver__right"><b>${o.caregiver.rating}</b><span>服务评分</span></div></div></section>` : '';
+    const caregiver = o.caregiver ? `<section class="dcard">${dhead('users', 'is-blue', '服务护理员', '已安排')}<div class="caregiver"><div class="avatar">${esc(o.caregiver.name.slice(0, 1))}</div><div class="caregiver__main"><b>${esc(o.caregiver.name)}</b><span>${esc(o.caregiver.level)} · ${o.caregiver.years} 年经验</span></div><div class="caregiver__right"><b>${o.caregiver.rating}</b><span>服务评分</span></div></div></section>` : '';
     return page(`<div class="order-hero">
       <div class="order-hero__nav"><button class="ph__btn" data-nav="#/my" aria-label="返回">${icon('chevL')}</button><span class="order-hero__brand">${icon('hospital')} 院内照护</span></div>
       <div class="order-hero__glass">
@@ -492,43 +544,46 @@
       </div>
     </div>
     <div class="order-body">
-      ${o.status === 'pending' ? `<div class="dcard" style="background:linear-gradient(135deg,#FFF9EC,#FFFDF8);border-color:#F6E8C8"><div style="display:flex;gap:7px;font-size:9.5px;color:#8B6A27;line-height:1.7">${icon('clock')}<span>预约已收到，照护顾问将审核评估后与您确认服务安排，请保持电话畅通。</span></div></div>` : ''}
-      <section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('shield')}服务券</div><span class="dcard__aside">${esc(o.card.cardTypeName)}</span></div>
+      ${o.status === 'pending' ? `<div class="dcard dcard--notice">${icon('clock')}<span>预约已收到，照护顾问将审核评估后与您确认服务安排，请保持电话畅通。</span></div>` : ''}
+      <section class="dcard">${dhead('clock', 'is-teal', '订单进度', `更新于 ${esc((o.timeline && o.timeline[o.timeline.length - 1].time) || '')}`)}<div class="timeline">${timeline || '<div class="tiny muted">暂无进度</div>'}</div></section>
+      <section class="dcard">${dhead('receipt', 'is-gold', '服务券', esc(o.card.cardTypeName))}
         <div class="benefit-mini"><div><b>${esc(o.card.productName)}</b><span>券号 ${esc(o.card.cardNum)}</span></div><div class="benefit-mini__period">单次使用</div></div>
       </section>
-      <section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('hospital')}住院信息</div></div>
+      <section class="dcard">${dhead('hospital', 'is-teal', '住院信息')}
         <div class="detail-kv"><span>医院</span><b>${esc(o.hospital)}</b></div>
         <div class="detail-kv"><span>服务城市</span><b>${esc(o.city || '')}</b></div>
         <div class="detail-kv"><span>科室 / 病区</span><b>${esc(o.department)}</b></div>
         ${o.hospitalizedTime ? `<div class="detail-kv"><span>住院日期</span><b>${fmtFull(o.hospitalizedTime)}</b></div>` : ''}
-        <div class="detail-kv"><span>入院疾病</span><b style="max-width:220px">${esc(o.disease || '—')}</b></div>
+        <div class="detail-kv"><span>入院疾病</span><b style="max-width:230px">${esc(o.disease || '—')}</b></div>
       </section>
-      <section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('user')}护理人信息</div></div>
+      <section class="dcard">${dhead('user', 'is-blue', '护理人信息')}
         <div class="detail-kv"><span>姓名 / 性别</span><b>${esc(o.patient.name)} · ${esc(o.patient.gender)} · ${o.patient.age}岁</b></div>
         <div class="detail-kv"><span>证件</span><b>${esc(idTypeName(o.patient.idType))} ${maskId(o.patient.idNo)}</b></div>
         <div class="detail-kv"><span>出生日期</span><b>${fmtFull(o.patient.birthday)}</b></div>
       </section>
-      <section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('clipboard')}期望服务时间</div></div>
+      <section class="dcard">${dhead('clipboard', 'is-violet', '期望服务时间')}
         <div class="detail-kv"><span>服务项目</span><b>院内照护</b></div>
         <div class="detail-kv"><span>期望时间</span><b>${fmtDate(o.startDate)} ${esc(o.startTime)}</b></div>
-        <div class="detail-kv"><span>照护需求</span><b style="max-width:220px">${o.needs.map((n) => `<span class="tag tag--blue" style="margin:0 0 4px 4px">${esc(n)}</span>`).join('')}</b></div>
-        ${o.note ? `<div class="detail-kv"><span>补充说明</span><b style="max-width:220px">${esc(o.note)}</b></div>` : ''}
+        <div class="detail-kv"><span>照护需求</span><b style="max-width:230px">${o.needs.map((n) => `<span class="tag tag--blue" style="margin:0 0 4px 4px">${esc(n)}</span>`).join('')}</b></div>
+        ${o.note ? `<div class="detail-kv"><span>补充说明</span><b style="max-width:230px">${esc(o.note)}</b></div>` : ''}
       </section>
       ${caregiver}
-      <section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('users')}联系人信息</div></div>
+      <section class="dcard">${dhead('users', 'is-blue', '联系人信息')}
         <div class="detail-kv"><span>姓名</span><b>${esc(o.contact.name)}</b></div>
         <div class="detail-kv"><span>手机号</span><b>${phoneMask(o.contact.mobile || o.contact.phone)}</b></div>
       </section>
-      <section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('clock')}订单进度</div><span class="dcard__aside">更新于 ${esc((o.timeline && o.timeline[o.timeline.length - 1].time) || '')}</span></div><div class="timeline">${timeline || '<div class="tiny muted">暂无进度</div>'}</div></section>
-      <section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('receipt')}订单信息</div></div>
+      <section class="dcard">${dhead('receipt', 'is-gold', '订单信息')}
         <div class="detail-kv"><span>订单编号</span><b>${esc(o.no)}</b></div>
         <div class="detail-kv"><span>提交时间</span><b>${esc(o.createdAt)}</b></div>
-        <div class="detail-kv"><span>易得康同步</span><b class="sync-ok">${o.syncStatus === 'success' ? '已同步' : '待同步'}${o.syncedAt ? ` · ${esc(o.syncedAt)}` : ''}</b></div>
       </section>
       ${['pending', 'accepted'].includes(o.status) ? `<div class="detail-actions">
         <button class="btn btn--ghost" data-act="cancel" data-id="${o.id}">取消预约</button><button class="btn btn--soft" data-act="edit-order" data-id="${o.id}">修改预约</button>
       </div>` : ''}
     </div>`, 'page--tabbar');
+  }
+
+  function dhead(iconName, tone, title, aside = '') {
+    return `<div class="dcard__head"><div class="dcard__title"><span class="form-card__num ${tone}">${icon(iconName)}</span>${title}</div>${aside ? `<span class="dcard__aside">${aside}</span>` : ''}</div>`;
   }
 
   function accountView() {
