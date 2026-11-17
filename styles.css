@@ -824,6 +824,26 @@ textarea.field__box { height: auto; min-height: 74px; padding: 10px 11px; line-h
 .detail-body .detail-actions .btn { font-size: 14px; }
 .detail-kv--tags b { display: flex; flex-wrap: wrap; gap: 5px; justify-content: flex-end; }
 
+.status-panel h1 { margin: 13px 0 4px; font-size: 27px; }
+.status-panel__eyebrow, .status-panel__meta, .status-panel__foot, .status-panel__updated { display: none; }
+.status-timeline { margin-top: 14px; }
+.status-timeline.is-foldable { max-height: 188px; overflow-y: auto; padding-right: 2px; scrollbar-width: thin; }
+.status-timeline.is-open { max-height: none; overflow: visible; }
+.timeline-toggle { display: block; margin: 3px auto 0; padding: 6px 12px; border-radius: 999px; background: #F1F7FF; color: var(--brand); font-size: 11px; font-weight: 600; }
+.timeline--panel .tl-item { padding: 8px 0 8px 22px; }
+.timeline--panel .tl-item b { font-size: 13.5px; }
+.timeline--panel .tl-item p { font-size: 11.5px; }
+.timeline--panel .tl-item time { font-size: 10px; }
+.caregiver__facts { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 8px; margin-top: 5px; font-size: 11px; color: var(--ink-3); }
+.caregiver__facts span + span { position: relative; padding-left: 8px; }
+.caregiver__facts span + span::before { content: ""; position: absolute; left: 0; top: 50%; width: 2px; height: 2px; border-radius: 50%; background: #AEBCCD; transform: translateY(-50%); }
+.caregiver__phone-text { font-family: var(--num); color: var(--ink-2); font-size: 11.5px; }
+.caregiver-contact { display: flex; gap: 8px; margin-top: 11px; }
+.caregiver-call, .caregiver-copy { flex: 1; height: 38px; border-radius: 11px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; font-size: 12px; font-weight: 600; }
+.caregiver-call { color: #fff; background: linear-gradient(135deg, #4C8DF6, #2E6BFF); }
+.caregiver-copy { color: var(--brand); background: #F1F7FF; }
+.caregiver-call .ic, .caregiver-copy .ic { width: 14px; height: 14px; }
+
 @media (min-width: 431px) {
   #app { margin: 24px auto 48px; min-height: calc(100vh - 72px); border-radius: 26px; overflow: hidden; }
   .actionbar { bottom: 24px; border-radius: 0 0 26px 26px; }

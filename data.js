@@ -115,7 +115,7 @@ window.HOSPITAL_DATA = {
       completedAt: null,
       syncStatus: 'success',
       syncedAt: '2026-11-14 09:13:00',
-      caregiver: { name: '陈晓梅', level: '中级养老护理员', years: 5, rating: 4.8 },
+      caregiver: { name: '陈晓梅', gender: '女', age: 46, phone: '13900001234', level: '中级养老护理员', years: 5, rating: 4.8 },
       createdAt: '2026-11-14 09:12:30',
       timeline: [
         { title: '预约已提交', desc: '照护顾问正在审核评估', time: '11-14 09:12:30' },
@@ -158,7 +158,7 @@ window.HOSPITAL_DATA = {
       completedAt: '2026-10-25 08:10:00',
       syncStatus: 'success',
       syncedAt: '2026-10-15 16:30:00',
-      caregiver: { name: '王秀兰', level: '高级养老护理员', years: 8, rating: 4.9 },
+      caregiver: { name: '王秀兰', gender: '女', age: 52, phone: '13900005678', level: '高级养老护理员', years: 8, rating: 4.9 },
       createdAt: '2026-10-15 16:28:00',
       timeline: [
         { title: '需求已提交', desc: '照护顾问已收到院内照护需求', time: '10-15 16:28:00' },
