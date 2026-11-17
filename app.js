@@ -312,29 +312,13 @@
     <form id="request-form" class="req-body" novalidate>
       ${activeOrders.length && !isEditing ? `<div class="banner banner--blue">${icon('info')} 您有 ${activeOrders.length} 个进行中预约，另有 ${available.length} 张服务券可用，可继续提交新的预约。</div>` : ''}
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num">券</span><span class="form-card__title">服务券</span><span class="form-card__aside">${isEditing ? '本次预约使用' : `可用 ${available.length} 张`}</span></div>
+        <div class="form-card__head"><span class="form-card__num">券</span><span class="form-card__title">卡券</span><span class="form-card__aside">${isEditing ? '本次预约使用' : `可用 ${available.length} 张`}</span></div>
         <div id="card-strip">${cardStripHtml(card, isEditing ? '本次预约' : '未使用')}</div>
         <p class="form-note">单次使用券，本次预约将使用 1 张。</p>
       </section>
 
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num">01</span><span class="form-card__title">预约机构与住院信息</span><span class="form-card__aside">用于匹配院内护理员</span></div>
-        <div class="form-grid">
-          <div class="field"><label class="field__label" for="city">城市<em>*</em></label><select class="field__box" id="city">${cities.map((c) => `<option value="${esc(c)}" ${city === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select><span class="field__err">请选择城市</span></div>
-          <div class="field"><label class="field__label" for="hospital">就诊医院<em>*</em></label><select class="field__box" id="hospital">${hospitals.map((h) => `<option ${hospital === h ? 'selected' : ''}>${esc(h)}</option>`).join('')}</select><span class="field__err">请选择医院</span></div>
-          <div class="field field--full"><label class="field__label" for="department">科室 / 病区<em>*</em></label><select class="field__box" id="department">${D.departments.map((d) => `<option ${draft.department === d ? 'selected' : ''}>${esc(d)}</option>`).join('')}</select><span class="field__err">请选择科室</span></div>
-          <div class="field field--full"><label class="field__label" for="disease">入院疾病 / 诊断<em>*</em></label><input class="field__box" id="disease" value="${esc(draft.disease)}" placeholder="如：膝关节骨性关节炎（术后）"><span class="field__err">请填写入院疾病或诊断</span></div>
-          <div class="field field--full"><label class="field__label" for="hospitalizedTime">住院日期 <span class="tiny muted">选填</span></label><input class="field__box" id="hospitalizedTime" type="date" max="${today}" value="${esc(draft.hospitalizedTime)}"><span class="field__err"></span></div>
-        </div>
-      </section>
-
-      <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num">02</span><span class="form-card__title">期望服务时间</span><span class="form-card__aside">照护顾问将评估确认</span></div>
-        <div class="field"><label class="field__label" for="serviceTime">期望服务时间<em>*</em></label><input class="field__box" id="serviceTime" type="datetime-local" min="${today}T00:00" value="${esc(draft.startDate)}T${esc(draft.startTime)}"><span class="field__err">请选择期望服务时间</span></div>
-      </section>
-
-      <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num">03</span><span class="form-card__title">填写护理人信息</span><span class="form-card__aside">用于服务预约与实名</span></div>
+        <div class="form-card__head"><span class="form-card__num">01</span><span class="form-card__title">填写护理人信息</span><span class="form-card__aside">用于服务预约与实名</span></div>
         <div class="form-grid">
           <div class="field field--full"><label class="field__label" for="patientName">姓名<em>*</em></label><input class="field__box" id="patientName" value="${esc(draft.patient.name)}" placeholder="请输入护理人姓名"><span class="field__err">请填写护理人姓名</span></div>
           <div class="field"><label class="field__label">性别<em>*</em></label><div class="seg"><button type="button" class="seg__btn ${draft.patient.gender === '女' ? 'is-on' : ''}" data-act="gender" data-value="女">女</button><button type="button" class="seg__btn ${draft.patient.gender === '男' ? 'is-on' : ''}" data-act="gender" data-value="男">男</button></div></div>
@@ -345,24 +329,43 @@
       </section>
 
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num">04</span><span class="form-card__title">照护需求</span><span class="form-card__aside" id="needs-count">已选 ${draft.needs.length} 项</span></div>
+        <div class="form-card__head"><span class="form-card__num">02</span><span class="form-card__title">填写联系人信息</span><span class="form-card__aside">用于顾问确认</span></div>
+        <div class="form-grid">
+          <div class="field"><label class="field__label" for="contactName">姓名<em>*</em></label><input class="field__box" id="contactName" value="${esc(draft.contact.name)}" placeholder="姓名"><span class="field__err">请填写联系人姓名</span></div>
+          <div class="field"><label class="field__label" for="contactPhone">手机号<em>*</em></label><input class="field__box" id="contactPhone" type="tel" inputmode="numeric" maxlength="11" value="${esc(draft.contact.mobile || draft.contact.phone)}" placeholder="11 位手机号"><span class="field__err">请填写正确手机号</span></div>
+        </div>
+      </section>
+
+      <section class="form-card">
+        <div class="form-card__head"><span class="form-card__num">03</span><span class="form-card__title">填写住院信息</span><span class="form-card__aside">用于匹配院内护理员</span></div>
+        <div class="form-grid">
+          <div class="field"><label class="field__label" for="city">城市<em>*</em></label><select class="field__box" id="city">${cities.map((c) => `<option value="${esc(c)}" ${city === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select><span class="field__err">请选择城市</span></div>
+          <div class="field"><label class="field__label" for="hospital">就诊医院<em>*</em></label><select class="field__box" id="hospital">${hospitals.map((h) => `<option ${hospital === h ? 'selected' : ''}>${esc(h)}</option>`).join('')}</select><span class="field__err">请选择医院</span></div>
+          <div class="field field--full"><label class="field__label" for="department">科室 / 病区<em>*</em></label><select class="field__box" id="department">${D.departments.map((d) => `<option ${draft.department === d ? 'selected' : ''}>${esc(d)}</option>`).join('')}</select><span class="field__err">请选择科室</span></div>
+          <div class="field field--full"><label class="field__label" for="disease">入院疾病 / 诊断<em>*</em></label><input class="field__box" id="disease" value="${esc(draft.disease)}" placeholder="如：膝关节骨性关节炎（术后）"><span class="field__err">请填写入院疾病或诊断</span></div>
+          <div class="field field--full"><label class="field__label" for="hospitalizedTime">住院日期 <span class="tiny muted">选填</span></label><input class="field__box" id="hospitalizedTime" type="date" max="${today}" value="${esc(draft.hospitalizedTime)}"><span class="field__err"></span></div>
+        </div>
+      </section>
+
+      <section class="form-card">
+        <div class="form-card__head"><span class="form-card__num">04</span><span class="form-card__title">预约时间</span><span class="form-card__aside">照护顾问将评估确认</span></div>
+        <div class="field"><label class="field__label" for="serviceTime">期望服务时间<em>*</em></label><input class="field__box" id="serviceTime" type="datetime-local" min="${today}T00:00" value="${esc(draft.startDate)}T${esc(draft.startTime)}"><span class="field__err">请选择期望服务时间</span></div>
+      </section>
+
+      <section class="form-card">
+        <div class="form-card__head"><span class="form-card__num">05</span><span class="form-card__title">照护需求</span><span class="form-card__aside" id="needs-count">已选 ${draft.needs.length} 项</span></div>
         <div class="need-grid" id="needs">${needs}</div>
         <span class="field__err" id="needs-err" style="display:none;margin-top:4px">请至少选择一项照护需求</span>
         <div class="field" style="margin-top:12px"><label class="field__label" for="note">补充说明 <span class="tiny muted">选填</span></label><textarea class="field__box" id="note" placeholder="例如：术后不能下床、夜间需要协助起夜、饮食禁忌等">${esc(draft.note)}</textarea></div>
       </section>
 
-      <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num">05</span><span class="form-card__title">填写联系人信息</span><span class="form-card__aside">用于顾问确认</span></div>
-        <div class="form-grid">
-          <div class="field"><label class="field__label" for="contactName">姓名<em>*</em></label><input class="field__box" id="contactName" value="${esc(draft.contact.name)}" placeholder="姓名"><span class="field__err">请填写联系人姓名</span></div>
-          <div class="field"><label class="field__label" for="contactPhone">手机号<em>*</em></label><input class="field__box" id="contactPhone" type="tel" inputmode="numeric" maxlength="11" value="${esc(draft.contact.mobile || draft.contact.phone)}" placeholder="11 位手机号"><span class="field__err">请填写正确手机号</span></div>
-        </div>
-        <div class="agree ${draft.agree ? 'is-on' : ''}" id="agree-row" data-act="toggle-agree" style="margin-top:10px">
+      <div class="agree-block">
+        <div class="agree ${draft.agree ? 'is-on' : ''}" id="agree-row" data-act="toggle-agree">
           <span class="agree__box">${icon('check')}</span>
           <span>我已阅读并同意<em>《院内照护服务协议》</em>与<em>《隐私政策》</em>，确认住院信息与照护需求真实有效</span>
         </div>
         <div class="form-foot-note">${icon('shield')} 服务由持证护理员提供，到院签到、护理记录全程可追溯</div>
-      </section>
+      </div>
 
       <div class="actionbar request-actionbar">
         <div class="actionbar__note"><b>提交后照护顾问将审核评估</b>确认服务安排后与您联系</div>
@@ -405,7 +408,6 @@
       <div class="my-hero__top">
         <div class="avatar avatar--lg">${esc((state.session.name || '用').slice(0, 1))}</div>
         <div><div class="my-hero__name">${esc(state.session.name)}<span class="my-hero__tag">院内照护会员</span></div><div class="my-hero__phone">${phoneMask(state.session.phone)}</div></div>
-        <button class="my-hero__set" data-nav="#/account" aria-label="账户信息">${icon('settings')}</button>
       </div>
       <div class="my-stats">
         <button class="my-stat" data-nav="#/orders/all"><b>${orders.length}</b><span>全部订单</span></button>
@@ -442,25 +444,22 @@
       <div class="appt-list">${list.length ? list.map(orderCard).join('') : `<div class="appt-empty">${icon('receipt')}<p>暂无${emptyLabel}预约</p><button class="btn btn--primary btn--sm" data-nav="#/book">去预约</button></div>`}</div>`, 'page--tabbar');
   }
 
-  function vouchersView() {
+  function vouchersView(tab = 'all') {
+    const tabs = [['all', '全部'], ['unused', '未使用'], ['used', '已使用']];
     const vouchers = allCards();
-    const unused = vouchers.filter((v) => v.status !== 'used').length;
+    const list = vouchers.filter((v) => tab === 'all' || (tab === 'unused' ? v.status !== 'used' : v.status === 'used'));
     return page(`${ph('卡券', { back: '#/my' })}
-      <div class="voucher-head">
-        <div class="voucher-head__num"><b>${unused}</b><span>张可用服务券</span></div>
-        <div class="voucher-head__tip">每张服务券仅可使用 1 次</div>
-        <button class="btn btn--primary btn--sm" data-nav="${unused ? '#/book' : '#/orders/all'}">${unused ? '去预约' : '查看订单'}</button>
-      </div>
-      <div class="voucher-list">${vouchers.map((v) => {
+      <div class="order-tabs voucher-tabs">${tabs.map(([k, l]) => `<button class="order-tab ${tab === k ? 'is-on' : ''}" data-nav="#/vouchers/${k}">${l}</button>`).join('')}</div>
+      <div class="voucher-list">${list.map((v) => {
         const used = v.status === 'used';
         const order = used ? state.orders.find((o) => o.id === v.orderId || o.card.cardNum === v.cardNum) : null;
         return `<article class="voucher-item ${used ? 'is-used' : ''}">
           <div class="voucher-item__top"><span class="voucher-item__product">${esc(v.productName)}</span><span class="voucher-tag ${used ? 'is-used' : ''}">${used ? '已使用' : '未使用'}</span></div>
           <div class="voucher-item__type">${esc(v.cardTypeName)}</div>
           <div class="voucher-item__num">券号 ${maskCard(v.cardNum)}</div>
-          <div class="voucher-item__foot"><span>单次使用</span><span>${used ? (order ? '订单 ' + esc(order.no) : '已使用') : '可用于院内照护预约'}</span></div>
+          <div class="voucher-item__foot"><span>单次使用</span>${used ? `<span>${order ? '订单 ' + esc(order.no) : '已使用'}</span>` : `<button class="voucher-use" data-nav="#/book">去使用${icon('chevR')}</button>`}</div>
         </article>`;
-      }).join('') || `<div class="appt-empty">${icon('receipt')}<p>暂无服务券</p></div>`}</div>
+      }).join('') || `<div class="appt-empty">${icon('receipt')}<p>暂无${tab === 'all' ? '' : tabs.find((t) => t[0] === tab)[1]}服务券</p></div>`}</div>
       <div class="voucher-note">${icon('info')} 服务券由后台发放，取消进行中的预约后会自动返还。</div>`);
   }
 
@@ -471,7 +470,7 @@
     const timeline = (o.timeline || []).slice().reverse().map((t, i) => `<div class="tl-item ${i === 0 ? 'is-latest' : ''}"><b>${esc(t.title)}</b><p>${esc(t.desc)}</p><time>${esc(t.time)}</time></div>`).join('');
     const caregiver = o.caregiver ? `<section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('users')}服务护理员</div><span class="dcard__aside">已接单</span></div><div class="caregiver"><div class="avatar">${esc(o.caregiver.name.slice(0, 1))}</div><div class="caregiver__main"><b>${esc(o.caregiver.name)}</b><span>${esc(o.caregiver.level)} · ${o.caregiver.years} 年经验</span></div><div class="caregiver__right"><b>${o.caregiver.rating}</b><span>服务评分</span></div></div></section>` : '';
     return page(`<div class="order-hero">
-      <div class="order-hero__nav"><button class="ph__btn" data-nav="#/my" aria-label="返回">${icon('chevL')}</button><button class="ph__btn" data-act="contact" aria-label="联系顾问">${icon('headset')}</button></div>
+      <div class="order-hero__nav"><button class="ph__btn" data-nav="#/my" aria-label="返回">${icon('chevL')}</button></div>
       <span class="order-hero__pill">${st.label}</span>
       <h1>${esc(st.title)}</h1>
       <p>${esc(st.desc)}</p>
@@ -511,10 +510,9 @@
         <div class="detail-kv"><span>提交时间</span><b>${esc(o.createdAt)}</b></div>
         <div class="detail-kv"><span>易得康同步</span><b class="sync-ok">${o.syncStatus === 'success' ? '已同步' : '待同步'}${o.syncedAt ? ` · ${esc(o.syncedAt)}` : ''}</b></div>
       </section>
-      <div class="detail-actions">
-        ${['pending', 'accepted'].includes(o.status) ? `<button class="btn btn--ghost" data-act="cancel" data-id="${o.id}">取消预约</button><button class="btn btn--soft" data-act="edit-order" data-id="${o.id}">修改预约</button>` : ''}
-        <button class="btn btn--primary" data-act="contact">${icon('headset')}联系照护顾问</button>
-      </div>
+      ${['pending', 'accepted'].includes(o.status) ? `<div class="detail-actions">
+        <button class="btn btn--ghost" data-act="cancel" data-id="${o.id}">取消预约</button><button class="btn btn--soft" data-act="edit-order" data-id="${o.id}">修改预约</button>
+      </div>` : ''}
     </div>`, 'page--tabbar');
   }
 
@@ -743,7 +741,7 @@
     else if (p === 'success') { location.hash = '#/orders'; return; }
     else if (p === 'account') html = accountView();
     else if (p === 'cards') { location.hash = '#/vouchers'; return; }
-    else if (p === 'vouchers') html = vouchersView();
+    else if (p === 'vouchers') html = vouchersView(parts[1] || 'all');
     else if (p === 'customer') { location.hash = '#/my'; return; }
     else if (p === 'privacy') html = privacyView();
     else html = requestView();
