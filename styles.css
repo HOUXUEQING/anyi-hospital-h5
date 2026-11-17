@@ -542,7 +542,7 @@ textarea.field__box { height: auto; min-height: 74px; padding: 10px 11px; line-h
 .my-profile__more { margin-left: auto; width: 31px; height: 31px; border-radius: 50%; background: #fff; display: grid; place-items: center; color: var(--ink-3); }
 .order-tabs { display: flex; align-items: center; gap: 3px; padding: 0 14px 12px; overflow-x: auto; scrollbar-width: none; }
 .order-tabs::-webkit-scrollbar { display: none; }
-.order-tab { flex: 1; min-width: 64px; height: 34px; border-radius: 9px; color: var(--ink-3); font-size: 10px; white-space: nowrap; }
+.order-tab { flex: 1; min-width: 54px; height: 34px; border-radius: 9px; color: var(--ink-3); font-size: 9.5px; white-space: nowrap; }
 .order-tab.is-on { color: var(--brand); background: #EAF2FF; border: 1px solid #D8E7FC; font-weight: 600; }
 .appt-list { padding: 0 16px; }
 .appt-card { margin-bottom: 11px; padding: 14px 14px 0; border-radius: 18px; background: #fff; border: 1px solid #E9EFF8; box-shadow: var(--shadow-sm); }
@@ -567,6 +567,41 @@ textarea.field__box { height: auto; min-height: 74px; padding: 10px 11px; line-h
 .appt-empty p { margin: 0 0 12px; font-size: 10px; color: var(--ink-3); }
 .my-menu { margin: 12px 16px 0; }
 .my-foot { padding: 14px 0 8px; text-align: center; font-size: 8.5px; color: var(--ink-4); line-height: 1.8; }
+.my-stat { border: 0; background: transparent; padding: 0; font-family: inherit; cursor: pointer; }
+.my-stat:active { opacity: .65; }
+.menu__value { margin-left: auto; display: flex; align-items: center; gap: 3px; color: var(--ink-3); font-size: 9px; }
+.menu__value .ic { width: 12px; height: 12px; }
+.my-hotline { display: block; margin: 16px auto 2px; text-align: center; font-size: 9px; color: #A6B2C4; letter-spacing: .3px; }
+.banner { margin: 0 16px 10px; padding: 10px 12px; border-radius: 12px; font-size: 9.5px; line-height: 1.65; display: flex; gap: 6px; align-items: flex-start; }
+.banner .ic { width: 14px; height: 14px; flex: none; margin-top: 1px; }
+.banner--blue { background: #EFF7FF; border: 1px solid #D8E9FC; color: #38669F; }
+.no-voucher { min-height: calc(100vh - 64px); padding: 90px 28px 40px; text-align: center; }
+.no-voucher__icon { width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 22px; display: grid; place-items: center; color: #8FB2E2; background: #EEF5FF; }
+.no-voucher__icon .ic { width: 30px; height: 30px; }
+.no-voucher h2 { margin: 0 0 8px; font-size: 20px; letter-spacing: -.4px; }
+.no-voucher p { margin: 0 auto; max-width: 280px; font-size: 10px; line-height: 1.8; color: var(--ink-3); }
+.no-voucher__actions { display: flex; flex-direction: column; gap: 8px; margin: 22px auto 0; max-width: 230px; }
+.no-voucher__tip { margin-top: 22px; font-size: 8.5px; color: #A8B5C7; display: flex; align-items: center; justify-content: center; gap: 5px; }
+.no-voucher__tip .ic { width: 12px; height: 12px; }
+.voucher-head { margin: 0 16px 12px; padding: 16px; border-radius: 18px; background: linear-gradient(135deg, #1B63D5, #4C91F2); color: #fff; display: flex; align-items: center; gap: 12px; box-shadow: 0 14px 24px -20px rgba(27, 99, 213, .9); }
+.voucher-head__num { display: flex; align-items: baseline; gap: 5px; flex: none; }
+.voucher-head__num b { font-family: var(--num); font-size: 30px; line-height: 1; }
+.voucher-head__num span { font-size: 9px; opacity: .9; }
+.voucher-head__tip { flex: 1; font-size: 8.5px; line-height: 1.6; opacity: .75; }
+.voucher-head .btn { flex: none; background: #fff; color: var(--brand); box-shadow: none; }
+.voucher-list { padding: 0 16px; }
+.voucher-item { margin-bottom: 10px; padding: 14px; border-radius: 16px; background: #fff; border: 1px solid #E9EFF8; box-shadow: var(--shadow-sm); }
+.voucher-item.is-used { background: #F8FAFD; box-shadow: none; }
+.voucher-item__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.voucher-item__product { font-size: 13px; font-weight: 650; }
+.voucher-tag { font-size: 9px; color: var(--mint); background: #E9F8F0; padding: 3px 7px; border-radius: 6px; }
+.voucher-tag.is-used { color: #97A4B6; background: #EEF2F7; }
+.voucher-item__type { margin-top: 3px; font-size: 9px; color: var(--ink-3); }
+.voucher-item__num { margin-top: 10px; padding: 8px 10px; border-radius: 8px; background: #F4F8FE; color: #4A6080; font-family: var(--num); font-size: 11px; letter-spacing: .5px; }
+.voucher-item.is-used .voucher-item__num { background: #F1F4F8; color: #909CAD; }
+.voucher-item__foot { display: flex; align-items: center; justify-content: space-between; margin-top: 9px; font-size: 8.5px; color: #9AA7B8; }
+.voucher-note { padding: 6px 20px 20px; font-size: 8.5px; color: #A0ADBE; line-height: 1.7; display: flex; gap: 5px; }
+.voucher-note .ic { width: 12px; height: 12px; flex: none; margin-top: 1px; }
 
 @media (min-width: 431px) {
   #app { margin: 24px auto 48px; min-height: calc(100vh - 72px); border-radius: 26px; overflow: hidden; }
