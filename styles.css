@@ -726,13 +726,13 @@ textarea.field__box { height: auto; min-height: 74px; padding: 10px 11px; line-h
 .order-hero__glass p { font-size: 11px; line-height: 1.7; }
 .order-hero__glass .order-hero__meta { font-size: 10px; }
 .order-hero__brand { font-size: 9px; }
-.appt-card__no { margin-top: 3px; font-size: 9.5px; }
+.appt-card__no { margin-top: 3px; font-size: 10.2px; }
 .appt-card__title h3 { font-size: 14.5px; }
 .appt-lines { margin-top: 9px; }
-.appt-line { display: flex; align-items: center; gap: 5px; padding: 4px 0; font-size: 10.5px; color: var(--ink-3); min-width: 0; }
+.appt-line { display: flex; align-items: center; gap: 5px; padding: 4px 0; font-size: 11px; color: var(--ink-3); min-width: 0; }
 .appt-line .ic { width: 14px; height: 14px; flex: none; color: #A7B4C6; }
-.appt-line__label { flex: none; width: 42px; font-size: 9.5px; color: var(--ink-3); }
-.appt-line b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.8px; font-weight: 500; color: var(--ink-2); }
+.appt-line__label { flex: none; width: 46px; font-size: 10.2px; color: var(--ink-3); }
+.appt-line b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11.5px; font-weight: 500; color: var(--ink-2); }
 .appt-action { height: 30px; font-size: 10px; }
 .appt-card__actions { padding: 8px 0 10px; }
 
