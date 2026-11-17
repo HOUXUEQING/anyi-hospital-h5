@@ -18,21 +18,25 @@ window.HOSPITAL_DATA = {
     {
       id: 'v1', cardNum: 'YDK2026000186', cardType: '120', cardTypeName: '单次服务券',
       productName: '院内照护服务券', productCode: 'FS2021036', status: 'used', orderId: 'seed-h1',
+      startTime: '2026-01-01', endTime: '2026-10-31',
       mainInsurerName: '李桂芳', idType: '1', idNo: '310104194803120024'
     },
     {
       id: 'v2', cardNum: 'YDK2026000187', cardType: '120', cardTypeName: '单次服务券',
       productName: '院内照护服务券', productCode: 'FS2021036', status: 'unused', orderId: null,
+      startTime: '2026-01-01', endTime: '2027-06-30',
       mainInsurerName: '李桂芳', idType: '1', idNo: '310104194803120024', isDefault: true
     },
     {
       id: 'v3', cardNum: 'YDK2026000188', cardType: '120', cardTypeName: '单次服务券',
       productName: '院内照护服务券', productCode: 'FS2021036', status: 'unused', orderId: null,
+      startTime: '2026-03-01', endTime: '2026-12-03',
       mainInsurerName: '李桂芳', idType: '1', idNo: '310104194803120024'
     },
     {
       id: 'v4', cardNum: 'YDK2026000189', cardType: '120', cardTypeName: '单次服务券',
       productName: '院内照护服务券', productCode: 'FS2021036', status: 'unused', orderId: null,
+      startTime: '2026-06-01', endTime: '2027-12-31',
       mainInsurerName: '张女士', idType: '1', idNo: '310104197506180028'
     }
   ],
@@ -90,7 +94,8 @@ window.HOSPITAL_DATA = {
       days: 7,
       card: {
         cardNum: 'YDK2026000186', cardType: '120', cardTypeName: '单次服务券',
-        productName: '院内照护服务券', productCode: 'FS2021036'
+        productName: '院内照护服务券', productCode: 'FS2021036',
+        startTime: '2026-01-01', endTime: '2026-10-31'
       },
       voucherId: 'v1',
       patient: {
@@ -103,15 +108,16 @@ window.HOSPITAL_DATA = {
       emergency: { name: '张先生', phone: '13900005678' },
       note: '母亲膝关节置换术后，夜间起夜需要协助，引流管请多留意。',
       status: 'completed',
+      completedAt: '2026-10-25 08:10:00',
       syncStatus: 'success',
-      syncedAt: '2026-10-15 16:30',
+      syncedAt: '2026-10-15 16:30:00',
       caregiver: { name: '王秀兰', level: '高级养老护理员', years: 8, rating: 4.9 },
-      createdAt: '2026-10-15 16:28',
+      createdAt: '2026-10-15 16:28:00',
       timeline: [
-        { title: '需求已提交', desc: '照护顾问已收到院内照护需求', time: '10-15 16:28' },
-        { title: '护理员已接单', desc: '王秀兰 · 高级养老护理员', time: '10-15 17:05' },
-        { title: '服务开始', desc: '护理员到院签到，与家属完成交接', time: '10-18 08:02' },
-        { title: '服务完成', desc: '7 天陪护结束，家属确认服务完成', time: '10-25 08:10' }
+        { title: '需求已提交', desc: '照护顾问已收到院内照护需求', time: '10-15 16:28:00' },
+        { title: '护理员已接单', desc: '王秀兰 · 高级养老护理员', time: '10-15 17:05:00' },
+        { title: '服务开始', desc: '护理员到院签到，与家属完成交接', time: '10-18 08:02:00' },
+        { title: '服务完成', desc: '7 天陪护结束，家属确认服务完成', time: '10-25 08:10:00' }
       ]
     }
   ]
