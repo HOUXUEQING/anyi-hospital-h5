@@ -16,18 +16,24 @@ window.HOSPITAL_DATA = {
   },
   cards: [
     {
-      id: 'card-1', cardNum: 'YDK2026000186', cardType: '121', cardTypeName: '多次服务券',
-      productName: '院内照护服务券', productCode: 'FS2021036', dueline: '3 年',
-      startTime: '2026-01-01', endTime: '2028-12-31', status: '0', activationCode: '888888',
-      mainInsurerName: '李桂芳', age: '78', idType: '1', idNo: '310104194803120024',
-      phone: '13800006721', address: '上海市徐汇区田林路 128 弄 12 号 502 室', isDefault: true
+      id: 'v1', cardNum: 'YDK2026000186', cardType: '120', cardTypeName: '单次服务券',
+      productName: '院内照护服务券', productCode: 'FS2021036', status: 'used', orderId: 'seed-h1',
+      mainInsurerName: '李桂芳', idType: '1', idNo: '310104194803120024'
     },
     {
-      id: 'card-2', cardNum: 'YDK2025000921', cardType: '122', cardTypeName: '家庭服务券',
-      productName: '家庭照护服务券', productCode: 'FS2021037', dueline: '1 年',
-      startTime: '2025-10-01', endTime: '2026-09-30', status: '0', activationCode: '666888',
-      mainInsurerName: '张女士', age: '50', idType: '1', idNo: '310104197506180028',
-      phone: '13800006721', address: '上海市徐汇区田林路 128 弄 12 号 502 室', isDefault: false
+      id: 'v2', cardNum: 'YDK2026000187', cardType: '120', cardTypeName: '单次服务券',
+      productName: '院内照护服务券', productCode: 'FS2021036', status: 'unused', orderId: null,
+      mainInsurerName: '李桂芳', idType: '1', idNo: '310104194803120024', isDefault: true
+    },
+    {
+      id: 'v3', cardNum: 'YDK2026000188', cardType: '120', cardTypeName: '单次服务券',
+      productName: '院内照护服务券', productCode: 'FS2021036', status: 'unused', orderId: null,
+      mainInsurerName: '李桂芳', idType: '1', idNo: '310104194803120024'
+    },
+    {
+      id: 'v4', cardNum: 'YDK2026000189', cardType: '120', cardTypeName: '单次服务券',
+      productName: '院内照护服务券', productCode: 'FS2021036', status: 'unused', orderId: null,
+      mainInsurerName: '张女士', idType: '1', idNo: '310104197506180028'
     }
   ],
   hospitalMeta: {
@@ -35,8 +41,7 @@ window.HOSPITAL_DATA = {
     '北大医疗鲁中医院': { code: 'LZ001', province: '山东省', city: '淄博市', county: '临淄区' },
     '北大医疗淄博医院': { code: 'ZB001', province: '山东省', city: '淄博市', county: '张店区' },
     '北大医疗海洋石油医院': { code: 'OCEAN001', province: '天津市', city: '天津市', county: '滨海新区' },
-    '北京北大医疗康复医院': { code: 'PKUR001', province: '北京市', city: '北京市', county: '昌平区' },
-    '其他医院': { code: '', province: '', city: '', county: '' }
+    '北京北大医疗康复医院': { code: 'PKUR001', province: '北京市', city: '北京市', county: '昌平区' }
   },
   idTypes: [
     ['1', '身份证'], ['2', '护照'], ['3', '户口簿'], ['4', '军官证'], ['5', '士兵证'],
@@ -50,8 +55,7 @@ window.HOSPITAL_DATA = {
     '北大医疗鲁中医院',
     '北大医疗淄博医院',
     '北大医疗海洋石油医院',
-    '北京北大医疗康复医院',
-    '其他医院'
+    '北京北大医疗康复医院'
   ],
   departments: [
     '骨科病区', '神经内科', '心血管内科', '康复医学科', '普外科', '肿瘤内科', 'ICU / 重症监护', '其他科室'
@@ -79,16 +83,16 @@ window.HOSPITAL_DATA = {
       hospitalNo: 'ZY2026101208',
       hospitalizedTime: '2026-10-12',
       disease: '膝关节骨性关节炎（术后）',
-      serviceType: '24 小时陪护',
-      serviceId: '24h',
+      serviceType: '院内照护',
+      serviceId: 'hospital',
       startDate: '2026-10-18',
       startTime: '08:00',
       days: 7,
       card: {
-        cardNum: 'YDK2026000186', cardType: '121', cardTypeName: '多次服务券',
-        productName: '院内照护服务券', productCode: 'FS2021036',
-        startTime: '2026-01-01', endTime: '2028-12-31'
+        cardNum: 'YDK2026000186', cardType: '120', cardTypeName: '单次服务券',
+        productName: '院内照护服务券', productCode: 'FS2021036'
       },
+      voucherId: 'v1',
       patient: {
         name: '李桂芳', gender: '女', idType: '1', idNo: '310104194803120024', birthday: '1948-03-12',
         age: 78, mobile: '13800006721', province: '上海市', city: '上海市', county: '徐汇区',
