@@ -607,6 +607,42 @@ textarea.field__box { height: auto; min-height: 74px; padding: 10px 11px; line-h
 .voucher-use .ic { width: 12px; height: 12px; }
 .agree-block { margin: 2px 0 0; padding: 12px 14px; background: #fff; border: 1px solid #E9EFF8; border-radius: 16px; box-shadow: var(--shadow-sm); }
 
+/* ---------------- medical-health visual polish ---------------- */
+.book-hero { padding-bottom: 14px; background: linear-gradient(145deg, #E8F2FF 0%, #F7FBFF 54%, #ECFBF4 100%); }
+.book-hero__copy { position: relative; z-index: 2; flex: 1; min-width: 0; }
+.book-hero__art { position: relative; flex: 0 0 104px; height: 102px; margin: -4px -4px 0 0; }
+.book-hero__glow { position: absolute; inset: 10px 4px 2px 6px; border-radius: 50%; background: radial-gradient(circle, rgba(66, 139, 255, .18), transparent 68%); }
+.book-hero__orb { position: absolute; right: 11px; top: 24px; width: 70px; height: 70px; border-radius: 24px; display: grid; place-items: center; color: #fff; background: linear-gradient(145deg, #70A8FF, #2E6BFF 58%, #1554C9); box-shadow: 0 16px 24px -14px rgba(27, 99, 213, .8), inset 0 1px 0 rgba(255, 255, 255, .45); transform: rotate(-7deg); }
+.book-hero__orb .ic { width: 33px; height: 33px; stroke-width: 1.6; transform: rotate(7deg); }
+.book-hero__chip { position: absolute; display: inline-flex; align-items: center; gap: 3px; height: 22px; padding: 0 7px; border-radius: 7px; background: rgba(255, 255, 255, .94); border: 1px solid #DCEAFB; color: #3D6FA9; font-size: 8px; box-shadow: 0 7px 14px -12px rgba(30, 80, 150, .5); white-space: nowrap; }
+.book-hero__chip .ic { width: 11px; height: 11px; color: var(--brand); }
+.book-hero__chip--a { right: 2px; top: 4px; }
+.book-hero__chip--b { right: 0; bottom: 3px; }
+.book-assure { position: relative; z-index: 1; display: flex; align-items: center; gap: 6px; margin-top: 12px; padding: 8px 10px; border-radius: 11px; background: rgba(255, 255, 255, .62); border: 1px solid rgba(255, 255, 255, .9); }
+.book-assure span { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 4px; font-size: 8.5px; color: #53718F; white-space: nowrap; }
+.book-assure span + span { border-left: 1px solid #DCE9F8; }
+.book-assure .ic { width: 12px; height: 12px; color: var(--brand); }
+.req-body { background: linear-gradient(180deg, #F5F9FF 0, #F7FAFD 260px); }
+.form-card { border-radius: 22px; border-color: #E8EFF9; box-shadow: 0 12px 30px -26px rgba(21, 53, 96, .35); }
+.form-card--voucher { background: linear-gradient(180deg, #FFFFFF, #F8FBFF); }
+.form-card__num { width: 30px; height: 30px; border-radius: 10px; font-size: 10px; }
+.form-card__num .ic { width: 15px; height: 15px; }
+.form-card__num.is-gold { background: #FFF5DF; color: #C88A1E; }
+.form-card__num.is-blue { background: #EAF2FF; color: #2E6BFF; }
+.form-card__num.is-teal { background: #E8F9F2; color: #159570; }
+.form-card__num.is-violet { background: #F1EDFF; color: #7559D6; }
+.form-card__num.is-rose { background: #FFEEF1; color: #D85D73; }
+.form-card__title { font-size: 14px; letter-spacing: -.2px; }
+.quick-dates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.quick-date { height: 43px; border-radius: 12px; border: 1px solid #E7EDF6; background: #F9FBFE; color: var(--ink-2); font-size: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.quick-date span { font-family: var(--num); font-size: 8px; color: #9AA9BB; }
+.quick-date.is-on { border-color: #8EB8F2; background: #EFF7FF; color: var(--brand); font-weight: 600; box-shadow: inset 0 0 0 1px rgba(27, 99, 213, .05); }
+.quick-date.is-on span { color: var(--brand); }
+.need-opt { height: 42px; border-radius: 12px; background: #FAFCFF; }
+.need-opt.is-on { background: linear-gradient(145deg, #EDF6FF, #F8FCFF); }
+.benefit-card__num { font-size: 16.5px; letter-spacing: .4px; white-space: nowrap; }
+.field__box { background: #F8FAFE; border-color: #E8EFF8; }
+
 @media (min-width: 431px) {
   #app { margin: 24px auto 48px; min-height: calc(100vh - 72px); border-radius: 26px; overflow: hidden; }
   .actionbar { bottom: 24px; border-radius: 0 0 26px 26px; }
