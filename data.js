@@ -16,15 +16,15 @@ window.HOSPITAL_DATA = {
   },
   cards: [
     {
-      id: 'card-1', cardNum: 'YDK2026000186', cardType: '121', cardTypeName: '钻石卡 / 不限次卡',
-      productName: '太平洋保险-照护无忧卡', productCode: 'FS2021036', dueline: '3 年',
+      id: 'card-1', cardNum: 'YDK2026000186', cardType: '121', cardTypeName: '多次服务券',
+      productName: '院内照护服务券', productCode: 'FS2021036', dueline: '3 年',
       startTime: '2026-01-01', endTime: '2028-12-31', status: '0', activationCode: '888888',
       mainInsurerName: '李桂芳', age: '78', idType: '1', idNo: '310104194803120024',
       phone: '13800006721', address: '上海市徐汇区田林路 128 弄 12 号 502 室', isDefault: true
     },
     {
-      id: 'card-2', cardNum: 'YDK2025000921', cardType: '122', cardTypeName: '家庭卡 A',
-      productName: '太平洋保险-家庭照护卡', productCode: 'FS2021037', dueline: '1 年',
+      id: 'card-2', cardNum: 'YDK2025000921', cardType: '122', cardTypeName: '家庭服务券',
+      productName: '家庭照护服务券', productCode: 'FS2021037', dueline: '1 年',
       startTime: '2025-10-01', endTime: '2026-09-30', status: '0', activationCode: '666888',
       mainInsurerName: '张女士', age: '50', idType: '1', idNo: '310104197506180028',
       phone: '13800006721', address: '上海市徐汇区田林路 128 弄 12 号 502 室', isDefault: false
@@ -85,8 +85,8 @@ window.HOSPITAL_DATA = {
       startTime: '08:00',
       days: 7,
       card: {
-        cardNum: 'YDK2026000186', cardType: '121', cardTypeName: '钻石卡 / 不限次卡',
-        productName: '太平洋保险-照护无忧卡', productCode: 'FS2021036',
+        cardNum: 'YDK2026000186', cardType: '121', cardTypeName: '多次服务券',
+        productName: '院内照护服务券', productCode: 'FS2021036',
         startTime: '2026-01-01', endTime: '2028-12-31'
       },
       patient: {
