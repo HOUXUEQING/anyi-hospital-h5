@@ -97,17 +97,23 @@
     const today = todayISO();
     if (card.endTime && card.endTime < today) return { key: 'expired', label: '已过期', tone: 'gray', valid: false };
     if (card.startTime && card.startTime > today) return { key: 'notstart', label: '未生效', tone: 'amber', valid: false };
-    return { key: 'valid', label: '权益可用', tone: 'green', valid: true };
+    return { key: 'valid', label: '服务券可用', tone: 'green', valid: true };
   }
   const maskCard = (n) => String(n || '').replace(/^(.{4}).*(.{4})$/, '$1 **** **** $2');
 
   const STATUS = {
-    pending: { label: '待接单', tone: 'amber', title: '正在匹配护理员', desc: '照护顾问将在 30 分钟内致电，确认住院信息与照护需求' },
-    accepted: { label: '已接单', tone: 'blue', title: '护理员已接单', desc: '护理员将在约定时间到院，请保持电话畅通' },
-    serving: { label: '服务中', tone: 'blue', title: '院内陪护进行中', desc: '护理员正在院内照护，服务记录会持续更新' },
+    pending: { label: '待确认', tone: 'blue', title: '预约待确认', desc: '照护顾问将在 30 分钟内致电，确认住院信息与照护需求' },
+    accepted: { label: '已预约', tone: 'blue', title: '预约已确认', desc: '护理员将在约定时间到院，请保持电话畅通' },
+    serving: { label: '已预约', tone: 'blue', title: '服务进行中', desc: '护理员正在院内照护，服务记录会持续更新' },
     completed: { label: '已完成', tone: 'green', title: '本次陪护已完成', desc: '感谢您的信任，期待再次为您服务' },
-    cancelled: { label: '已取消', tone: 'gray', title: '订单已取消', desc: '如仍需院内陪护，可重新提交需求' }
+    cancelled: { label: '已取消', tone: 'gray', title: '预约已取消', desc: '如仍需院内陪护，可重新提交预约' }
   };
+  function apptStatus(o) {
+    if (o.status === 'pending') return { label: '待确认', tone: 'blue' };
+    if (o.status === 'accepted' || o.status === 'serving') return { label: '已预约', tone: 'blue' };
+    if (o.status === 'completed') return { label: '已完成', tone: 'green' };
+    return { label: '已取消', tone: 'gray' };
+  }
   const statusPill = (key) => {
     const s = STATUS[key] || { label: key, tone: 'gray' };
     return `<span class="pill pill--${s.tone}">${s.label}</span>`;
@@ -125,38 +131,56 @@
   }
 
   function loginView() {
-    return page(`<div class="login">
-      <div class="login__brand">
-        <span class="login__mark"><svg viewBox="0 0 24 24"><path d="M12 21s-8-4.8-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 16.2 12 21 12 21z"/></svg></span>
-        <div><b>安颐院内照护</b><span>PKU CARE · HOSPITAL CARE</span></div>
+    state.loginAgree = false;
+    return page(`<div class="login-page">
+      <div class="login-top">
+        <button class="login-back" type="button" data-act="login-back" aria-label="返回">${icon('chevL')}</button>
+        <h1>登录注册</h1>
+        <span class="login-top__placeholder"></span>
       </div>
-      <form class="login__card" data-form="login" novalidate>
-        <div class="login__card-head">
-          <span class="login__card-icon">${icon('hospital')}</span>
-          <div><h2>登录</h2><p>手机号验证码登录，首次登录自动创建院内照护账户</p></div>
+      <div class="login-hello">
+        <div class="login-hello__copy"><h2>Hello!</h2><p>欢迎使用</p></div>
+        <div class="login-hello__art" aria-hidden="true">
+          <svg viewBox="0 0 250 200" role="img">
+            <defs>
+              <linearGradient id="shieldA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A8CCFF"/><stop offset=".48" stop-color="#4B8EFF"/><stop offset="1" stop-color="#1B5FE0"/></linearGradient>
+              <linearGradient id="shieldB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9EBFF" stop-opacity=".9"/><stop offset="1" stop-color="#6DA6FF" stop-opacity=".25"/></linearGradient>
+              <linearGradient id="cardA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D7E9FF"/><stop offset="1" stop-color="#86B7FF"/></linearGradient>
+              <linearGradient id="cardB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#BFD9FF"/><stop offset="1" stop-color="#5D97F5"/></linearGradient>
+              <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5"/></filter>
+            </defs>
+            <ellipse cx="140" cy="172" rx="72" ry="10" fill="#7FB2F8" opacity=".2" filter="url(#soft)"/>
+            <g opacity=".9">
+              <g transform="translate(18 58) rotate(-22)"><rect width="54" height="32" rx="7" fill="url(#cardA)" opacity=".8"/><rect x="9" y="9" width="20" height="4" rx="2" fill="#fff" opacity=".75"/><rect x="9" y="18" width="32" height="4" rx="2" fill="#fff" opacity=".5"/></g>
+              <g transform="translate(196 45) rotate(17)"><rect width="48" height="29" rx="7" fill="url(#cardB)" opacity=".8"/><rect x="8" y="8" width="17" height="3.5" rx="1.7" fill="#fff" opacity=".7"/><rect x="8" y="16" width="27" height="3.5" rx="1.7" fill="#fff" opacity=".45"/></g>
+              <g transform="translate(188 128) rotate(10)"><rect width="42" height="26" rx="6" fill="url(#cardA)" opacity=".75"/><rect x="7" y="7" width="14" height="3" rx="1.5" fill="#fff" opacity=".7"/><rect x="7" y="14" width="23" height="3" rx="1.5" fill="#fff" opacity=".45"/></g>
+            </g>
+            <g transform="translate(73 24)">
+              <path d="M52 12 92 29v39c0 31-19 51-40 62C31 119 12 99 12 68V29z" fill="#2E6BFF" opacity=".18" filter="url(#soft)"/>
+              <path d="M52 6 90 22v40c0 28-17 47-38 58-21-11-38-30-38-58V22z" fill="url(#shieldA)" stroke="#EAF4FF" stroke-width="2.5"/>
+              <path d="M52 18 80 30v32c0 21-13 36-28 45-15-9-28-24-28-45V30z" fill="url(#shieldB)" opacity=".55"/>
+              <path d="M52 26v50M31 51h42" stroke="#fff" stroke-width="13" stroke-linecap="round" opacity=".98"/>
+              <path d="M52 26v50M31 51h42" stroke="#D9EAFF" stroke-width="3" stroke-linecap="round" opacity=".45"/>
+              <path d="M24 45c-2-9 2-17 8-23" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".35" fill="none"/>
+            </g>
+          </svg>
         </div>
-        <div class="field">
-          <label class="field__label" for="login-phone">手机号</label>
-          <div class="input-wrap">${icon('phone')}<input id="login-phone" type="tel" inputmode="numeric" maxlength="11" placeholder="请输入手机号" autocomplete="tel"></div>
+      </div>
+      <form class="login-sheet" data-form="login" novalidate>
+        <label class="login-label" for="login-phone">手机号</label>
+        <input class="login-input" id="login-phone" type="tel" inputmode="numeric" maxlength="11" placeholder="请输入手机号" autocomplete="tel">
+        <label class="login-label" for="login-code">验证码</label>
+        <div class="login-code">
+          <input class="login-input" id="login-code" type="tel" inputmode="numeric" maxlength="6" placeholder="请输入验证码" autocomplete="one-time-code">
+          <button class="login-code__btn" id="send-code" type="button" data-act="send-code">获取验证码</button>
         </div>
-        <div class="field">
-          <label class="field__label" for="login-code">验证码</label>
-          <div class="input-wrap">${icon('shield')}<input id="login-code" type="tel" inputmode="numeric" maxlength="6" placeholder="请输入 6 位验证码" autocomplete="one-time-code"><button type="button" class="code-btn" id="send-code" data-act="send-code">获取验证码</button></div>
+        <button class="login-submit" type="submit">登录</button>
+        <div class="login-protocol ${state.loginAgree ? 'is-on' : ''}" data-act="toggle-login-agree">
+          <span class="login-protocol__box">${state.loginAgree ? icon('check') : ''}</span>
+          <span>我已阅读并同意<em>《用户服务协议》</em>和<em>《用户隐私协议》</em></span>
         </div>
-        <div class="login__extra"><span>未注册手机号验证后自动创建账户</span><button type="button" data-act="fill-demo">填入演示账号</button></div>
-        <button class="btn btn--primary btn--block login__submit" type="submit">登录并填写需求</button>
-        <div class="login__agree ${state.loginAgree !== false ? 'is-on' : ''}" data-act="toggle-login-agree">
-          <span class="agree-box">${icon('check')}</span>
-          <span>我已阅读并同意<em>《服务协议》</em>与<a data-act="open-privacy">《隐私政策》</a>，授权平台使用服务所需信息</span>
-        </div>
-        <p class="login__hint">演示环境：手机号 <b>13800006721</b>，验证码 <b>123456</b></p>
       </form>
-      <div class="login__trust">
-        <div>${icon('shield')}<b>持证护理员</b><span>实名认证</span></div>
-        <div>${icon('hospital')}<b>到院签到</b><span>服务交接</span></div>
-        <div>${icon('file')}<b>全程记录</b><span>可追溯</span></div>
-      </div>
-      <div class="login__foot">安颐照护 · 院内陪护服务由持证护理员提供</div>
+      <div class="login-page__foot">安颐院内照护 · 专业陪护服务</div>
     </div>`);
   }
 
@@ -186,15 +210,54 @@
     };
   }
   let draft = null;
+  let editingOrderId = null;
+
+  function draftFromOrder(o) {
+    const meta = D.hospitalMeta[o.hospital] || {};
+    return {
+      cardId: defaultCard() ? defaultCard().id : '',
+      hospital: o.hospital,
+      city: o.city || meta.city || '',
+      department: o.department,
+      bed: o.bed,
+      hospitalNo: o.hospitalNo || '',
+      hospitalizedTime: o.hospitalizedTime || '',
+      disease: o.disease || '',
+      serviceId: o.serviceId || '24h',
+      startDate: o.startDate >= todayISO() ? o.startDate : todayISO(),
+      startTime: o.startTime,
+      days: o.days,
+      patient: { ...o.patient, age: calcAge(o.patient.birthday) || o.patient.age, selfCare: o.patient.selfCare || '半自理' },
+      needs: [...(o.needs || [])],
+      contact: { ...o.contact, mobile: o.contact.mobile || o.contact.phone, phone: o.contact.mobile || o.contact.phone },
+      emergency: { ...(o.emergency || { name: '', phone: '' }) },
+      note: o.note || '',
+      agree: true
+    };
+  }
+  function editOrder(id) {
+    const o = state.orders.find((x) => x.id === id);
+    if (!o) return;
+    editingOrderId = id;
+    draft = draftFromOrder(o);
+    go('/book');
+  }
+  function rebookOrder(id) {
+    const o = state.orders.find((x) => x.id === id);
+    if (!o) return;
+    editingOrderId = null;
+    draft = draftFromOrder(o);
+    go('/book');
+  }
 
   function cardStripHtml(card) {
     const st = cardState(card);
-    if (!card) return `<div class="benefit-empty">${icon('receipt')}暂无可用服务卡<button class="link" data-act="choose-card">激活/选择服务卡</button></div>`;
+    if (!card) return `<div class="benefit-empty">${icon('receipt')}暂无可用服务券，请联系客服发放</div>`;
     return `<div class="benefit-card">
       <div class="benefit-card__top"><span class="benefit-card__product">${esc(card.productName)}</span><span class="benefit-card__state ${st.valid ? 'is-ok' : ''}">${st.label}</span></div>
       <div class="benefit-card__type">${esc(card.cardTypeName)} · ${esc(card.productCode)}</div>
-      <div class="benefit-card__num">${maskCard(card.cardNum)}</div>
-      <div class="benefit-card__foot"><span>服务期 ${fmtFull(card.startTime)} – ${fmtFull(card.endTime)}</span><span>持卡人 ${esc(card.mainInsurerName)}</span></div>
+      <div class="benefit-card__num">券号 ${maskCard(card.cardNum)}</div>
+      <div class="benefit-card__foot"><span>有效期 ${fmtFull(card.startTime)} – ${fmtFull(card.endTime)}</span><span>使用人 ${esc(card.mainInsurerName)}</span></div>
     </div>`;
   }
 
@@ -202,6 +265,13 @@
     if (!draft) draft = createDraft();
     const today = todayISO();
     const card = getCard(draft.cardId) || defaultCard();
+    const isEditing = !!editingOrderId;
+    const dates = Array.from({ length: 7 }, (_, i) => addDays(today, i));
+    const dateChips = dates.map((d) => {
+      const dt = new Date(d + 'T00:00:00');
+      const w = '日一二三四五六'[dt.getDay()];
+      return `<button type="button" class="date-chip ${draft.startDate === d ? 'is-on' : ''}" data-act="pick-date" data-date="${d}"><b>${d === today ? '今天' : '周' + w}</b><span>${Number(d.slice(5, 7))}/${Number(d.slice(8))}</span></button>`;
+    }).join('');
     const services = D.serviceTypes.map((s) => `<button type="button" class="service-opt ${draft.serviceId === s.id ? 'is-on' : ''}" data-act="service" data-id="${s.id}">
       <span class="service-opt__top"><b>${esc(s.name)}</b><span class="service-opt__tick">${icon('check')}</span></span>
       <small>${esc(s.short)} · ${esc(s.hours)}</small><p>${esc(s.desc)}</p>
@@ -212,27 +282,27 @@
     return page(`<header class="req-head">
       <div class="req-head__row">
         <div>
-          <span class="req-head__badge">${icon('hospital')} 院内照护 · 独立版</span>
-          <h1>填写院内照护需求</h1>
-          <p>提交后照护顾问 30 分钟内致电，确认住院信息与照护安排。</p>
+          <span class="req-head__badge">${icon('hospital')} ${isEditing ? '修改预约' : '服务预约'} · 院内照护</span>
+          <h1>${isEditing ? '修改预约' : '院内照护预约'}</h1>
+          <p>${isEditing ? '修改后预约将重新进入待确认状态。' : '填写信息并提交预约，照护顾问将致电确认服务安排。'}</p>
         </div>
-        <button class="req-head__avatar" data-nav="#/my" aria-label="我的">${esc((state.session && state.session.name || '张').slice(0, 1))}</button>
       </div>
       <div class="req-progress">
-        <span class="is-on"><i>1</i>填写需求</span><span class="req-progress__line"></span>
-        <span><i>2</i>顾问确认</span><span class="req-progress__line"></span>
-        <span><i>3</i>护理员到院</span>
+        <span class="is-on"><i>1</i>信息填写</span><span class="req-progress__line"></span>
+        <span><i>2</i>预约申请</span><span class="req-progress__line"></span>
+        <span><i>3</i>到店使用</span><span class="req-progress__line"></span>
+        <span><i>4</i>服务完成</span>
       </div>
     </header>
     <form id="request-form" class="req-body" novalidate>
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num">卡</span><span class="form-card__title">服务权益</span><span class="form-card__aside"><button class="link" data-act="choose-card">切换服务卡${icon('chevR')}</button></span></div>
+        <div class="form-card__head"><span class="form-card__num">券</span><span class="form-card__title">服务券</span><span class="form-card__aside">已自动使用</span></div>
         <div id="card-strip">${cardStripHtml(card)}</div>
-        <p class="form-note">服务权益由易得康服务卡提供，提交后将同步本次服务申请。</p>
+        <p class="form-note">提交预约后，本次服务将使用该服务券。</p>
       </section>
 
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num">01</span><span class="form-card__title">住院信息</span><span class="form-card__aside">用于匹配院内护理员</span></div>
+        <div class="form-card__head"><span class="form-card__num">01</span><span class="form-card__title">预约机构与住院信息</span><span class="form-card__aside">用于匹配院内护理员</span></div>
         <div class="form-grid">
           <div class="field field--full"><label class="field__label" for="hospital">就诊医院<em>*</em></label><select class="field__box" id="hospital">${D.hospitals.map((h) => `<option ${draft.hospital === h ? 'selected' : ''}>${esc(h)}</option>`).join('')}</select><div class="field__hint" id="hospital-code-hint">医院编码 ${esc((D.hospitalMeta[draft.hospital] || {}).code || '待匹配')} · 城市 ${esc((D.hospitalMeta[draft.hospital] || {}).city || '待补充')}</div><span class="field__err">请选择医院</span></div>
           <div class="field"><label class="field__label" for="city">服务城市<em>*</em></label><input class="field__box field__box--readonly" id="city" value="${esc(draft.city || (D.hospitalMeta[draft.hospital] || {}).city || '')}" readonly><span class="field__err">该医院暂未配置城市</span></div>
@@ -245,19 +315,21 @@
       </section>
 
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num">02</span><span class="form-card__title">服务安排</span><span class="form-card__aside">到院时间可调整</span></div>
+        <div class="form-card__head"><span class="form-card__num">02</span><span class="form-card__title">选择预约项目</span><span class="form-card__aside">请选择 1 项</span></div>
         <div class="service-grid">${services}</div>
         <span class="field__err" id="service-err" style="display:none">请选择服务类型</span>
-        <div class="form-grid" style="margin-top:11px">
-          <div class="field"><label class="field__label" for="startDate">开始日期<em>*</em></label><input class="field__box" id="startDate" type="date" min="${today}" value="${esc(draft.startDate)}"><span class="field__err">请选择开始日期</span></div>
+        <div class="date-title">选择预约时间 <span>滑动选择预约日期</span></div>
+        <div class="date-strip">${dateChips}</div>
+        <input type="hidden" id="startDate" value="${esc(draft.startDate)}">
+        <div class="form-grid" style="margin-top:10px">
           <div class="field"><label class="field__label" for="startTime">到院时间<em>*</em></label><select class="field__box" id="startTime">${['06:00', '08:00', '09:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'].map((t) => `<option ${draft.startTime === t ? 'selected' : ''}>${t}</option>`).join('')}</select><span class="field__err"></span></div>
-          <div class="field field--full"><label class="field__label">服务时长</label><div class="qty-row"><span>预计陪护天数</span><div class="qty"><button type="button" data-act="days" data-step="-1" ${draft.days <= 1 ? 'disabled' : ''}>${icon('minus')}</button><b id="days-value">${draft.days} 天</b><button type="button" data-act="days" data-step="1" ${draft.days >= 30 ? 'disabled' : ''}>${icon('plus')}</button></div></div></div>
+          <div class="field"><label class="field__label">服务时长</label><div class="qty-row"><span>预计陪护天数</span><div class="qty"><button type="button" data-act="days" data-step="-1" ${draft.days <= 1 ? 'disabled' : ''}>${icon('minus')}</button><b id="days-value">${draft.days} 天</b><button type="button" data-act="days" data-step="1" ${draft.days >= 30 ? 'disabled' : ''}>${icon('plus')}</button></div></div></div>
         </div>
-        <p class="form-note">如需延长或缩短服务，可随时联系照护顾问调整。</p>
+        <p class="form-note" style="color:var(--amber);background:#FFF9EC;padding:8px 10px;border-radius:9px">该时间为意向预约时间，具体时间以照护顾问确认为准。</p>
       </section>
 
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num">03</span><span class="form-card__title">照护对象</span><span class="form-card__aside">用于易得康实名与服务匹配</span></div>
+        <div class="form-card__head"><span class="form-card__num">03</span><span class="form-card__title">填写就诊人信息</span><span class="form-card__aside">用于服务预约与实名</span></div>
         <div class="form-grid">
           <div class="field field--full"><label class="field__label" for="patientName">姓名<em>*</em></label><input class="field__box" id="patientName" value="${esc(draft.patient.name)}" placeholder="请输入长辈姓名"><span class="field__err">请填写照护对象姓名</span></div>
           <div class="field"><label class="field__label">性别<em>*</em></label><div class="seg"><button type="button" class="seg__btn ${draft.patient.gender === '女' ? 'is-on' : ''}" data-act="gender" data-value="女">女</button><button type="button" class="seg__btn ${draft.patient.gender === '男' ? 'is-on' : ''}" data-act="gender" data-value="男">男</button><button type="button" class="seg__btn ${draft.patient.gender === '不详' ? 'is-on' : ''}" data-act="gender" data-value="不详">不详</button></div></div>
@@ -299,65 +371,64 @@
 
       <div class="actionbar request-actionbar">
         <div class="actionbar__note"><b>提交后 30 分钟内联系</b>照护顾问将致电确认服务安排</div>
-        <button class="btn btn--primary" type="submit">提交需求</button>
+        <button class="btn btn--primary" type="submit">${isEditing ? '保存修改' : '提交预约'}</button>
       </div>
-    </form>`, 'page--actionbar');
+    </form>`, 'page--actionbar page--tabbar');
   }
 
   function orderCard(o) {
-    const st = STATUS[o.status] || STATUS.pending;
-    return `<article class="ocard" data-nav="#/order/${o.id}">
-      <div class="ocard__top"><span class="ocard__no">订单 ${esc(o.no)}</span>${statusPill(o.status)}</div>
-      <div class="ocard__body">
-        <div class="ocard__title">${esc(o.hospital)}<span class="tag tag--blue">${esc(o.serviceType)}</span></div>
-        <div class="ocard__meta">${icon('pin')}<span>${esc(o.department)} · ${esc(o.bed)}</span></div>
-        <div class="ocard__meta">${icon('calendar')}<span>${fmtFull(o.startDate)} ${esc(o.startTime)} 开始 · ${o.days} 天</span></div>
-        <div class="ocard__service"><span class="muted">照护对象</span><b>${esc(o.patient.name)}</b><span class="muted">${esc(o.patient.gender)} · ${o.patient.age}岁</span><span style="margin-left:auto" class="tag tag--outline">${esc(o.patient.selfCare)}</span></div>
+    const st = apptStatus(o);
+    const canCancel = ['pending', 'accepted', 'serving'].includes(o.status);
+    const canEdit = ['pending', 'accepted'].includes(o.status);
+    const canRebook = ['completed', 'cancelled'].includes(o.status);
+    return `<article class="appt-card">
+      <div class="appt-card__head">
+        <span class="appt-icon">${icon(o.serviceId === '24h' ? 'bed' : o.serviceId === 'visit' ? 'stethoscope' : 'care')}</span>
+        <div class="appt-card__title"><h3>${esc(o.serviceType)}</h3><div class="appt-card__no">订单号 ${esc(o.no)}</div></div>
+        <span class="appt-status appt-status--${st.tone}">${st.label}</span>
       </div>
-      <div class="ocard__foot"><span class="ocard__status">${esc(st.desc)}</span><div class="ocard__actions"><span class="btn btn--ghost btn--sm">查看详情${icon('chevR')}</span></div></div>
+      <div class="appt-card__rows">
+        <div class="appt-row">${icon('clock')}<span>${fmtFull(o.startDate)} ${esc(o.startTime)}</span></div>
+        <div class="appt-row">${icon('user')}<span>${esc(o.patient.name)} ${esc(o.patient.gender)} · ${o.patient.age}岁</span></div>
+        <div class="appt-row">${icon('pin')}<span>${esc(o.hospital)} · ${esc(o.department)} ${esc(o.bed)}</span></div>
+      </div>
+      <div class="appt-card__actions">
+        <button class="appt-action" data-nav="#/order/${o.id}">查看详情</button>
+        ${canCancel ? `<button class="appt-action" data-act="cancel" data-id="${o.id}">取消预约</button>` : ''}
+        ${canEdit ? `<button class="appt-action appt-action--primary" data-act="edit-order" data-id="${o.id}">修改预约</button>` : ''}
+        ${canRebook ? `<button class="appt-action appt-action--primary" data-act="rebook" data-id="${o.id}">重新预约</button>` : ''}
+      </div>
     </article>`;
   }
 
-  function myView() {
-    const orders = state.orders;
-    const serving = orders.filter((o) => ['pending', 'accepted', 'serving'].includes(o.status)).length;
-    const completed = orders.filter((o) => o.status === 'completed').length;
-    const recent = orders.slice(0, 2).map((o) => {
-      const d = o.createdAt.slice(0, 10);
-      return `<div class="my-order" data-nav="#/order/${o.id}">
-        <div class="my-order__date"><b>${Number(d.slice(8))}</b><span>${Number(d.slice(5, 7))}月</span></div>
-        <div class="my-order__main"><b>${esc(o.hospital)} · ${esc(o.serviceType)}</b><span>${esc(o.department)} ${esc(o.bed)} · ${o.days} 天</span></div>
-        <div class="my-order__right">${statusPill(o.status)}<div class="tiny muted" style="margin-top:4px">${icon('chevR')}</div></div>
-      </div>`;
-    }).join('');
-    return page(`<header class="my-hero">
-      <div class="my-hero__top">
-        <div class="avatar avatar--lg">${esc((state.session.name || '张').slice(0, 1))}</div>
-        <div><div class="my-hero__name">${esc(state.session.name)}<span class="my-hero__tag">院内照护会员</span></div><div class="my-hero__phone">${phoneMask(state.session.phone)}</div></div>
-        <button class="my-hero__set" data-nav="#/account" aria-label="账户信息">${icon('settings')}</button>
-      </div>
-      <div class="my-stats">
-        <div class="my-stat"><b>${orders.length}</b><span>全部订单</span></div>
-        <div class="my-stat"><b>${serving}</b><span>进行中</span></div>
-        <div class="my-stat"><b>${completed}</b><span>已完成</span></div>
-      </div>
-    </header>
-    <div class="my-body">
-      <section class="my-card">
-        <div class="my-card__head"><div class="my-card__title">${icon('receipt')}我的订单</div><button class="my-card__more" data-nav="#/orders">全部订单${icon('chevR')}</button></div>
-        <div class="my-orders">${recent || `<div class="my-empty">${icon('receipt')}<p>还没有院内照护订单</p><button class="btn btn--soft btn--sm" data-nav="#/request">填写需求</button></div>`}</div>
+  function myView(tab = 'all') {
+    const tabs = [['all', '全部'], ['pending', '待确认'], ['confirmed', '已预约'], ['completed', '已完成'], ['cancelled', '已取消']];
+    const all = state.orders;
+    const list = all.filter((o) => {
+      if (tab === 'pending') return o.status === 'pending';
+      if (tab === 'confirmed') return ['accepted', 'serving'].includes(o.status);
+      if (tab === 'completed') return o.status === 'completed';
+      if (tab === 'cancelled') return o.status === 'cancelled';
+      return true;
+    });
+    return page(`<div class="my-page">
+      <header class="my-head"><h1>我的</h1><button class="my-head__btn" data-nav="#/account" aria-label="账户信息">${icon('settings')}</button></header>
+      <section class="my-profile">
+        <div class="avatar avatar--lg">${esc((state.session.name || '用').slice(0, 1))}</div>
+        <div><div class="my-profile__name">${esc(state.session.name)}<span class="my-profile__tag">院内照护会员</span></div><div class="my-profile__phone">${phoneMask(state.session.phone)}</div></div>
+        <button class="my-profile__more" data-nav="#/account" aria-label="查看账户">${icon('chevR')}</button>
       </section>
-      <div class="menu">
-        <button class="menu__item" data-nav="#/cards"><span class="menu__ic">${icon('shield')}</span>服务卡与权益<span class="menu__arrow">${icon('chevR')}</span></button>
+      <div class="order-tabs">${tabs.map(([k, l]) => `<button class="order-tab ${tab === k ? 'is-on' : ''}" data-nav="#/my${k === 'all' ? '' : '/' + k}">${l}${k === 'all' ? ` ${all.length}` : ''}</button>`).join('')}</div>
+      <div class="appt-list">${list.length ? list.map(orderCard).join('') : `<div class="appt-empty">${icon('receipt')}<p>暂无${tab === 'all' ? '' : tabs.find((t) => t[0] === tab)[1]}预约</p><button class="btn btn--primary btn--sm" data-nav="#/book">去预约</button></div>`}</div>
+      <div class="my-menu"><div class="menu">
         <button class="menu__item" data-nav="#/customer"><span class="menu__ic">${icon('user')}</span>客户信息<span class="menu__arrow">${icon('chevR')}</span></button>
         <button class="menu__item" data-nav="#/account"><span class="menu__ic">${icon('settings')}</span>账户信息<span class="menu__arrow">${icon('chevR')}</span></button>
         <button class="menu__item" data-nav="#/privacy"><span class="menu__ic">${icon('shield')}</span>隐私政策<span class="menu__arrow">${icon('chevR')}</span></button>
         <a class="menu__item" href="tel:4008006688"><span class="menu__ic">${icon('headset')}</span>服务热线<span class="menu__arrow">400-800-6688 ${icon('chevR')}</span></a>
         <button class="menu__item menu__item--danger" data-act="logout"><span class="menu__ic">${icon('logout')}</span>退出登录<span class="menu__arrow">${icon('chevR')}</span></button>
-      </div>
-      <div class="my-foot"><b>安颐院内照护</b><br>专业陪护，让家人安心 · v1.0</div>
-      <button class="btn btn--primary btn--block" data-nav="#/request" style="margin-top:2px">${icon('plus')}填写新的院内照护需求</button>
-    </div>`);
+      </div></div>
+      <div class="my-foot"><b>安颐院内照护</b><br>专业陪护，让家人安心</div>
+    </div>`, 'page--tabbar');
   }
 
   function successView(id) {
@@ -371,7 +442,7 @@
       <div class="success__card">
         <div class="success__no"><span>订单编号</span><b>${esc(o.no)}</b></div>
         <div class="success__rows">
-          <div class="kv"><span class="kv__k">服务权益</span><span class="kv__v">${esc(o.card.productName)}<br>${esc(o.card.cardTypeName)} · ${maskCard(o.card.cardNum)}</span></div>
+          <div class="kv"><span class="kv__k">服务券</span><span class="kv__v">${esc(o.card.productName)}<br>${esc(o.card.cardTypeName)} · ${maskCard(o.card.cardNum)}</span></div>
           <div class="kv"><span class="kv__k">就诊医院</span><span class="kv__v">${esc(o.hospital)}<br>${esc(o.department)} · ${esc(o.bed)}</span></div>
           <div class="kv"><span class="kv__k">入院疾病</span><span class="kv__v">${esc(o.disease)}</span></div>
           <div class="kv"><span class="kv__k">服务类型</span><span class="kv__v">${esc(o.serviceType)} · ${o.days} 天</span></div>
@@ -400,21 +471,21 @@
 
   function orderDetailView(id) {
     const o = state.orders.find((x) => x.id === id);
-    if (!o) return page(`${ph('订单详情', { back: '#/orders' })}<div class="empty"><div class="empty__ic">${icon('info')}</div><h3>订单不存在</h3><p>请返回订单列表查看</p><button class="btn btn--primary" data-nav="#/orders">返回订单</button></div>`);
+    if (!o) return page(`${ph('订单详情', { back: '#/my' })}<div class="empty"><div class="empty__ic">${icon('info')}</div><h3>订单不存在</h3><p>请返回我的预约查看</p><button class="btn btn--primary" data-nav="#/my">返回我的</button></div>`);
     const st = STATUS[o.status] || STATUS.pending;
     const timeline = (o.timeline || []).slice().reverse().map((t, i) => `<div class="tl-item ${i === 0 ? 'is-latest' : ''}"><b>${esc(t.title)}</b><p>${esc(t.desc)}</p><time>${esc(t.time)}</time></div>`).join('');
     const caregiver = o.caregiver ? `<section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('users')}服务护理员</div><span class="dcard__aside">已接单</span></div><div class="caregiver"><div class="avatar">${esc(o.caregiver.name.slice(0, 1))}</div><div class="caregiver__main"><b>${esc(o.caregiver.name)}</b><span>${esc(o.caregiver.level)} · ${o.caregiver.years} 年经验</span></div><div class="caregiver__right"><b>${o.caregiver.rating}</b><span>服务评分</span></div></div></section>` : '';
     return page(`<div class="order-hero">
-      <div class="order-hero__nav"><button class="ph__btn" data-nav="#/orders" aria-label="返回">${icon('chevL')}</button><button class="ph__btn" data-act="contact" aria-label="联系顾问">${icon('headset')}</button></div>
+      <div class="order-hero__nav"><button class="ph__btn" data-nav="#/my" aria-label="返回">${icon('chevL')}</button><button class="ph__btn" data-act="contact" aria-label="联系顾问">${icon('headset')}</button></div>
       <span class="order-hero__pill">${st.label}</span>
       <h1>${esc(st.title)}</h1>
       <p>${esc(st.desc)}</p>
       <div class="order-hero__meta">${icon('calendar')}${fmtFull(o.startDate)} ${esc(o.startTime)} · ${o.days} 天${icon('pin')}<span style="margin-left:4px">${esc(o.bed)}</span></div>
     </div>
     <div class="order-body">
-      ${o.status === 'pending' ? `<div class="dcard" style="background:linear-gradient(135deg,#FFF9EC,#FFFDF8);border-color:#F6E8C8"><div style="display:flex;gap:7px;font-size:9.5px;color:#8B6A27;line-height:1.7">${icon('clock')}<span>需求已收到，照护顾问将在 30 分钟内致电。请保持电话畅通，无需重复提交。</span></div></div>` : ''}
-      <section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('shield')}服务权益</div><span class="dcard__aside">${esc(o.card.cardTypeName)}</span></div>
-        <div class="benefit-mini"><div><b>${esc(o.card.productName)}</b><span>${esc(o.card.productCode)} · ${maskCard(o.card.cardNum)}</span></div><div class="benefit-mini__period">服务期<br>${fmtFull(o.card.startTime)} – ${fmtFull(o.card.endTime)}</div></div>
+      ${o.status === 'pending' ? `<div class="dcard" style="background:linear-gradient(135deg,#FFF9EC,#FFFDF8);border-color:#F6E8C8"><div style="display:flex;gap:7px;font-size:9.5px;color:#8B6A27;line-height:1.7">${icon('clock')}<span>预约已收到，照护顾问将在 30 分钟内致电。请保持电话畅通，无需重复提交。</span></div></div>` : ''}
+      <section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('shield')}服务券</div><span class="dcard__aside">${esc(o.card.cardTypeName)}</span></div>
+        <div class="benefit-mini"><div><b>${esc(o.card.productName)}</b><span>券号 ${maskCard(o.card.cardNum)}</span></div><div class="benefit-mini__period">有效期<br>${fmtFull(o.card.startTime)} – ${fmtFull(o.card.endTime)}</div></div>
       </section>
       <section class="dcard"><div class="dcard__head"><div class="dcard__title">${icon('hospital')}住院信息</div></div>
         <div class="detail-kv"><span>医院</span><b>${esc(o.hospital)}</b></div>
@@ -452,10 +523,10 @@
         <div class="detail-kv"><span>易得康同步</span><b class="sync-ok">${o.syncStatus === 'success' ? '已同步' : '待同步'}${o.syncedAt ? ` · ${esc(o.syncedAt)}` : ''}</b></div>
       </section>
       <div class="detail-actions">
-        ${o.status === 'pending' ? `<button class="btn btn--ghost" data-act="cancel" data-id="${o.id}">取消需求</button>` : ''}
+        ${['pending', 'accepted'].includes(o.status) ? `<button class="btn btn--ghost" data-act="cancel" data-id="${o.id}">取消预约</button><button class="btn btn--soft" data-act="edit-order" data-id="${o.id}">修改预约</button>` : ''}
         <button class="btn btn--primary" data-act="contact">${icon('headset')}联系照护顾问</button>
       </div>
-    </div>`);
+    </div>`, 'page--tabbar');
   }
 
   function accountView() {
@@ -550,8 +621,7 @@
           <div class="account-row"><span>详细地址</span><b>${esc(p.address) || '未填写'}</b></div>
         </section>
         <section class="account-card"><div class="account-card__head"><b>易得康同步</b><span class="pill pill--green">已同步</span></div>
-          <div class="account-tip">${icon('checkC')} 当前档案已用于 ${activeOrders.length} 个进行中订单；修改后将同步至进行中订单（演示）。</div>
-          <button class="menu__item" style="padding-left:0;padding-right:0;border-bottom:0" data-nav="#/cards"><span class="menu__ic">${icon('shield')}</span>服务卡与权益<span class="menu__arrow">${icon('chevR')}</span></button>
+          <div class="account-tip">${icon('checkC')} 当前档案已用于 ${activeOrders.length} 个进行中预约；修改后将同步至进行中预约（演示）。</div>
         </section>
         <button class="btn btn--primary btn--block" data-act="edit-customer">${icon('edit')}编辑客户信息</button>
       </div>`);
@@ -639,9 +709,9 @@
       <div class="sheet__foot"><button class="btn btn--ghost btn--block" data-act="close-sheet">稍后联系</button></div>`);
   }
   function cancelSheet(id) {
-    openSheet(`<div class="sheet__handle"></div><div class="sheet__head"><div><h2>取消院内照护需求</h2><p>取消后如需服务，需要重新提交需求。</p></div><button class="sheet__close" data-act="close-sheet">${icon('close')}</button></div>
+    openSheet(`<div class="sheet__handle"></div><div class="sheet__head"><div><h2>取消预约</h2><p>取消后如需服务，需要重新提交预约。</p></div><button class="sheet__close" data-act="close-sheet">${icon('close')}</button></div>
       <div class="sheet__body"><p>照护顾问可能已经与您联系，取消前请确认不再需要本次陪护服务。</p></div>
-      <div class="sheet__foot"><button class="btn btn--ghost" data-act="close-sheet">保留订单</button><button class="btn btn--primary" style="background:linear-gradient(120deg,#DE5B70,#EC8292);box-shadow:none" data-act="confirm-cancel" data-id="${id}">确认取消</button></div>`);
+      <div class="sheet__foot"><button class="btn btn--ghost" data-act="close-sheet">保留预约</button><button class="btn btn--primary" style="background:linear-gradient(120deg,#DE5B70,#EC8292);box-shadow:none" data-act="confirm-cancel" data-id="${id}">确认取消</button></div>`);
   }
   function editNameSheet() {
     openSheet(`<div class="sheet__handle"></div><div class="sheet__head"><div><h2>修改姓名</h2><p>姓名将用于照护顾问联系与服务确认。</p></div><button class="sheet__close" data-act="close-sheet">${icon('close')}</button></div>
@@ -671,26 +741,27 @@
     const { parts } = parse();
     let p = parts[0] || '';
     if (!state.session && p !== 'login') { location.hash = '#/login'; return; }
-    if (state.session && p === 'login') { location.hash = '#/request'; return; }
+    if (state.session && p === 'login') { location.hash = '#/book'; return; }
 
     let html;
     if (p === 'login') html = loginView();
-    else if (p === 'request' || !p) html = requestView();
-    else if (p === 'my') html = myView();
-    else if (p === 'orders') html = ordersView(parts[1] || 'all');
+    else if (p === 'book' || p === 'request' || !p) html = requestView();
+    else if (p === 'my') html = myView(parts[1] || 'all');
+    else if (p === 'orders') { location.hash = '#/my'; return; }
     else if (p === 'order') html = orderDetailView(parts[1]);
     else if (p === 'success') html = successView(parts[1]);
     else if (p === 'account') html = accountView();
-    else if (p === 'cards') html = cardsView();
+    else if (p === 'cards') { location.hash = '#/my'; return; }
     else if (p === 'customer') html = customerView();
     else if (p === 'privacy') html = privacyView();
     else html = requestView();
 
     $('#view').innerHTML = html;
     const tabbar = $('#tabbar');
-    tabbar.hidden = true;
-    tabbar.innerHTML = '';
-    document.title = p === 'login' ? '登录 · 安颐院内照护' : p === 'my' ? '我的 · 安颐院内照护' : '院内照护 · 安颐照护';
+    const showTab = ['book', 'request', 'my', 'order'].includes(p);
+    tabbar.hidden = !showTab;
+    tabbar.innerHTML = showTab ? `<button class="tabbar__item ${p === 'book' || p === 'request' ? 'is-on' : ''}" data-nav="#/book">${icon('hospital')}<span>服务预约</span></button><button class="tabbar__item ${p === 'my' || p === 'order' ? 'is-on' : ''}" data-nav="#/my">${icon('receipt')}<span>我的</span></button>` : '';
+    document.title = p === 'login' ? '登录 · 安颐院内照护' : p === 'my' ? '我的 · 安颐院内照护' : p === 'book' ? '服务预约 · 安颐院内照护' : '院内照护 · 安颐照护';
     window.scrollTo(0, 0);
     requestAnimationFrame(updateRequestBar);
   }
@@ -746,7 +817,7 @@
     let first = null;
     const fail = (input, msg) => { const f = markError(input, msg); if (!first) first = f || input; };
     if (!card || !cardState(card).valid) {
-      toast('请选择一张在有效期内的服务卡');
+      toast('请选择一张在有效期内的服务券');
       first = $('#card-strip');
     }
     if (!(D.hospitalMeta[hospital] || {}).code) fail($('#hospital'), '该医院暂未配置服务编码，请选择其他医院');
@@ -807,10 +878,25 @@
       createdAt: now,
       timeline: [{ title: '需求已提交', desc: '照护顾问将在 30 分钟内致电确认', time: mdText(now) }]
     };
+    if (editingOrderId) {
+      const ex = state.orders.find((x) => x.id === editingOrderId);
+      if (ex) {
+        const old = { id: ex.id, no: ex.no, createdAt: ex.createdAt, timeline: ex.timeline || [] };
+        Object.assign(ex, order, { id: old.id, no: old.no, createdAt: old.createdAt, status: 'pending', caregiver: null });
+        ex.timeline = [...old.timeline, { title: '预约已修改', desc: '修改后的预约等待照护顾问确认', time: mdText(now) }];
+        save();
+        editingOrderId = null;
+        draft = null;
+        go('/order/' + ex.id);
+        toast('预约已修改，等待确认');
+        return;
+      }
+    }
     state.orders.unshift(order);
     save();
     draft = null;
-    go('/success/' + order.id);
+    go('/order/' + order.id);
+    toast('预约已提交，等待照护顾问确认');
   }
 
   /* ---------------- events ---------------- */
@@ -858,21 +944,22 @@
     const act = el.dataset.act;
     if (act === 'send-code') {
       const phone = $('#login-phone').value.trim();
-      if (!/^1[3-9]\d{9}$/.test(phone)) { toast('请先输入正确的 11 位手机号'); $('#login-phone').focus(); return; }
+      if (!/^\d{11}$/.test(phone)) { toast('请输入 11 位手机号'); $('#login-phone').focus(); return; }
       startCodeCountdown();
-      toast('验证码已发送，演示验证码为 123456');
+      toast('验证码已发送，输入任意 6 位数字即可登录');
       return;
     }
-    if (act === 'fill-demo') {
-      $('#login-phone').value = '13800006721';
-      $('#login-code').value = '123456';
-      toast('已填入演示账号');
+    if (act === 'login-back') {
+      if (history.length > 1) history.back();
+      else toast('请先登录');
       return;
     }
     if (act === 'toggle-login-agree') {
-      state.loginAgree = !(state.loginAgree !== false);
+      state.loginAgree = !state.loginAgree;
       save();
       el.classList.toggle('is-on', state.loginAgree);
+      const box = el.querySelector('.login-protocol__box');
+      if (box) box.innerHTML = state.loginAgree ? icon('check') : '';
       return;
     }
     if (act === 'open-privacy') {
@@ -890,6 +977,15 @@
       $('#service-err').style.display = 'none';
       return;
     }
+    if (act === 'pick-date') {
+      draft.startDate = el.dataset.date;
+      const hidden = $('#startDate');
+      if (hidden) hidden.value = draft.startDate;
+      $$('.date-chip').forEach((b) => b.classList.toggle('is-on', b.dataset.date === draft.startDate));
+      return;
+    }
+    if (act === 'edit-order') { editOrder(el.dataset.id); return; }
+    if (act === 'rebook') { rebookOrder(el.dataset.id); return; }
     if (act === 'choose-card') { openCardSheet(); return; }
     if (act === 'pick-card') {
       const card = getCard(el.dataset.id);
@@ -963,12 +1059,12 @@
       const o = state.orders.find((x) => x.id === el.dataset.id);
       if (o) {
         o.status = 'cancelled';
-        o.timeline.push({ title: '需求已取消', desc: '家属取消本次院内照护需求', time: mdText(nowText()) });
+        o.timeline.push({ title: '预约已取消', desc: '家属取消本次院内照护预约', time: mdText(nowText()) });
         save();
       }
       closeSheet();
       render();
-      toast('订单已取消');
+      toast('预约已取消');
       return;
     }
     if (act === 'edit-name') { editNameSheet(); return; }
@@ -1019,16 +1115,15 @@
       e.preventDefault();
       const phone = $('#login-phone').value.trim();
       const code = $('#login-code').value.trim();
-      if (!/^1[3-9]\d{9}$/.test(phone)) { toast('请输入正确的 11 位手机号'); $('#login-phone').focus(); return; }
-      if (!/^\d{6}$/.test(code)) { toast('请输入 6 位短信验证码'); $('#login-code').focus(); return; }
-      if (code !== '123456') { toast('验证码错误，演示验证码为 123456'); $('#login-code').focus(); return; }
-      if (state.loginAgree === false) { toast('请先阅读并同意服务协议与隐私政策'); return; }
-      const name = phone === D.account.phone ? D.account.name : '家属用户';
+      if (!/^\d{11}$/.test(phone)) { toast('请输入 11 位手机号'); $('#login-phone').focus(); return; }
+      if (!/^\d{6}$/.test(code)) { toast('请输入 6 位验证码'); $('#login-code').focus(); return; }
+      if (!state.loginAgree) { toast('请先阅读并同意用户服务协议与隐私协议'); return; }
+      const name = phone === D.account.phone ? D.account.name : '用户' + phone.slice(-4);
       state.session = { phone, name, loginAt: Date.now() };
       save();
       draft = null;
       clearInterval(codeTimer);
-      go('/request');
+      go('/book');
       toast('登录成功');
       return;
     }
