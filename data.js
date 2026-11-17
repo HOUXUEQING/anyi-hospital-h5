@@ -38,6 +38,12 @@ window.HOSPITAL_DATA = {
       productName: '院内照护服务券', productCode: 'FS2021036', status: 'unused', orderId: null,
       startTime: '2026-06-01', endTime: '2027-12-31',
       mainInsurerName: '张女士', idType: '1', idNo: '310104197506180028'
+    },
+    {
+      id: 'v5', cardNum: 'YDK2026000190', cardType: '120', cardTypeName: '单次服务券',
+      productName: '院内照护服务券', productCode: 'FS2021036', status: 'used', orderId: 'seed-h2',
+      startTime: '2026-01-01', endTime: '2026-12-31',
+      mainInsurerName: '李桂芳', idType: '1', idNo: '310104194803120024'
     }
   ],
   hospitalMeta: {
@@ -76,6 +82,47 @@ window.HOSPITAL_DATA = {
   ],
   selfCare: ['自理', '半自理', '不能自理', '术后卧床'],
   seedOrders: [
+    {
+      id: 'seed-h2',
+      no: 'AYH20261116010',
+      hospital: '北京大学国际医院',
+      hospitalCode: 'PKUIH001',
+      city: '北京市',
+      department: '神经内科',
+      bed: '',
+      hospitalNo: '',
+      hospitalizedTime: '2026-11-12',
+      disease: '脑梗死后康复期',
+      serviceType: '院内照护',
+      serviceId: 'hospital',
+      startDate: '2026-11-16',
+      startTime: '08:00',
+      card: {
+        cardNum: 'YDK2026000190', cardType: '120', cardTypeName: '单次服务券',
+        productName: '院内照护服务券', productCode: 'FS2021036',
+        startTime: '2026-01-01', endTime: '2026-12-31'
+      },
+      voucherId: 'v5',
+      patient: {
+        name: '李桂芳', gender: '女', idType: '1', idNo: '310104194803120024', birthday: '1948-03-12',
+        age: 78, mobile: '', province: '', city: '', county: '', address: '', selfCare: ''
+      },
+      needs: ['翻身叩背', '助餐喂食', '康复协助'],
+      contact: { name: '张女士', mobile: '13800006721', phone: '13800006721' },
+      emergency: { name: '', phone: '' },
+      note: '脑梗后右侧肢体活动不便，进食需要协助，康复训练时请在旁陪护。',
+      status: 'serving',
+      completedAt: null,
+      syncStatus: 'success',
+      syncedAt: '2026-11-14 09:13:00',
+      caregiver: { name: '陈晓梅', level: '中级养老护理员', years: 5, rating: 4.8 },
+      createdAt: '2026-11-14 09:12:30',
+      timeline: [
+        { title: '预约已提交', desc: '照护顾问正在审核评估', time: '11-14 09:12:30' },
+        { title: '护理员已安排', desc: '陈晓梅 · 中级养老护理员', time: '11-14 10:05:00' },
+        { title: '服务开始', desc: '护理员到院签到，开始院内照护', time: '11-16 08:05:00' }
+      ]
+    },
     {
       id: 'seed-h1',
       no: 'AYH20261018008',

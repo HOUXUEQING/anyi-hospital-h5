@@ -161,6 +161,14 @@
     </header>`;
   }
 
+  function titlebar(title, back = '') {
+    return `<header class="ios-bar">
+      <div class="ios-bar__side">${back ? `<button class="ios-bar__back" data-nav="${back}" aria-label="返回">${icon('chevL')}</button>` : ''}</div>
+      <div class="ios-bar__title">${esc(title)}</div>
+      <div class="ios-bar__side"></div>
+    </header>`;
+  }
+
   function loginView() {
     state.loginAgree = false;
     return page(`<div class="login-page">
@@ -309,7 +317,7 @@
     </button>`).join('');
 
     if (!isEditing && !card) {
-      return page(`<div class="no-voucher">
+      return page(`${titlebar('服务预约')}<div class="no-voucher">
         <span class="no-voucher__icon">${icon('receipt')}</span>
         <h2>暂无可用服务券</h2>
         <p>${activeOrders.length ? `您有 ${activeOrders.length} 个进行中预约，服务券已全部使用。取消进行中预约可返还服务券，或等待服务完成后再预约。` : '当前服务券已全部使用，暂时无法提交新的预约。'}</p>
@@ -318,7 +326,7 @@
       </div>`, 'page--tabbar');
     }
 
-    return page(`<header class="req-head book-hero">
+    return page(`${titlebar('服务预约')}<header class="req-head book-hero">
       <div class="req-head__row">
         <div class="book-hero__copy">
           <h1>${isEditing ? '修改预约' : '院内照护预约'}</h1>
@@ -454,9 +462,10 @@
     const orders = state.orders;
     const active = orders.filter((o) => ['pending', 'accepted', 'serving'].includes(o.status));
     const pending = orders.filter((o) => o.status === 'pending');
+    const serving = orders.filter((o) => o.status === 'serving');
     const completed = orders.filter((o) => o.status === 'completed');
     const vouchers = unusedVouchers().length;
-    return page(`<header class="my-hero">
+    return page(`${titlebar('我的')}<header class="my-hero">
       <div class="my-hero__top">
         <div class="avatar avatar--lg">${esc((state.session.name || '用').slice(0, 1))}</div>
         <div><div class="my-hero__name">${esc(state.session.name)}<span class="my-hero__tag">院内照护会员</span></div><div class="my-hero__phone">${phoneMask(state.session.phone)}</div></div>
@@ -464,6 +473,7 @@
       <div class="my-stats">
         <button class="my-stat" data-nav="#/orders/all"><b>${orders.length}</b><span>全部订单</span></button>
         <button class="my-stat" data-nav="#/orders/pending"><b>${pending.length}</b><span>待确认</span></button>
+        <button class="my-stat" data-nav="#/orders/serving"><b>${serving.length}</b><span>服务中</span></button>
         <button class="my-stat" data-nav="#/orders/completed"><b>${completed.length}</b><span>已完成</span></button>
       </div>
     </header>
@@ -535,56 +545,53 @@
 
   function orderDetailView(id) {
     const o = state.orders.find((x) => x.id === id);
-    if (!o) return page(`${ph('订单详情', { back: '#/my' })}<div class="empty"><div class="empty__ic">${icon('info')}</div><h3>订单不存在</h3><p>请返回我的预约查看</p><button class="btn btn--primary" data-nav="#/my">返回我的</button></div>`);
+    if (!o) return page(`${titlebar('订单详情', '#/my')}<div class="empty"><div class="empty__ic">${icon('info')}</div><h3>订单不存在</h3><p>请返回我的订单查看</p><button class="btn btn--primary" data-nav="#/my">返回我的</button></div>`, 'page--tabbar');
     const st = STATUS[o.status] || STATUS.pending;
     const timeline = (o.timeline || []).slice().reverse().map((t, i) => `<div class="tl-item ${i === 0 ? 'is-latest' : ''}"><b>${esc(t.title)}</b><p>${esc(t.desc)}</p><time>${esc(t.time)}</time></div>`).join('');
-    const caregiver = o.caregiver ? `<section class="dcard">${dhead('users', 'is-blue', '服务护理员', '已安排')}<div class="caregiver"><div class="avatar">${esc(o.caregiver.name.slice(0, 1))}</div><div class="caregiver__main"><b>${esc(o.caregiver.name)}</b><span>${esc(o.caregiver.level)} · ${o.caregiver.years} 年经验</span></div><div class="caregiver__right"><b>${o.caregiver.rating}</b><span>服务评分</span></div></div></section>` : '';
-    return page(`<div class="order-hero">
-      <div class="order-hero__nav"><button class="ph__btn" data-nav="#/my" aria-label="返回">${icon('chevL')}</button><span class="order-hero__brand">${icon('hospital')} 院内照护</span></div>
-      <div class="order-hero__glass">
-        <span class="order-hero__pill">${st.label}</span>
-        <h1>${esc(st.title)}</h1>
-        <p>${esc(st.desc)}</p>
-        <div class="order-hero__meta">${icon('calendar')}${fmtFull(o.startDate)} ${esc(o.startTime)}</div>
-      </div>
-    </div>
-    <div class="order-body">
-      ${o.status === 'pending' ? `<div class="dcard dcard--notice">${icon('clock')}<span>预约已收到，照护顾问将审核评估后与您确认服务安排，请保持电话畅通。</span></div>` : ''}
-      <section class="dcard">${dhead('clock', 'is-teal', '订单进度', `更新于 ${esc((o.timeline && o.timeline[o.timeline.length - 1].time) || '')}`)}<div class="timeline">${timeline || '<div class="tiny muted">暂无进度</div>'}</div></section>
-      <section class="dcard">${dhead('receipt', 'is-gold', '服务券', '单次使用')}
-        <div class="benefit-mini"><div><b>${esc(o.card.productName)}</b><span>券号 ${esc(o.card.cardNum)}</span></div><div class="benefit-mini__period">${o.card.startTime && o.card.endTime ? `有效期<br>${fmtFull(o.card.startTime)} – ${fmtFull(o.card.endTime)}` : '单次使用'}</div></div>
-      </section>
-      <section class="dcard">${dhead('hospital', 'is-teal', '住院信息')}
-        <div class="detail-kv"><span>医院</span><b>${esc(o.hospital)}</b></div>
-        <div class="detail-kv"><span>服务城市</span><b>${esc(o.city || '')}</b></div>
-        <div class="detail-kv"><span>科室 / 病区</span><b>${esc(o.department)}</b></div>
-        ${o.hospitalizedTime ? `<div class="detail-kv"><span>住院日期</span><b>${fmtFull(o.hospitalizedTime)}</b></div>` : ''}
-        <div class="detail-kv"><span>入院疾病</span><b style="max-width:230px">${esc(o.disease || '—')}</b></div>
-      </section>
-      <section class="dcard">${dhead('user', 'is-blue', '护理人信息')}
-        <div class="detail-kv"><span>姓名 / 性别</span><b>${esc(o.patient.name)} · ${esc(o.patient.gender)} · ${o.patient.age}岁</b></div>
-        <div class="detail-kv"><span>证件</span><b>${esc(idTypeName(o.patient.idType))} ${maskId(o.patient.idNo)}</b></div>
-        <div class="detail-kv"><span>出生日期</span><b>${fmtFull(o.patient.birthday)}</b></div>
-      </section>
-      <section class="dcard">${dhead('clipboard', 'is-violet', '期望服务时间')}
-        <div class="detail-kv"><span>服务项目</span><b>院内照护</b></div>
-        <div class="detail-kv"><span>期望时间</span><b>${fmtDate(o.startDate)} ${esc(o.startTime)}</b></div>
-        <div class="detail-kv"><span>照护需求</span><b style="max-width:230px">${o.needs.map((n) => `<span class="tag tag--blue" style="margin:0 0 4px 4px">${esc(n)}</span>`).join('')}</b></div>
-        ${o.note ? `<div class="detail-kv"><span>补充说明</span><b style="max-width:230px">${esc(o.note)}</b></div>` : ''}
-      </section>
-      ${caregiver}
-      <section class="dcard">${dhead('users', 'is-blue', '联系人信息')}
-        <div class="detail-kv"><span>姓名</span><b>${esc(o.contact.name)}</b></div>
-        <div class="detail-kv"><span>手机号</span><b>${phoneMask(o.contact.mobile || o.contact.phone)}</b></div>
-      </section>
-      <section class="dcard">${dhead('receipt', 'is-gold', '订单信息')}
-        <div class="detail-kv"><span>订单编号</span><b>${esc(o.no)}</b></div>
-        <div class="detail-kv"><span>下单时间</span><b>${esc(o.createdAt)}</b></div>
-      </section>
-      ${['pending', 'accepted'].includes(o.status) ? `<div class="detail-actions">
-        <button class="btn btn--ghost" data-act="cancel" data-id="${o.id}">取消预约</button><button class="btn btn--soft" data-act="edit-order" data-id="${o.id}">修改预约</button>
-      </div>` : ''}
-    </div>`, 'page--tabbar');
+    const updated = (o.timeline && o.timeline.length) ? o.timeline[o.timeline.length - 1].time : '';
+    const caregiver = o.caregiver && ['accepted', 'serving', 'completed'].includes(o.status) ? `<section class="dcard">${dhead('users', 'is-blue', '护理员信息', o.status === 'serving' ? '服务中' : '已安排')}<div class="caregiver"><div class="avatar">${esc(o.caregiver.name.slice(0, 1))}</div><div class="caregiver__main"><b>${esc(o.caregiver.name)}</b><span>${esc(o.caregiver.level)} · ${o.caregiver.years} 年经验</span></div><div class="caregiver__right"><b>${o.caregiver.rating}</b><span>服务评分</span></div></div></section>` : '';
+    return page(`${titlebar('订单详情', '#/my')}
+      <div class="order-body detail-body">
+        <section class="status-panel">
+          <div class="status-panel__top"><span class="status-panel__pill">${st.label}</span><span class="status-panel__updated">更新于 ${esc(updated)}</span></div>
+          <div class="status-panel__eyebrow">订单状态及进度</div>
+          <h1>${esc(st.title)}</h1>
+          <div class="status-panel__meta">${icon('calendar')}${fmtFull(o.startDate)} ${esc(o.startTime)}</div>
+          <div class="timeline timeline--panel">${timeline || '<div class="tiny muted">暂无进度</div>'}</div>
+          <div class="status-panel__foot"><span>订单号 ${esc(o.no)}</span><span>下单时间 ${esc(o.createdAt)}</span></div>
+        </section>
+        ${caregiver}
+        <section class="dcard">${dhead('receipt', 'is-gold', '服务券', '单次使用')}
+          <div class="benefit-mini"><div><b>${esc(o.card.productName)}</b><span>券号 ${esc(o.card.cardNum)}</span></div><div class="benefit-mini__period">${o.card.startTime && o.card.endTime ? `有效期<br>${fmtFull(o.card.startTime)} – ${fmtFull(o.card.endTime)}` : '单次使用'}</div></div>
+        </section>
+        <section class="dcard">${dhead('user', 'is-blue', '护理人信息')}
+          <div class="detail-kv"><span>姓名 / 性别</span><b>${esc(o.patient.name)} · ${esc(o.patient.gender)} · ${o.patient.age}岁</b></div>
+          <div class="detail-kv"><span>证件</span><b>${esc(idTypeName(o.patient.idType))} ${maskId(o.patient.idNo)}</b></div>
+          <div class="detail-kv"><span>出生日期</span><b>${fmtFull(o.patient.birthday)}</b></div>
+        </section>
+        <section class="dcard">${dhead('hospital', 'is-teal', '住院信息')}
+          <div class="detail-kv"><span>医院</span><b>${esc(o.hospital)}</b></div>
+          <div class="detail-kv"><span>服务城市</span><b>${esc(o.city || '')}</b></div>
+          <div class="detail-kv"><span>科室 / 病区</span><b>${esc(o.department)}</b></div>
+          ${o.hospitalizedTime ? `<div class="detail-kv"><span>住院日期</span><b>${fmtFull(o.hospitalizedTime)}</b></div>` : ''}
+          <div class="detail-kv"><span>入院疾病</span><b style="max-width:240px">${esc(o.disease || '—')}</b></div>
+        </section>
+        <section class="dcard">${dhead('clock', 'is-violet', '期望服务时间')}
+          <div class="detail-kv"><span>服务项目</span><b>院内照护</b></div>
+          <div class="detail-kv"><span>期望时间</span><b>${fmtDate(o.startDate)} ${esc(o.startTime)}</b></div>
+        </section>
+        <section class="dcard">${dhead('care', 'is-rose', '照护需求')}
+          <div class="detail-kv detail-kv--tags"><span>照护需求</span><b>${o.needs.map((n) => `<span class="tag tag--blue">${esc(n)}</span>`).join('')}</b></div>
+          <div class="detail-kv"><span>补充说明</span><b style="max-width:250px">${esc(o.note || '无')}</b></div>
+        </section>
+        <section class="dcard">${dhead('users', 'is-blue', '联系人信息')}
+          <div class="detail-kv"><span>姓名</span><b>${esc(o.contact.name)}</b></div>
+          <div class="detail-kv"><span>手机号</span><b>${phoneMask(o.contact.mobile || o.contact.phone)}</b></div>
+        </section>
+        ${['pending', 'accepted'].includes(o.status) ? `<div class="detail-actions">
+          <button class="btn btn--ghost" data-act="cancel" data-id="${o.id}">取消预约</button><button class="btn btn--soft" data-act="edit-order" data-id="${o.id}">修改预约</button>
+        </div>` : ''}
+      </div>`, 'page--tabbar');
   }
 
   function dhead(iconName, tone, title, aside = '') {

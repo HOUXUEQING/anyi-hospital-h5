@@ -726,13 +726,13 @@ textarea.field__box { height: auto; min-height: 74px; padding: 10px 11px; line-h
 .order-hero__glass p { font-size: 11px; line-height: 1.7; }
 .order-hero__glass .order-hero__meta { font-size: 10px; }
 .order-hero__brand { font-size: 9px; }
-.appt-card__no { margin-top: 3px; font-size: 10.2px; }
+.appt-card__no { margin-top: 3px; font-size: 10.8px; }
 .appt-card__title h3 { font-size: 14.5px; }
 .appt-lines { margin-top: 9px; }
 .appt-line { display: flex; align-items: center; gap: 5px; padding: 4px 0; font-size: 11px; color: var(--ink-3); min-width: 0; }
 .appt-line .ic { width: 14px; height: 14px; flex: none; color: #A7B4C6; }
-.appt-line__label { flex: none; width: 46px; font-size: 10.2px; color: var(--ink-3); }
-.appt-line b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11.5px; font-weight: 500; color: var(--ink-2); }
+.appt-line__label { flex: none; width: 48px; font-size: 10.8px; color: var(--ink-3); }
+.appt-line b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 500; color: var(--ink-2); }
 .appt-action { height: 30px; font-size: 10px; }
 .appt-card__actions { padding: 8px 0 10px; }
 
@@ -764,6 +764,65 @@ textarea.field__box { height: auto; min-height: 74px; padding: 10px 11px; line-h
 .order-hero__glass .order-hero__meta { color: var(--ink-3); }
 .order-body { background: linear-gradient(180deg, #F0F8FF, #F7FAFD 240px); }
 .order-tab.is-on { color: var(--brand); background: #EAF2FF; border-color: #BBD6FF; box-shadow: inset 0 0 0 1px rgba(46, 107, 255, .06); }
+
+/* ---------------- iOS chrome and light detail ---------------- */
+.ios-bar { position: sticky; top: 0; z-index: 55; height: 52px; display: flex; align-items: center; padding: 0 10px; background: #EAF3FF; backdrop-filter: blur(22px); }
+.ios-bar__side { width: 42px; flex: none; display: flex; align-items: center; }
+.ios-bar__side:last-child { justify-content: flex-end; }
+.ios-bar__back { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: var(--brand); background: rgba(255, 255, 255, .72); box-shadow: 0 6px 16px -14px rgba(25, 60, 110, .45); }
+.ios-bar__back .ic { width: 19px; height: 19px; }
+.ios-bar__title { flex: 1; text-align: center; font-size: 17px; font-weight: 600; letter-spacing: -.2px; color: var(--ink); }
+.book-hero { min-height: 168px; padding: 8px 18px 12px; border: 0 !important; }
+.book-hero__copy { max-width: 64%; padding-top: 5px; }
+.book-hero h1 { margin: 0; font-size: 28px; font-weight: 800; line-height: 1.25; letter-spacing: -1.1px; background: linear-gradient(100deg, #1B4FC9 0%, #2E6BFF 38%, #1F9FE8 68%, #16B89A 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+.book-hero h1::after { content: ""; display: block; width: 36px; height: 3px; margin-top: 7px; border-radius: 2px; background: linear-gradient(90deg, #2E6BFF, #21C7B0); }
+.book-hero p { margin-top: 8px; font-size: 10.5px; line-height: 1.65; }
+.book-hero__scene { height: 150px; opacity: .92; }
+.book-hero::after { height: 34px; }
+.my-hero { border-bottom: 0; padding: 13px 18px 12px; background: linear-gradient(180deg, #EAF3FF 0%, #F7FBFF 58%, #F5F9FF 100%); }
+.my-body { padding: 10px 16px 0; background: linear-gradient(180deg, #F5F9FF 0, #F3F7FC 230px, #F3F7FC 100%); }
+.my-stats { margin-top: 8px; padding: 6px 2px; border-radius: 14px; }
+.my-stat b { font-size: 18px; }
+.my-stat span { font-size: 8.5px; }
+.my-card { border: 0; box-shadow: 0 14px 30px -28px rgba(20, 54, 98, .45); }
+.detail-body { padding: 10px 16px 0; background: linear-gradient(180deg, #EFF7FF 0%, #F7FAFD 220px); }
+.status-panel { position: relative; overflow: hidden; padding: 16px; margin-bottom: 12px; border-radius: 22px; background: radial-gradient(circle at 90% 0, rgba(122, 183, 255, .18), transparent 36%), linear-gradient(145deg, rgba(255, 255, 255, .82), rgba(255, 255, 255, .46)); box-shadow: 0 18px 38px -30px rgba(24, 64, 118, .4); }
+.status-panel__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.status-panel__pill { display: inline-flex; align-items: center; height: 23px; padding: 0 9px; border-radius: 999px; background: rgba(46, 107, 255, .1); color: var(--brand); font-size: 9.5px; font-weight: 600; }
+.status-panel__updated { font-size: 9px; color: var(--ink-3); }
+.status-panel__eyebrow { margin-top: 13px; font-size: 9px; letter-spacing: .8px; color: #7E93AD; }
+.status-panel h1 { margin: 5px 0 6px; font-size: 26px; letter-spacing: -.7px; }
+.status-panel p { margin: 0; font-size: 12.5px; line-height: 1.65; color: var(--ink-2); }
+.status-panel__meta { display: flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 11px; color: var(--ink-3); }
+.status-panel__meta .ic { width: 14px; height: 14px; }
+.status-panel .timeline { margin-top: 12px; padding-top: 11px; border-top: 0; }
+.status-panel__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 10px; margin-top: 10px; font-size: 9px; color: #8EA0B5; }
+.timeline--panel { border-top: 0; }
+.timeline--panel .tl-item { padding: 8px 0 8px 22px; }
+.timeline--panel .tl-item b { font-size: 12.5px; }
+.timeline--panel .tl-item p { font-size: 11.5px; }
+.timeline--panel .tl-item time { font-size: 9.5px; }
+.detail-body .dcard { border: 0; box-shadow: 0 14px 32px -30px rgba(20, 54, 98, .5); }
+.detail-body .dcard__title { font-size: 16px; }
+.detail-body .dcard__title .form-card__num { width: 32px; height: 32px; border-radius: 10px; }
+.detail-body .dcard__title .form-card__num .ic { width: 16px; height: 16px; }
+.detail-body .detail-kv { font-size: 14px; padding: 10px 0; }
+.detail-body .detail-kv span { font-size: 13px; }
+.detail-body .detail-kv b { font-size: 15px; line-height: 1.65; }
+.detail-body .benefit-mini b { font-size: 14px; }
+.detail-body .benefit-mini span { font-size: 11.5px; }
+.detail-body .benefit-mini__period { font-size: 11px; }
+.detail-body .tag { font-size: 11px; padding: 4px 7px; }
+.status-panel h1 { font-size: 28px; }
+.status-panel__meta { font-size: 12px; }
+.status-panel__foot { font-size: 10px; }
+.timeline--panel .tl-item b { font-size: 13.5px; }
+.timeline--panel .tl-item p { font-size: 12.5px; }
+.timeline--panel .tl-item time { font-size: 10px; }
+.detail-body .caregiver__main b { font-size: 14px; }
+.detail-body .caregiver__main span { font-size: 11.5px; }
+.detail-body .detail-actions .btn { font-size: 14px; }
+.detail-kv--tags b { display: flex; flex-wrap: wrap; gap: 5px; justify-content: flex-end; }
 
 @media (min-width: 431px) {
   #app { margin: 24px auto 48px; min-height: calc(100vh - 72px); border-radius: 26px; overflow: hidden; }
