@@ -94,6 +94,11 @@
         if (title === '预约已取消') return { ...t, title: '服务申请已取消', desc: '家属取消本次院内照护服务申请' };
         return t;
       });
+      if (o.caregiver && o.caregiver.name === '王秀兰') {
+        o.caregiver.name = '王建国';
+        o.caregiver.gender = '男';
+        o.timeline = (o.timeline || []).map((t) => t.desc ? { ...t, desc: String(t.desc).replaceAll('王秀兰', '王建国') } : t);
+      }
     });
     s.vouchers.forEach((v) => {
       const active = s.orders.find((o) => o.voucherId === v.id && o.status !== 'cancelled');
@@ -177,22 +182,18 @@
   function iconSvg(name) { return icon(name); }
   function page(html, cls = '') { return `<div class="page ${cls}">${html}</div>`; }
 
+  const avatarNeutral = () => `<svg viewBox="0 0 64 64" class="avatar-art" aria-hidden="true"><rect width="64" height="64" rx="18" fill="#DDEBFF"/><circle cx="32" cy="25" r="9.5" fill="#FFFFFF"/><path d="M13 60c.8-13 9-20 19-20s18.2 7 19 20" fill="#FFFFFF"/><path d="M25 42c1.8 3 4.4 4 7 4s5.2-1 7-4" fill="none" stroke="#C8DDF5" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+  const avatarFemale = () => `<svg viewBox="0 0 64 64" class="avatar-art" aria-hidden="true"><rect width="64" height="64" rx="18" fill="#FFE8DF"/><path d="M20 30c-2 8 0 13 2 16M44 30c2 8 0 13-2 16" stroke="#3D2D2B" stroke-width="3" stroke-linecap="round"/><path d="M19 27c-2-11 5-18 13-18s15 7 13 18l-3-1c0-7-4-11-10-11s-10 4-10 11z" fill="#3D2D2B"/><circle cx="32" cy="25" r="9.5" fill="#F4CDB6"/><path d="M10 64c0-13 9-20 22-20s22 7 22 20" fill="#F7FCFF"/><path d="M27 45l5 5 5-5" fill="none" stroke="#7FB6E8" stroke-width="2"/><circle cx="28.5" cy="25" r="1.2" fill="#3D2D2B"/><circle cx="35.5" cy="25" r="1.2" fill="#3D2D2B"/><path d="M29.5 30c1.5 1.2 3.5 1.2 5 0" fill="none" stroke="#D68C7B" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+  const avatarMale = () => `<svg viewBox="0 0 64 64" class="avatar-art" aria-hidden="true"><rect width="64" height="64" rx="18" fill="#DCEEFF"/><circle cx="32" cy="25" r="9.5" fill="#F2C7AD"/><path d="M20 23c1-9 6-13 12-13s11 4 12 13c-3-3-7-4-12-4s-9 1-12 4z" fill="#3A2E2B"/><path d="M10 64c0-13 9-20 22-20s22 7 22 20" fill="#F7FCFF"/><path d="M27 45l5 5 5-5" fill="none" stroke="#7FB6E8" stroke-width="2"/><circle cx="28.5" cy="26" r="1.2" fill="#3A2E2B"/><circle cx="35.5" cy="26" r="1.2" fill="#3A2E2B"/><path d="M29.5 31c1.5 1.2 3.5 1.2 5 0" fill="none" stroke="#CF876F" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+  const caregiverAvatar = (gender) => String(gender || '').includes('男') ? avatarMale() : (String(gender || '').includes('女') ? avatarFemale() : avatarNeutral());
+
   function ph(title, { back = '#/my', right = '', sub = '' } = {}) {
-    return `<header class="ph">
-      <button class="ph__btn" data-nav="${back}" aria-label="返回">${icon('chevL')}</button>
-      <div class="grow" style="text-align:center"><div class="ph__title">${esc(title)}</div>${sub ? `<div class="ph__sub">${esc(sub)}</div>` : ''}</div>
-      <div class="ph__right" style="min-width:36px;justify-content:flex-end">${right}</div>
-    </header>`;
+    return `<div class="float-back-row">${back ? `<button class="float-back" data-nav="${back}" aria-label="返回">${icon('chevL')}</button>` : ''}<span class="sr-only">${esc(title)}</span></div>`;
   }
-
   function titlebar(title, back = '') {
-    return `<header class="ios-bar">
-      <div class="ios-bar__side">${back ? `<button class="ios-bar__back" data-nav="${back}" aria-label="返回">${icon('chevL')}</button>` : ''}</div>
-      <div class="ios-bar__title">${esc(title)}</div>
-      <div class="ios-bar__side"></div>
-    </header>`;
+    if (!back) return `<span class="sr-only">${esc(title)}</span>`;
+    return `<div class="float-back-row"><button class="float-back" data-nav="${back}" aria-label="返回">${icon('chevL')}</button><span class="sr-only">${esc(title)}</span></div>`;
   }
-
   function loginView() {
     state.loginAgree = false;
     return page(`<div class="login-page">
@@ -601,7 +602,7 @@
     const materialCount = orders.reduce((n, o) => n + ((o.materials && o.materials.length) || 0), 0);
     return page(`${titlebar('我的')}<header class="my-hero">
       <div class="my-hero__top">
-        <div class="avatar avatar--lg">${esc((state.session.name || '用').slice(0, 1))}</div>
+        <div class="avatar avatar--lg">${avatarNeutral()}</div>
         <div><div class="my-hero__name">${esc(state.session.name)}<span class="my-hero__tag">院内照护会员</span></div><div class="my-hero__phone">${phoneMask(state.session.phone)}</div></div>
       </div>
       <div class="my-stats">
@@ -787,7 +788,7 @@
       cgPhone ? esc(cgPhone) : ''
     ].filter(Boolean) : [];
     const caregiver = cg ? `<section class="dcard">${dhead('users', 'is-blue', '护理员信息')}
-      <div class="caregiver"><div class="avatar">${esc(cg.name.slice(0, 1))}</div><div class="caregiver__main"><b>${esc(cg.name)}</b><span>${esc(cg.level)}${cg.years ? ` · ${cg.years} 年经验` : ''}</span>${cgFacts.length ? `<div class="caregiver__facts">${cgFacts.map((f) => `<span>${f}</span>`).join('')}</div>` : ''}</div></div>
+      <div class="caregiver"><div class="avatar">${caregiverAvatar(cg.gender)}</div><div class="caregiver__main"><b>${esc(cg.name)}</b><span>${esc(cg.level)}${cg.years ? ` · ${cg.years} 年经验` : ''}</span>${cgFacts.length ? `<div class="caregiver__facts">${cgFacts.map((f) => `<span>${f}</span>`).join('')}</div>` : ''}</div></div>
       ${cgPhone ? `<div class="caregiver-contact"><a class="caregiver-call" href="tel:${esc(cgPhone)}">${icon('phone')}拨打电话</a><button class="caregiver-copy" type="button" data-act="copy-phone" data-phone="${esc(cgPhone)}">${icon('clipboard')}复制手机号</button></div>` : ''}
     </section>` : '';
     return page(`${titlebar('订单详情', '#/my')}
@@ -841,7 +842,7 @@
   function accountView() {
     const joined = D.account.joinedAt;
     return page(`${ph('账户信息', { back: '#/my' })}
-      <div class="account-hero"><div class="account-hero__main"><div class="avatar avatar--lg">${esc((state.session.name || '张').slice(0, 1))}</div><div><h1>${esc(state.session.name)}</h1><p>${phoneMask(state.session.phone)} · 院内照护账户</p></div></div></div>
+      <div class="account-hero"><div class="account-hero__main"><div class="avatar avatar--lg">${avatarNeutral()}</div><div><h1>${esc(state.session.name)}</h1><p>${phoneMask(state.session.phone)} · 院内照护账户</p></div></div></div>
       <div class="account-body">
         <div class="account-card"><div class="account-card__head"><b>登录与身份</b><button class="ph__link" data-act="edit-name">修改姓名</button></div>
           <div class="account-row"><span>姓名</span><b>${esc(state.session.name)}</b></div>
@@ -912,7 +913,7 @@
     const c = state.profile.contact;
     const activeOrders = state.orders.filter((o) => ['pending', 'accepted', 'serving'].includes(o.status));
     return page(`${ph('客户信息', { back: '#/my', right: `<button class="ph__link" data-act="edit-customer">编辑</button>` })}
-      <div class="account-hero"><div class="account-hero__main"><div class="avatar avatar--lg">${esc(p.name.slice(0, 1))}</div><div><h1>${esc(p.name)}</h1><p>${esc(c.name)} · ${phoneMask(c.mobile)} · 默认客户档案</p></div></div></div>
+      <div class="account-hero"><div class="account-hero__main"><div class="avatar avatar--lg">${avatarNeutral()}</div><div><h1>${esc(p.name)}</h1><p>${esc(c.name)} · ${phoneMask(c.mobile)} · 默认客户档案</p></div></div></div>
       <div class="account-body">
         <section class="account-card"><div class="account-card__head"><b>护理对象</b><button class="ph__link" data-act="edit-patient">编辑</button></div>
           <div class="account-row"><span>姓名 / 性别</span><b>${esc(p.name)} · ${esc(p.gender)}</b></div>

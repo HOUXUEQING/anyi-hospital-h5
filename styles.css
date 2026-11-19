@@ -1034,3 +1034,132 @@ textarea.field__box { height: auto; min-height: 74px; padding: 10px 11px; line-h
   .login__card { padding: 16px; }
   .login__card > p { margin-bottom: 10px; }
 }
+
+/* shared typography + floating back + avatar refresh */
+.sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.float-back-row { display: flex; align-items: center; min-height: 50px; padding: 10px 16px 0; position: relative; z-index: 6; }
+.float-back { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.92); color: var(--brand); border: 1px solid rgba(255,255,255,.9); box-shadow: 0 10px 22px -18px rgba(20,54,98,.55); backdrop-filter: blur(8px); }
+.float-back .ic { width: 18px; height: 18px; }
+.avatar { overflow: hidden; }
+.avatar-art { display: block; width: 100%; height: 100%; }
+
+body { font-size: 15px; }
+.tiny { font-size: 11px !important; }
+.form-note { font-size: 12px !important; line-height: 1.65; }
+.field__label { font-size: 13px !important; }
+.field__box { height: 48px !important; font-size: 15px !important; }
+.field__box::placeholder { font-size: 13px !important; }
+.field__err { font-size: 12px !important; }
+.field__tag { font-size: 10px !important; }
+.form-card__title { font-size: 17px !important; }
+.form-card__aside { font-size: 11.5px !important; }
+.form-card__num { font-size: 12px !important; width: 28px; height: 28px; }
+.seg__btn { font-size: 14px !important; }
+.quick-date { font-size: 12px !important; }
+.quick-date span { font-size: 10px !important; }
+.agree { font-size: 12px !important; }
+.form-foot-note { font-size: 11.5px !important; }
+.actionbar__note { font-size: 11px !important; }
+.actionbar__note b { font-size: 13px !important; }
+.btn { font-size: 15px !important; }
+.btn--sm { font-size: 13px !important; }
+.banner__text { font-size: 12.5px !important; }
+.banner__action { font-size: 11.5px !important; }
+.toast { font-size: 12px !important; }
+.tabbar__item { font-size: 10.5px !important; }
+
+.login-label { font-size: 13px !important; }
+.login-input { font-size: 15px !important; }
+.login-submit { font-size: 16px !important; }
+.login-code__btn { font-size: 13px !important; }
+.login-protocol { font-size: 11.5px !important; }
+.login-page__foot { font-size: 11px !important; }
+.login__card > p { font-size: 11px !important; }
+.login__badge { font-size: 10px !important; }
+
+.my-hero__tag { font-size: 10.5px !important; }
+.my-hero__phone { font-size: 11.5px !important; }
+.my-stat span { font-size: 11px !important; }
+.my-stat b { font-size: 24px !important; }
+.menu__item { font-size: 14px !important; }
+.menu__value { font-size: 11.5px !important; }
+.my-hotline { font-size: 11px !important; }
+.my-foot { font-size: 10.5px !important; }
+
+.appt-card__title h3 { font-size: 16px !important; }
+.appt-card__no { font-size: 11px !important; }
+.appt-status { font-size: 12px !important; }
+.appt-line { font-size: 13px !important; }
+.appt-line__label { font-size: 12px !important; }
+.appt-line b { font-size: 14px !important; }
+.appt-action { font-size: 12px !important; }
+.order-tab { font-size: 12.5px !important; }
+.appt-empty p { font-size: 13px !important; }
+
+.status-panel__pill { font-size: 13px !important; }
+.dcard__title { font-size: 16px !important; }
+.dcard__aside { font-size: 11.5px !important; }
+.detail-kv { font-size: 14px !important; }
+.detail-kv span { font-size: 13px !important; }
+.detail-kv b { font-size: 15px !important; }
+.timeline--panel .tl-item b { font-size: 13.5px !important; }
+.timeline--panel .tl-item p { font-size: 12px !important; }
+.timeline--panel .tl-item time { font-size: 11px !important; }
+.timeline-toggle { font-size: 12px !important; }
+.caregiver__main b { font-size: 15px !important; }
+.caregiver__main span { font-size: 12px !important; }
+.caregiver__facts { font-size: 12px !important; }
+.caregiver__phone-text { font-size: 12px !important; }
+.caregiver-call, .caregiver-copy { font-size: 13px !important; }
+.detail-actions .btn { font-size: 14px !important; }
+.tag { font-size: 12px !important; }
+.quota-cell span { font-size: 11px !important; }
+.quota-foot { font-size: 11px !important; }
+.material-main b { font-size: 13px !important; }
+.material-main span { font-size: 10.5px !important; }
+.material-main .material-time { font-size: 10px !important; }
+.material-actions button { font-size: 11px !important; }
+.material-upload { font-size: 13px !important; }
+.material-upload small { font-size: 10px !important; }
+.voucher-note { font-size: 11px !important; }
+
+.sv-hero__eyebrow { font-size: 10.5px !important; }
+.sv-hero p { font-size: 12.5px !important; }
+.sv-hero__chips span { font-size: 10.5px !important; }
+.sv-head h2 { font-size: 17px !important; }
+.sv-head p { font-size: 11px !important; }
+.sv-num { font-size: 11px !important; width: 30px; height: 30px; }
+.sv-tags span { font-size: 12.5px !important; }
+.sv-tip { font-size: 11px !important; }
+.sv-step b { font-size: 13px !important; }
+.sv-step p { font-size: 11px !important; }
+.sv-step__dot { font-size: 10px !important; }
+.sv-material b { font-size: 11.5px !important; }
+.sv-material small { font-size: 9.5px !important; }
+.sv-feature b { font-size: 12px !important; }
+.sv-feature p { font-size: 10px !important; }
+.sv-notes li { font-size: 12px !important; }
+.sv-svc-summary b { font-size: 21px !important; }
+.sv-svc-summary span, .sv-svc-summary em { font-size: 10px !important; }
+.sv-svc-lead { font-size: 11.5px !important; }
+.sv-cat__title b { font-size: 14px !important; }
+.sv-cat__title small { font-size: 10px !important; }
+.sv-service__title b { font-size: 13px !important; }
+.sv-service__lead { font-size: 10.5px !important; }
+.sv-service__list li { font-size: 11px !important; }
+.sv-service__note { font-size: 10px !important; }
+.sv-cta > span { font-size: 10px !important; }
+
+.map-city { font-size: 14px !important; }
+.map-search input { font-size: 13px !important; }
+.map-current b { font-size: 12px !important; }
+.map-current small { font-size: 9.5px !important; }
+.map-place b { font-size: 13px !important; }
+.map-place div > span { font-size: 10px !important; }
+.map-place div > small { font-size: 9px !important; }
+.map-place .map-distance { font-size: 9px !important; }
+.map-sheet__head b { font-size: 15px !important; }
+.map-sheet__head span { font-size: 10px !important; }
+.map-confirm .btn { font-size: 15px !important; }
+.map-tip { font-size: 9px !important; }
+

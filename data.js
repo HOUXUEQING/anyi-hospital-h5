@@ -167,11 +167,11 @@ window.HOSPITAL_DATA = {
       completedAt: '2026-10-25 08:10:00',
       syncStatus: 'success',
       syncedAt: '2026-10-15 16:30:00',
-      caregiver: { name: '王秀兰', gender: '女', age: 52, phone: '13900005678', level: '高级养老护理员', years: 8, rating: 4.9 },
+      caregiver: { name: '王建国', gender: '男', age: 52, phone: '13900005678', level: '高级养老护理员', years: 8, rating: 4.9 },
       createdAt: '2026-10-15 16:28:00',
       timeline: [
         { title: '服务申请已提交', desc: '照护顾问已收到院内照护需求，待评估后安排', time: '10-15 16:28:00' },
-        { title: '服务评估完成，已安排护理员', desc: '王秀兰 · 高级养老护理员', time: '10-15 17:05:00' },
+        { title: '服务评估完成，已安排护理员', desc: '王建国 · 高级养老护理员', time: '10-15 17:05:00' },
         { title: '服务开始', desc: '护理员已到院签到，照护开始', time: '10-18 08:02:00' },
         { title: '服务完成', desc: '照护结束，服务完成', time: '10-25 08:10:00' }
       ]
