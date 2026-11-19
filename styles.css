@@ -1175,3 +1175,4 @@ body { font-size: 15px; }
 .page--tabbar .request-actionbar { bottom: calc(64px + env(safe-area-inset-bottom)); }
 .request-actionbar { transform: translate(-50%, 0) !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
 .req-body > .banner { margin-left: 0; margin-right: 0; }
+.page--tabbar .actionbar { padding-bottom: 9px; }
