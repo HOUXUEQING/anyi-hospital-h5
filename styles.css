@@ -1269,3 +1269,17 @@ body { font-size: 15px; }
 }
 .field__box[type="date"]::-webkit-date-and-time-value, .field__box[type="datetime-local"]::-webkit-date-and-time-value, .field__box[type="date"]::-webkit-datetime-edit, .field__box[type="datetime-local"]::-webkit-datetime-edit { text-align: center; }
 .field__box[type="date"], .field__box[type="datetime-local"] { background-image: none !important; background-size: auto !important; background-position: initial !important; padding: 0 38px !important; }
+/* pale My gradient, vertical date centering and wrapping address */
+.my-hero { background: radial-gradient(circle at 94% 0%, rgba(82, 164, 255, .12), transparent 44%), radial-gradient(circle at 4% 100%, rgba(80, 216, 191, .08), transparent 42%), linear-gradient(180deg, #EDF6FF 0%, #F8FCFF 58%, #EEFBF5 100%) !important; }
+.my-body { background-color: #F4F9FC !important; background-image: linear-gradient(180deg, #EEFBF5 0%, #F7FCF9 42px, #F4F9FC 76px) !important; background-repeat: no-repeat !important; background-size: 100% 76px !important; }
+.field__box[type="date"], .field__box[type="datetime-local"] { line-height: 46px !important; }
+.field__box[type="date"]::-webkit-datetime-edit, .field__box[type="datetime-local"]::-webkit-datetime-edit { display: flex; align-items: center; height: 46px; line-height: normal; padding: 0; }
+.field__box[type="date"]::-webkit-date-and-time-value, .field__box[type="datetime-local"]::-webkit-date-and-time-value { line-height: 46px; }
+.appt-line--address { align-items: flex-start; }
+.appt-line--address .ic { margin-top: 2px; }
+.appt-line--address b { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.45; word-break: break-word; }
+.my-body { background-image: linear-gradient(180deg, #EEFBF5 0%, #F7FCF9 28px, #F4F9FC 48px) !important; background-size: 100% 48px !important; }
+.field__box[type="date"], .field__box[type="datetime-local"] { display: flex !important; align-items: center !important; line-height: normal !important; padding: 0 38px !important; box-sizing: border-box !important; }
+.field__box[type="date"]::-webkit-datetime-edit, .field__box[type="datetime-local"]::-webkit-datetime-edit { display: block; height: auto; line-height: normal; }
+.field__box[type="date"], .field__box[type="datetime-local"] { display: block !important; align-items: initial !important; line-height: 46px !important; padding: 0 38px !important; }
+.field__box[type="date"]::-webkit-datetime-edit, .field__box[type="datetime-local"]::-webkit-datetime-edit { display: block; height: 46px; line-height: 46px; transform: translateY(-3px); }

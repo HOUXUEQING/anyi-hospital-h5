@@ -577,7 +577,7 @@
       <div class="appt-lines">
         <div class="appt-line">${icon('clock')}<span class="appt-line__label">预约时间</span><b>${fmtFull(o.startDate)} ${esc(o.startTime)}</b></div>
         <div class="appt-line">${icon('user')}<span class="appt-line__label">护理人</span><b>${esc(o.patient.name)} · ${esc(o.patient.gender)} · ${o.patient.age}岁</b></div>
-        <div class="appt-line">${icon('pin')}<span class="appt-line__label">住院地址</span><b>${esc(o.hospital)} · ${esc(o.department)}</b></div>
+        <div class="appt-line appt-line--address">${icon('pin')}<span class="appt-line__label">住院地址</span><b>${esc(o.hospital)} · ${esc(o.department)}</b></div>
       </div>
       <div class="appt-card__actions">
         <button class="appt-action" data-nav="#/order/${o.id}">查看详情</button>
