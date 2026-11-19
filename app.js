@@ -496,7 +496,7 @@
       </section>
 
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num is-blue">${icon('user')}</span><span class="form-card__title">填写护理人信息</span><span class="form-card__aside">用于服务预约与实名</span></div>
+        <div class="form-card__head"><span class="form-card__num is-blue">${icon('user')}</span><span class="form-card__title">护理人信息</span><span class="form-card__aside">用于服务预约与实名</span></div>
         <div class="form-grid">
           <div class="field field--full"><label class="field__label" for="patientName">姓名<em>*</em></label><input class="field__box" id="patientName" value="${esc(draft.patient.name)}" placeholder="请输入护理人姓名"><span class="field__err">请填写护理人姓名</span></div>
           <div class="field field--full"><label class="field__label">性别<em>*</em></label><div class="seg"><button type="button" class="seg__btn ${draft.patient.gender === '女' ? 'is-on' : ''}" data-act="gender" data-value="女">女</button><button type="button" class="seg__btn ${draft.patient.gender === '男' ? 'is-on' : ''}" data-act="gender" data-value="男">男</button></div></div>
@@ -507,7 +507,7 @@
       </section>
 
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num is-teal">${icon('hospital')}</span><span class="form-card__title">填写住院信息</span><span class="form-card__aside">用于匹配院内护理员</span></div>
+        <div class="form-card__head"><span class="form-card__num is-teal">${icon('hospital')}</span><span class="form-card__title">住院信息</span><span class="form-card__aside">用于匹配院内护理员</span></div>
         <div class="form-grid">
           <div class="field field--full"><label class="field__label" for="city">城市<em>*</em></label><input type="hidden" id="city" value="${esc(city)}"><input type="hidden" id="province" value="${esc(province)}"><button type="button" class="field__box field__box--picker" id="city-picker-btn" data-act="choose-city"><span id="city-label">${esc(province && province !== city ? province + ' ' + city : city)}</span>${icon('chevD')}</button><span class="field__err">请选择城市</span></div>
           <div class="field field--full"><label class="field__label" for="hospital-input">就诊医院<em>*</em></label><div class="hospital-input-wrap">${icon('search')}<input class="field__box" id="hospital-input" value="${esc(hospital)}" placeholder="输入医院名称搜索" autocomplete="off"><input type="hidden" id="hospital" value="${esc(hospital)}"></div><div class="hospital-suggest" id="hospital-suggest" hidden></div><span class="field__err">请选择清单内医院</span></div>
@@ -526,9 +526,9 @@
 
 
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num is-violet">${icon('clock')}</span><span class="form-card__title">期望服务时间</span><span class="form-card__aside">照护顾问将评估确认</span></div>
+        <div class="form-card__head"><span class="form-card__num is-violet">${icon('clock')}</span><span class="form-card__title">期望服务开始时间</span><span class="form-card__aside">照护顾问将评估确认</span></div>
         <div class="quick-dates">${[[0, '今天'], [1, '明天'], [2, '后天']].map(([n, label]) => { const d = addDays(today, n); return `<button type="button" class="quick-date ${draft.startDate === d ? 'is-on' : ''}" data-act="quick-date" data-date="${d}">${label}<span>${Number(d.slice(5, 7))}/${Number(d.slice(8))}</span></button>`; }).join('')}</div>
-        <div class="field" style="margin-top:10px"><label class="field__label" for="serviceTime">期望服务时间<em>*</em></label><input class="field__box" id="serviceTime" type="datetime-local" min="${today}T00:00" value="${esc(draft.startDate)}T${esc(draft.startTime)}"><span class="field__err">请选择期望服务时间</span></div>
+        <div class="field" style="margin-top:10px"><label class="field__label" for="serviceTime">期望服务开始时间<em>*</em></label><input class="field__box" id="serviceTime" type="datetime-local" min="${today}T00:00" value="${esc(draft.startDate)}T${esc(draft.startTime)}"><span class="field__err">请选择期望服务开始时间</span></div>
       </section>
 
       <section class="form-card">
@@ -541,7 +541,7 @@
 
 
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num is-blue">${icon('users')}</span><span class="form-card__title">填写联系人信息</span><span class="form-card__aside">用于顾问确认</span></div>
+        <div class="form-card__head"><span class="form-card__num is-blue">${icon('users')}</span><span class="form-card__title">联系人信息</span><span class="form-card__aside">用于顾问确认</span></div>
         <div class="form-grid">
           <div class="field"><label class="field__label" for="contactName">姓名<em>*</em></label><input class="field__box" id="contactName" value="${esc(draft.contact.name)}" placeholder="姓名"><span class="field__err">请填写联系人姓名</span></div>
           <div class="field"><label class="field__label" for="contactPhone">手机号<em>*</em></label><input class="field__box" id="contactPhone" type="tel" inputmode="numeric" maxlength="11" value="${esc(draft.contact.mobile || draft.contact.phone)}" placeholder="11 位手机号"><span class="field__err">请填写正确手机号</span></div>
@@ -807,9 +807,9 @@
           ${o.hospitalizedTime ? `<div class="detail-kv"><span>住院日期</span><b>${fmtFull(o.hospitalizedTime)}</b></div>` : ''}
           <div class="detail-kv"><span>入院疾病</span><b style="max-width:240px">${esc(o.disease || '—')}</b></div>
         </section>
-        <section class="dcard">${dhead('clock', 'is-violet', '期望服务时间')}
+        <section class="dcard">${dhead('clock', 'is-violet', '期望服务开始时间')}
           <div class="detail-kv"><span>服务项目</span><b>院内照护</b></div>
-          <div class="detail-kv"><span>期望时间</span><b>${fmtDate(o.startDate)} ${esc(o.startTime)}</b></div>
+          <div class="detail-kv"><span>期望开始时间</span><b>${fmtDate(o.startDate)} ${esc(o.startTime)}</b></div>
         </section>
         <section class="dcard">${dhead('care', 'is-rose', '护理员要求')}
           <div class="detail-kv"><span>指定性别</span><b>${esc(o.staffGender || '随机分配')}</b></div>
@@ -865,7 +865,7 @@
         <div class="privacy__date">更新日期：2026 年 11 月 12 日 · 生效日期：2026 年 11 月 12 日</div>
         <p>安颐院内照护（以下简称“我们”）深知个人信息对您和家人的重要性。本政策说明我们在提供院内陪护服务过程中如何收集、使用、存储和保护信息。</p>
         <h2>一、我们收集的信息</h2>
-        <ul><li>登录信息：手机号、姓名、验证码校验记录。</li><li>服务信息：城市、医院、科室、入院疾病、期望服务时间与照护需求。</li><li>护理人信息：姓名、性别、年龄、证件类型与证件号。</li><li>联系人信息：姓名、手机号。</li><li>订单与服务记录：订单状态、护理员安排、到院服务与服务完成记录。</li></ul>
+        <ul><li>登录信息：手机号、姓名、验证码校验记录。</li><li>服务信息：城市、医院、科室、入院疾病、期望服务开始时间与照护需求。</li><li>护理人信息：姓名、性别、年龄、证件类型与证件号。</li><li>联系人信息：姓名、手机号。</li><li>订单与服务记录：订单状态、护理员安排、到院服务与服务完成记录。</li></ul>
         <h2>二、信息使用目的</h2>
         <p>用于创建和管理院内照护订单、匹配护理员、照护顾问电话确认、服务交接、订单进度展示、客服处理与安全保障。我们不会将健康相关信息用于与服务无关的营销。</p>
         <h2>三、信息共享</h2>
@@ -1129,7 +1129,7 @@
     if (!(D.hospitalMeta[hospital] || {}).code) fail($('#hospital'), '该医院暂未配置服务编码，请选择其他医院');
     if (!department) fail($('#department'), '请选择科室');
     if (!disease) fail($('#disease'), '请填写入院疾病或诊断');
-    if (!serviceTime || startDate < todayISO()) fail($('#serviceTime'), '请选择今天或之后的期望服务时间');
+    if (!serviceTime || startDate < todayISO()) fail($('#serviceTime'), '请选择今天或之后的期望服务开始时间');
     if (!patientName) fail($('#patientName'), '请填写护理人姓名');
     if (!['女', '男'].includes(patientGender)) fail($('#patientName'), '请选择护理人性别');
     if (!patientBirthday) fail($('#birthday'), '请填写出生日期');
