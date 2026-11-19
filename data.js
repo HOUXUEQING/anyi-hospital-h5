@@ -51,7 +51,9 @@ window.HOSPITAL_DATA = {
     '北大医疗鲁中医院': { code: 'LZ001', province: '山东省', city: '淄博市', county: '临淄区' },
     '北大医疗淄博医院': { code: 'ZB001', province: '山东省', city: '淄博市', county: '张店区' },
     '北大医疗海洋石油医院': { code: 'OCEAN001', province: '天津市', city: '天津市', county: '滨海新区' },
-    '北京北大医疗康复医院': { code: 'PKUR001', province: '北京市', city: '北京市', county: '昌平区' }
+    '北京北大医疗康复医院': { code: 'PKUR001', province: '北京市', city: '北京市', county: '昌平区' },
+    '河北中石油中心医院': { code: 'HBLF001', province: '河北省', city: '廊坊市', county: '广阳区' },
+    '北大医疗潞安医院': { code: 'LA001', province: '山西省', city: '长治市', county: '潞州区' }
   },
   idTypes: [
     ['1', '身份证'], ['2', '护照'], ['3', '户口簿'], ['4', '军官证'], ['5', '士兵证'],
@@ -65,7 +67,9 @@ window.HOSPITAL_DATA = {
     '北大医疗鲁中医院',
     '北大医疗淄博医院',
     '北大医疗海洋石油医院',
-    '北京北大医疗康复医院'
+    '北京北大医疗康复医院',
+    '河北中石油中心医院',
+    '北大医疗潞安医院'
   ],
   departments: [
     '骨科病区', '神经内科', '心血管内科', '康复医学科', '普外科', '肿瘤内科', 'ICU / 重症监护', '其他科室'
@@ -76,6 +80,7 @@ window.HOSPITAL_DATA = {
     { id: 'night', name: '12 小时夜班', short: '20:00–08:00', hours: '12 小时', desc: '夜间看护，协助起夜、翻身和突发情况照应' },
     { id: 'visit', name: '按次陪护', short: '陪检 / 临时', hours: '按次', desc: '陪检、临时看护、家属临时替换等短时需求' }
   ],
+  materialTypes: ['住院申请单 / 住院凭证', '病历资料', '检查报告', '床头卡', '手环', '其他就医材料'],
   careNeeds: [
     '术后照护', '翻身叩背', '助餐喂食', '如厕助洁', '夜间看护',
     '陪检陪护', '康复协助', '压疮护理', '管路护理', '失智照护'
@@ -108,6 +113,8 @@ window.HOSPITAL_DATA = {
         age: 78, mobile: '', province: '', city: '', county: '', address: '', selfCare: ''
       },
       needs: ['翻身叩背', '助餐喂食', '康复协助'],
+      staffGender: '女',
+      staffNote: '希望护理员有神经内科照护经验，动作轻柔，能协助康复训练。',
       contact: { name: '张女士', mobile: '13800006721', phone: '13800006721' },
       emergency: { name: '', phone: '' },
       note: '脑梗后右侧肢体活动不便，进食需要协助，康复训练时请在旁陪护。',
@@ -151,6 +158,8 @@ window.HOSPITAL_DATA = {
         address: '田林路 128 弄 12 号 502 室', selfCare: '半自理'
       },
       needs: ['术后照护', '翻身叩背', '助餐喂食', '夜间看护'],
+      staffGender: '女',
+      staffNote: '希望护理员有骨科术后照护经验，夜间起夜需要协助。',
       contact: { name: '张女士', idType: '1', idNo: '310104197506180028', mobile: '13800006721', phone: '13800006721' },
       emergency: { name: '张先生', phone: '13900005678' },
       note: '母亲膝关节置换术后，夜间起夜需要协助，引流管请多留意。',

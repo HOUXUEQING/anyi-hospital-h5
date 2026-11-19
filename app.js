@@ -71,6 +71,8 @@
       if (!o.patient.idType) o.patient = { ...s.profile.patient, ...o.patient };
       if (!o.contact.idType) o.contact = { ...s.profile.contact, ...o.contact };
       if (!o.syncStatus) o.syncStatus = 'success';
+      if (!Array.isArray(o.materials)) o.materials = [];
+      if (!o.staffGender) o.staffGender = '女';
       if (o.caregiver) {
         const seed = D.seedOrders.find((x) => x.id === o.id || (x.caregiver && x.caregiver.name === o.caregiver.name));
         if (seed && seed.caregiver) {
@@ -122,6 +124,7 @@
   const allCards = () => state.vouchers || D.cards;
   const getCard = (id) => allCards().find((c) => c.id === id);
   const unusedVouchers = () => allCards().filter((c) => c.status !== 'used');
+  const quotaStats = () => { const list = allCards(); const used = list.filter((c) => c.status === 'used').length; return { total: list.length, used, remaining: list.length - used }; };
   const defaultCard = () => unusedVouchers()[0] || null;
   function cardState(card) {
     if (!card) return { key: 'none', label: '未发放', tone: 'gray', valid: false };
@@ -249,6 +252,8 @@
       startTime: '08:00',
       patient: { ...p, age: calcAge(p.birthday) || '78', selfCare: '' },
       needs: ['术后照护', '夜间看护'],
+      staffGender: '女',
+      materials: [],
       contact: { name: c.name, mobile: c.mobile || (state.session ? state.session.phone : D.account.phone), phone: c.mobile || (state.session ? state.session.phone : D.account.phone) },
       emergency: { name: '', phone: '' },
       note: '',
@@ -257,6 +262,8 @@
   }
   let draft = null;
   let editingOrderId = null;
+  let materialEdit = null;
+  let cityPick = null;
 
   function draftFromOrder(o) {
     const meta = D.hospitalMeta[o.hospital] || {};
@@ -274,6 +281,8 @@
       startTime: o.startTime,
       patient: { ...o.patient, age: calcAge(o.patient.birthday) || o.patient.age, selfCare: '' },
       needs: [...(o.needs || [])],
+      staffGender: o.staffGender || '女',
+      materials: [...(o.materials || [])],
       contact: { ...o.contact, mobile: o.contact.mobile || o.contact.phone, phone: o.contact.mobile || o.contact.phone },
       emergency: { name: '', phone: '' },
       note: o.note || '',
@@ -290,7 +299,7 @@
   function rebookOrder(id) {
     const o = state.orders.find((x) => x.id === id);
     if (!o) return;
-    if (!unusedVouchers().length) { toast('服务券已用完，暂不可预约'); go('/vouchers'); return; }
+    if (!unusedVouchers().length) { toast('权益次数已用完，暂不可预约'); go('/book'); return; }
     editingOrderId = null;
     draft = draftFromOrder(o);
     draft.cardId = defaultCard() ? defaultCard().id : '';
@@ -308,16 +317,117 @@
     </div>`;
   }
 
+  function formatSize(n) {
+    if (!n) return '0 KB';
+    return n >= 1024 * 1024 ? `${(n / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`;
+  }
+  const materialTypes = () => D.materialTypes || ['其他就医材料'];
+  function guessMaterialType(name = '') {
+    if (/住院|申请单|凭证/.test(name)) return '住院申请单 / 住院凭证';
+    if (/病历|出院|入院记录/.test(name)) return '病历资料';
+    if (/检查|报告|CT|核磁|超声|化验/.test(name)) return '检查报告';
+    if (/床头卡/.test(name)) return '床头卡';
+    if (/手环/.test(name)) return '手环';
+    return '其他就医材料';
+  }
+  function materialTiles(list = [], orderId = '') {
+    return list.map((m) => {
+      const isImg = m.dataUrl && String(m.mime || '').startsWith('image/');
+      return `<div class="material-item"><button class="material-thumb" type="button" data-act="view-material" data-id="${esc(m.id)}" data-order="${esc(orderId)}">${isImg ? `<img src="${m.dataUrl}" alt="">` : icon('file')}</button><div class="material-main"><b>${esc(m.name)}</b><span>${esc(m.type)} · ${formatSize(m.size)}</span><span class="material-time">上传于 ${esc(String(m.uploadedAt || '').slice(5))}</span></div><div class="material-actions"><button type="button" data-act="edit-material" data-id="${esc(m.id)}" data-order="${esc(orderId)}">编辑</button><button type="button" class="is-danger" data-act="delete-material" data-id="${esc(m.id)}" data-order="${esc(orderId)}">删除</button></div></div>`;
+    }).join('');
+  }
+  function renderMaterials() {
+    const box = $('#material-list');
+    if (box) box.innerHTML = materialTiles(draft?.materials || []);
+    const count = $('#material-count');
+    if (count) count.textContent = `${(draft?.materials || []).length} 份`;
+  }
+
+  function findMaterial(id, orderId = '') {
+    if (orderId) {
+      const o = state.orders.find((x) => x.id === orderId);
+      return { m: (o?.materials || []).find((x) => x.id === id), o };
+    }
+    return { m: (draft?.materials || []).find((x) => x.id === id), o: null };
+  }
+  function openMaterialView(id, orderId = '') {
+    const { m } = findMaterial(id, orderId);
+    if (!m) return;
+    const isImg = m.dataUrl && String(m.mime || '').startsWith('image/');
+    openSheet(`<div class="sheet__handle"></div><div class="sheet__head"><div><h2>${esc(m.name)}</h2><p>${esc(m.type)} · ${formatSize(m.size)}</p></div><button class="sheet__close" data-act="close-sheet">${icon('close')}</button></div>
+      <div class="sheet__body">${isImg ? `<img class="material-preview" src="${m.dataUrl}" alt="${esc(m.name)}">` : `<div class="material-file-preview">${icon('file')}<b>${esc(m.name)}</b><span>${formatSize(m.size)}</span></div>`}${m.dataUrl ? `<a class="material-download" href="${m.dataUrl}" download="${esc(m.name)}">下载/打开文件</a>` : ''}<p class="tiny muted" style="margin-top:8px">上传时间 ${esc(m.uploadedAt || '')}</p></div>`);
+  }
+  function openMaterialSheet(id, orderId = '') {
+    const { m } = findMaterial(id, orderId);
+    if (!m) return;
+    materialEdit = { id, orderId };
+    openSheet(`<div class="sheet__handle"></div><div class="sheet__head"><div><h2>编辑材料</h2><p>修改材料名称或类型</p></div><button class="sheet__close" data-act="close-sheet">${icon('close')}</button></div>
+      <div class="sheet__body"><div class="field"><label class="field__label" for="material-name">材料名称</label><input class="field__box" id="material-name" value="${esc(m.name)}"></div><div class="field" style="margin-top:10px"><label class="field__label" for="material-type">材料类型</label><select class="field__box" id="material-type">${materialTypes().map((t) => `<option ${t === m.type ? 'selected' : ''}>${esc(t)}</option>`).join('')}</select></div></div>
+      <div class="sheet__foot"><button class="btn btn--ghost" data-act="close-sheet">取消</button><button class="btn btn--primary" data-act="save-material">保存</button></div>`);
+  }
+  function openMaterialDelete(id, orderId = '') {
+    const { m } = findMaterial(id, orderId);
+    if (!m) return;
+    materialEdit = { id, orderId };
+    openSheet(`<div class="sheet__handle"></div><div class="sheet__head"><div><h2>删除材料</h2><p>删除后如已提交预约，将同步移除该材料。</p></div><button class="sheet__close" data-act="close-sheet">${icon('close')}</button></div>
+      <div class="sheet__body"><p>确认删除「${esc(m.name)}」？</p></div><div class="sheet__foot"><button class="btn btn--ghost" data-act="close-sheet">取消</button><button class="btn btn--primary" style="background:linear-gradient(120deg,#DE5B70,#EC8292);box-shadow:none" data-act="confirm-delete-material">删除</button></div>`);
+  }
+
+  function provinceCityMap() {
+    const map = {};
+    D.hospitals.forEach((h) => {
+      const meta = D.hospitalMeta[h] || {};
+      if (!meta.province || !meta.city) return;
+      if (!map[meta.province]) map[meta.province] = [];
+      if (!map[meta.province].includes(meta.city)) map[meta.province].push(meta.city);
+    });
+    return map;
+  }
+  function paintCityPicker() {
+    if (!cityPick) return;
+    const map = provinceCityMap();
+    $$('.city-prov').forEach((b) => b.classList.toggle('is-on', b.dataset.value === cityPick.province));
+    const box = $('#city-city-list');
+    if (box) box.innerHTML = (map[cityPick.province] || []).map((c) => `<button type="button" class="city-option city-city ${c === cityPick.city ? 'is-on' : ''}" data-act="pick-city" data-value="${esc(c)}">${esc(c)}</button>`).join('');
+  }
+  function openCitySheet() {
+    const map = provinceCityMap();
+    const provinces = Object.keys(map);
+    const meta = D.hospitalMeta[draft.hospital] || {};
+    let p = draft.province || meta.province || provinces[0];
+    if (!map[p]) p = provinces[0];
+    let c = draft.city || map[p][0];
+    if (!map[p].includes(c)) c = map[p][0];
+    cityPick = { province: p, city: c };
+    openSheet(`<div class="sheet__handle"></div><div class="sheet__head"><div><h2>选择省市</h2><p>上下滚动选择服务城市</p></div><button class="sheet__close" data-act="close-sheet">${icon('close')}</button></div>
+      <div class="sheet__body city-picker"><div class="city-picker__col" id="city-province-list">${provinces.map((x) => `<button type="button" class="city-option city-prov ${x === p ? 'is-on' : ''}" data-act="pick-province" data-value="${esc(x)}">${esc(x)}</button>`).join('')}</div><div class="city-picker__col" id="city-city-list">${map[p].map((x) => `<button type="button" class="city-option city-city ${x === c ? 'is-on' : ''}" data-act="pick-city" data-value="${esc(x)}">${esc(x)}</button>`).join('')}</div></div>
+      <div class="sheet__foot"><button class="btn btn--ghost" data-act="close-sheet">取消</button><button class="btn btn--primary" data-act="confirm-city">确定</button></div>`);
+  }
+  function openHospitalSheet() {
+    if (!draft.city) { toast('请先选择城市'); return; }
+    openSheet(`<div class="sheet__handle"></div><div class="sheet__head"><div><h2>选择就诊医院</h2><p>仅可选择当前城市可服务医院</p></div><button class="sheet__close" data-act="close-sheet">${icon('close')}</button></div>
+      <div class="sheet__body"><div class="input-wrap" style="margin-bottom:10px">${icon('search')}<input id="hospital-search" placeholder="搜索医院名称" autocomplete="off"></div><div class="hospital-results" id="hospital-results"></div></div>`);
+    paintHospitalResults('');
+  }
+  function paintHospitalResults(q = '') {
+    const box = $('#hospital-results');
+    if (!box) return;
+    const list = D.hospitals.filter((h) => (D.hospitalMeta[h] || {}).city === draft.city && h.includes(q.trim()));
+    box.innerHTML = list.length ? list.map((h) => `<button type="button" class="hospital-option ${draft.hospital === h ? 'is-on' : ''}" data-act="pick-hospital" data-value="${esc(h)}"><b>${esc(h)}</b><span>${esc((D.hospitalMeta[h] || {}).province || '')} ${esc((D.hospitalMeta[h] || {}).city || '')}</span></button>`).join('') : `<div class="empty" style="padding:26px 10px"><p>未找到可服务医院</p><span class="tiny muted">仅支持当前城市清单内医院</span></div>`;
+  }
+
   function requestView() {
     if (!draft) draft = createDraft();
     const today = todayISO();
     const isEditing = !!editingOrderId;
     const available = unusedVouchers();
+    const quota = quotaStats();
     const card = isEditing ? (getCard(draft.cardId) || null) : (available[0] || null);
     if (!isEditing && card) draft.cardId = card.id;
     const activeOrders = state.orders.filter((o) => ['pending', 'accepted', 'serving'].includes(o.status));
     const cities = [...new Set(D.hospitals.map((h) => (D.hospitalMeta[h] || {}).city).filter(Boolean))];
     const city = draft.city && cities.includes(draft.city) ? draft.city : ((D.hospitalMeta[draft.hospital] || {}).city || cities[0]);
+    const province = draft.province || (D.hospitalMeta[draft.hospital] || {}).province || '';
     const hospitals = D.hospitals.filter((h) => (D.hospitalMeta[h] || {}).city === city);
     const hospital = hospitals.includes(draft.hospital) ? draft.hospital : (hospitals[0] || '');
     const needs = D.careNeeds.map((n) => `<button type="button" class="need-opt ${draft.needs.includes(n) ? 'is-on' : ''}" data-act="need" data-value="${esc(n)}">
@@ -327,10 +437,10 @@
     if (!isEditing && !card) {
       return page(`${titlebar('服务预约')}<div class="no-voucher">
         <span class="no-voucher__icon">${icon('receipt')}</span>
-        <h2>暂无可用服务券</h2>
-        <p>${activeOrders.length ? `您有 ${activeOrders.length} 个进行中预约，服务券已全部使用。取消进行中预约可返还服务券，或等待服务完成后再预约。` : '当前服务券已全部使用，暂时无法提交新的预约。'}</p>
-        <div class="no-voucher__actions"><button class="btn btn--primary" data-nav="#/vouchers">查看我的券包</button><button class="btn btn--ghost" data-nav="#/my">返回我的</button></div>
-        <div class="no-voucher__tip">${icon('info')} 每张服务券仅可使用 1 次</div>
+        <h2>暂无可用权益次数</h2>
+        <p>${activeOrders.length ? `您有 ${activeOrders.length} 个进行中预约，权益次数已全部使用。取消进行中预约可返还 1 次权益，或等待服务完成后再预约。` : '当前权益次数已全部使用，暂时无法提交新的预约。'}</p>
+        <div class="no-voucher__actions"><button class="btn btn--primary" data-nav="#/service">查看服务详情</button><button class="btn btn--ghost" data-nav="#/my">返回我的</button></div>
+        <div class="no-voucher__tip">${icon('info')} 每次预约使用 1 次权益</div>
       </div>`, 'page--tabbar');
     }
 
@@ -376,11 +486,15 @@
       </div>
     </header>
     <form id="request-form" class="req-body" novalidate>
-      ${activeOrders.length && !isEditing ? `<div class="banner banner--blue"><span class="banner__text">${icon('info')} 您有 ${activeOrders.length} 个进行中预约，另有 ${available.length} 张服务券可用，可继续提交新的预约。</span><button class="banner__action" type="button" data-act="view-orders">查看订单${icon('chevR')}</button></div>` : ''}
-      <section class="form-card form-card--voucher">
-        <div class="form-card__head"><span class="form-card__num is-gold">${icon('receipt')}</span><span class="form-card__title">卡券</span><span class="form-card__aside">${isEditing ? '本次预约使用' : `可用 ${available.length} 张`}</span></div>
-        <div id="card-strip">${cardStripHtml(card, isEditing ? '本次预约' : '未使用')}</div>
-        <p class="form-note">单次使用券，本次预约将使用 1 张。</p>
+      ${activeOrders.length && !isEditing ? `<div class="banner banner--blue"><span class="banner__text">${icon('info')} 您有 ${activeOrders.length} 个进行中预约，另有 ${available.length} 次权益可用，可继续提交新的预约。</span><button class="banner__action" type="button" data-act="view-orders">查看订单${icon('chevR')}</button></div>` : ''}
+      <section class="form-card" id="quota-card">
+        <div class="form-card__head"><span class="form-card__num is-gold">${icon('shield')}</span><span class="form-card__title">权益额度</span><span class="form-card__aside">剩余 ${quota.remaining} 次</span></div>
+        <div class="quota-grid">
+          <div class="quota-cell"><b>${quota.total}</b><span>总次数</span></div>
+          <div class="quota-cell"><b>${quota.used}</b><span>已使用</span></div>
+          <div class="quota-cell is-accent"><b>${quota.remaining}</b><span>剩余次数</span></div>
+        </div>
+        <div class="quota-foot"><span>每次预约使用 1 次权益，取消预约后返还</span><button type="button" class="link" data-act="go-service">服务详情${icon('chevR')}</button></div>
       </section>
 
       <section class="form-card">
@@ -397,8 +511,8 @@
       <section class="form-card">
         <div class="form-card__head"><span class="form-card__num is-teal">${icon('hospital')}</span><span class="form-card__title">填写住院信息</span><span class="form-card__aside">用于匹配院内护理员</span></div>
         <div class="form-grid">
-          <div class="field"><label class="field__label" for="city">城市<em>*</em></label><select class="field__box" id="city">${cities.map((c) => `<option value="${esc(c)}" ${city === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select><span class="field__err">请选择城市</span></div>
-          <div class="field"><label class="field__label" for="hospital">就诊医院<em>*</em></label><select class="field__box" id="hospital">${hospitals.map((h) => `<option ${hospital === h ? 'selected' : ''}>${esc(h)}</option>`).join('')}</select><span class="field__err">请选择医院</span></div>
+          <div class="field"><label class="field__label" for="city">城市<em>*</em></label><input type="hidden" id="city" value="${esc(city)}"><input type="hidden" id="province" value="${esc(province)}"><button type="button" class="field__box field__box--picker" id="city-picker-btn" data-act="choose-city"><span id="city-label">${esc(province && province !== city ? province + ' ' + city : city)}</span>${icon('chevD')}</button><span class="field__err">请选择城市</span></div>
+          <div class="field"><label class="field__label" for="hospital">就诊医院<em>*</em></label><input type="hidden" id="hospital" value="${esc(hospital)}"><button type="button" class="field__box field__box--picker" id="hospital-picker-btn" data-act="choose-hospital"><span id="hospital-label">${hospital ? esc(hospital) : '请选择医院'}</span>${icon('chevD')}</button><span class="field__err">请选择医院</span></div>
           <div class="field field--full"><label class="field__label" for="department">科室 / 病区<em>*</em></label><select class="field__box" id="department">${D.departments.map((d) => `<option ${draft.department === d ? 'selected' : ''}>${esc(d)}</option>`).join('')}</select><span class="field__err">请选择科室</span></div>
           <div class="field field--full"><label class="field__label" for="disease">入院疾病 / 诊断<em>*</em></label><input class="field__box" id="disease" value="${esc(draft.disease)}" placeholder="如：膝关节骨性关节炎（术后）"><span class="field__err">请填写入院疾病或诊断</span></div>
           <div class="field field--full"><label class="field__label" for="hospitalizedTime">住院日期 <span class="tiny muted">选填</span></label><input class="field__box" id="hospitalizedTime" type="date" max="${today}" value="${esc(draft.hospitalizedTime)}"><span class="field__err"></span></div>
@@ -412,10 +526,18 @@
       </section>
 
       <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num is-rose">${icon('care')}</span><span class="form-card__title">照护需求</span><span class="form-card__aside" id="needs-count">已选 ${draft.needs.length} 项</span></div>
-        <div class="need-grid" id="needs">${needs}</div>
-        <span class="field__err" id="needs-err" style="display:none;margin-top:4px">请至少选择一项照护需求</span>
-        <div class="field" style="margin-top:12px"><label class="field__label" for="note">补充说明 <span class="tiny muted">选填</span></label><textarea class="field__box" id="note" placeholder="例如：术后不能下床、夜间需要协助起夜、饮食禁忌等">${esc(draft.note)}</textarea></div>
+        <div class="form-card__head"><span class="form-card__num is-rose">${icon('care')}</span><span class="form-card__title">护理员要求</span><span class="form-card__aside">可指定护理员性别</span></div>
+        <div class="form-grid">
+          <div class="field field--full"><label class="field__label">指定性别<em>*</em></label><div class="seg"><button type="button" class="seg__btn ${draft.staffGender === '女' ? 'is-on' : ''}" data-act="staff-gender" data-value="女">女</button><button type="button" class="seg__btn ${draft.staffGender === '男' ? 'is-on' : ''}" data-act="staff-gender" data-value="男">男</button></div></div>
+          <div class="field field--full"><label class="field__label" for="note">补充说明 <span class="tiny muted">选填</span></label><textarea class="field__box" id="note" placeholder="例如：希望护理员有骨科护理经验、夜间需要协助起夜等">${esc(draft.note)}</textarea></div>
+        </div>
+      </section>
+
+      <section class="form-card">
+        <div class="form-card__head"><span class="form-card__num is-teal">${icon('file')}</span><span class="form-card__title">材料收集</span><span class="form-card__aside" id="material-count">${(draft.materials || []).length} 份</span></div>
+        <p class="form-note">请上传住院申请单或其他住院凭证、病历资料、检查报告、床头卡、手环等就医材料，用于顾问评估审核。</p>
+        <div class="material-list" id="material-list">${materialTiles(draft.materials || [])}</div>
+        <label class="material-upload"><input id="material-input" type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" multiple><span>${icon('plus')}上传材料</span><small>支持图片、PDF、Word，单文件不超过 5MB</small></label>
       </section>
 
       <section class="form-card">
@@ -429,7 +551,7 @@
       <div class="agree-block">
         <div class="agree ${draft.agree ? 'is-on' : ''}" id="agree-row" data-act="toggle-agree">
           <span class="agree__box">${icon('check')}</span>
-          <span>我已阅读并同意<em>《院内照护服务协议》</em>与<em>《隐私政策》</em>，确认住院信息与照护需求真实有效</span>
+          <span>我已阅读并同意<em>《院内照护服务协议》</em>与<em>《隐私政策》</em>，确认住院信息与护理员要求真实有效</span>
         </div>
         <div class="form-foot-note">${icon('shield')} 服务由持证护理员提供，到院签到、护理记录全程可追溯</div>
       </div>
@@ -472,7 +594,7 @@
     const pending = orders.filter((o) => o.status === 'pending');
     const serving = orders.filter((o) => o.status === 'serving');
     const completed = orders.filter((o) => o.status === 'completed');
-    const vouchers = unusedVouchers().length;
+    const materialCount = orders.reduce((n, o) => n + ((o.materials && o.materials.length) || 0), 0);
     return page(`${titlebar('我的')}<header class="my-hero">
       <div class="my-hero__top">
         <div class="avatar avatar--lg">${esc((state.session.name || '用').slice(0, 1))}</div>
@@ -491,7 +613,8 @@
         <div class="my-orders">${active.length ? active.slice(0, 2).map(orderCard).join('') : `<div class="my-empty">${icon('receipt')}<p>暂无进行中的预约</p><button class="btn btn--soft btn--sm" data-nav="#/book">去预约</button></div>`}</div>
       </section>
       <div class="menu">
-        <button class="menu__item" data-nav="#/vouchers"><span class="menu__ic">${icon('receipt')}</span>卡券<span class="menu__value">${vouchers} 张可用 ${icon('chevR')}</span></button>
+        <button class="menu__item" data-nav="#/service"><span class="menu__ic">${icon('hospital')}</span>院内照护服务<span class="menu__value">服务详情 ${icon('chevR')}</span></button>
+        <button class="menu__item" data-nav="#/records"><span class="menu__ic">${icon('file')}</span>病历资料<span class="menu__value">${materialCount} 份 ${icon('chevR')}</span></button>
         <button class="menu__item" data-nav="#/privacy"><span class="menu__ic">${icon('shield')}</span>隐私政策<span class="menu__arrow">${icon('chevR')}</span></button>
         <button class="menu__item menu__item--danger" data-act="logout"><span class="menu__ic">${icon('logout')}</span>退出登录<span class="menu__arrow">${icon('chevR')}</span></button>
       </div>
@@ -551,6 +674,29 @@
       <div class="voucher-note">${icon('info')} 服务券由后台发放，取消进行中的预约后会自动返还。</div>`);
   }
 
+  function serviceView() {
+    return page(`${titlebar('院内照护服务', '#/my')}
+      <div class="service-page">
+        <section class="service-hero"><span class="service-hero__tag">院内照护 · 专业陪护</span><h1>让专业护理员，替您守在病床旁</h1><p>针对住院期间的生活照护与陪护需求，提供持证护理员到院服务，减轻家属陪护压力。</p></section>
+        <section class="service-card"><h2>${icon('users')}适用人群</h2><ul><li>术后康复、行动不便、需要卧床照护的住院患者</li><li>失能、半失能，家属无法全天陪护的患者</li><li>需要协助进食、翻身、如厕、陪检的住院患者</li><li>夜间需要看护、家属需要临时替换的患者</li></ul><p class="service-tip">具体是否适合服务，以照护顾问评估结果为准。</p></section>
+        <section class="service-card"><h2>${icon('clipboard')}申请流程</h2><ol class="service-steps"><li><b>提交预约</b><span>填写护理人、住院信息和护理员要求</span></li><li><b>材料审核</b><span>上传住院凭证、病历、检查报告等材料</span></li><li><b>顾问评估</b><span>照护顾问电话确认服务需求与时间</span></li><li><b>安排护理员</b><span>匹配符合要求的持证护理员</span></li><li><b>到院服务</b><span>护理员到院签到，开始院内照护</span></li></ol></section>
+        <section class="service-card"><h2>${icon('file')}材料审核</h2><p>为完成服务评估，请准备以下材料：</p><ul><li>住院申请单或其他住院凭证</li><li>病历资料、入院记录或出院小结</li><li>检查报告、化验单、影像报告</li><li>床头卡、住院手环等住院信息材料</li><li>其他能够说明就医情况的材料</li></ul><p class="service-tip">材料仅用于服务评估与护理安排，请确保真实、清晰、完整。</p></section>
+        <section class="service-card"><h2>${icon('care')}服务内容</h2><ul><li>生活照护：协助进食、饮水、如厕、洗漱、翻身叩背</li><li>陪同服务：陪检、散步、治疗过程陪同</li><li>夜间看护：协助起夜、观察休息情况</li><li>康复协助：在医护指导下协助简单活动</li><li>服务记录：记录服务情况，与家属保持沟通</li></ul><p class="service-tip">护理员不提供医疗诊疗、用药决策、侵入性护理等医疗行为。</p></section>
+        <section class="service-card"><h2>${icon('info')}注意事项</h2><ul><li>请如实填写护理人健康状况、住院信息和护理员要求。</li><li>服务时间、护理员安排以照护顾问最终确认为准。</li><li>如需取消或修改预约，请尽早在订单详情操作。</li><li>贵重物品请家属自行保管，护理员不承担财物保管责任。</li><li>如遇病情变化，请第一时间联系医护人员。</li></ul></section>
+        <button class="btn btn--primary btn--block service-cta" data-nav="#/book">去预约院内照护</button>
+      </div>`);
+  }
+
+  function recordsView() {
+    const rows = state.orders.flatMap((o) => (o.materials || []).map((m) => ({ m, o })));
+    return page(`${titlebar('病历资料', '#/my')}
+      <div class="records-page">
+        <div class="records-summary"><div><b>${rows.length}</b><span>份就医材料</span></div><p>统一管理预约时上传的材料，用于服务评估审核。</p></div>
+        <div class="material-list">${rows.length ? rows.map(({ m, o }) => materialTiles([m], o.id)).join('') : `<div class="appt-empty">${icon('file')}<p>暂无病历资料</p><button class="btn btn--primary btn--sm" data-nav="#/book">去预约并上传</button></div>`}</div>
+        <div class="voucher-note">${icon('info')} 材料仅用于院内照护服务评估，请确保真实清晰。</div>
+      </div>`);
+  }
+
   function orderDetailView(id) {
     const o = state.orders.find((x) => x.id === id);
     if (!o) return page(`${titlebar('订单详情', '#/my')}<div class="empty"><div class="empty__ic">${icon('info')}</div><h3>订单不存在</h3><p>请返回我的订单查看</p><button class="btn btn--primary" data-nav="#/my">返回我的</button></div>`, 'page--tabbar');
@@ -578,9 +724,6 @@
           ${foldable ? `<button class="timeline-toggle" type="button" data-act="toggle-timeline">展开全部</button>` : ''}
         </section>
         ${caregiver}
-        <section class="dcard">${dhead('receipt', 'is-gold', '服务券')}
-          <div class="benefit-mini"><div><b>${esc(o.card.productName)}</b><span>券号 ${esc(o.card.cardNum)}</span></div><div class="benefit-mini__period">${o.card.startTime && o.card.endTime ? `单次使用 · 有效期<br>${fmtFull(o.card.startTime)} – ${fmtFull(o.card.endTime)}` : '单次使用'}</div></div>
-        </section>
         <section class="dcard">${dhead('user', 'is-blue', '护理人信息')}
           <div class="detail-kv"><span>姓名 / 性别</span><b>${esc(o.patient.name)} · ${esc(o.patient.gender)} · ${o.patient.age}岁</b></div>
           <div class="detail-kv"><span>证件</span><b>${esc(idTypeName(o.patient.idType))} ${maskId(o.patient.idNo)}</b></div>
@@ -597,9 +740,9 @@
           <div class="detail-kv"><span>服务项目</span><b>院内照护</b></div>
           <div class="detail-kv"><span>期望时间</span><b>${fmtDate(o.startDate)} ${esc(o.startTime)}</b></div>
         </section>
-        <section class="dcard">${dhead('care', 'is-rose', '照护需求')}
-          <div class="detail-kv detail-kv--tags"><span>照护需求</span><b>${o.needs.map((n) => `<span class="tag tag--blue">${esc(n)}</span>`).join('')}</b></div>
-          <div class="detail-kv"><span>补充说明</span><b style="max-width:250px">${esc(o.note || '无')}</b></div>
+        <section class="dcard">${dhead('care', 'is-rose', '护理员要求')}
+          <div class="detail-kv"><span>指定性别</span><b>${esc(o.staffGender || '女')}</b></div>
+          <div class="detail-kv"><span>补充说明</span><b style="max-width:250px">${esc(o.staffNote || o.note || '无')}</b></div>
         </section>
         <section class="dcard">${dhead('users', 'is-blue', '联系人信息')}
           <div class="detail-kv"><span>姓名</span><b>${esc(o.contact.name)}</b></div>
@@ -608,6 +751,7 @@
         <section class="dcard">${dhead('receipt', 'is-gold', '订单信息')}
           <div class="detail-kv"><span>订单编号</span><b>${esc(o.no)}</b></div>
           <div class="detail-kv"><span>下单时间</span><b>${esc(o.createdAt)}</b></div>
+          <div class="detail-kv"><span>权益消耗</span><b>1 次</b></div>
         </section>
         ${['pending', 'accepted'].includes(o.status) ? `<div class="detail-actions">
           <button class="btn btn--ghost" data-act="cancel" data-id="${o.id}">取消预约</button><button class="btn btn--soft" data-act="edit-order" data-id="${o.id}">修改预约</button>
@@ -843,8 +987,10 @@
     else if (p === 'order') html = orderDetailView(parts[1]);
     else if (p === 'success') { location.hash = '#/orders'; return; }
     else if (p === 'account') html = accountView();
-    else if (p === 'cards') { location.hash = '#/vouchers'; return; }
-    else if (p === 'vouchers') html = vouchersView(parts[1] || 'all');
+    else if (p === 'cards') { location.hash = '#/my'; return; }
+    else if (p === 'vouchers') { location.hash = '#/my'; return; }
+    else if (p === 'service') html = serviceView();
+    else if (p === 'records') html = recordsView();
     else if (p === 'customer') { location.hash = '#/my'; return; }
     else if (p === 'privacy') html = privacyView();
     else html = requestView();
@@ -896,15 +1042,16 @@
     const contactName = $('#contactName').value.trim();
     const contactPhone = $('#contactPhone').value.trim();
     const note = $('#note').value.trim();
+    const staffGender = draft.staffGender || '女';
 
     let first = null;
     const fail = (input, msg) => { const f = markError(input, msg); if (!first) first = f || input; };
     if (!card) {
-      toast('暂无可用服务券');
-      first = $('#card-strip');
+      toast('暂无可用权益次数');
+      first = $('#quota-card');
     } else if (!isEditing && card.status === 'used') {
-      toast('该服务券已使用，请选择其他服务券');
-      first = $('#card-strip');
+      toast('该权益次数已使用');
+      first = $('#quota-card');
     }
     if (!city) fail($('#city'), '请选择城市');
     if (!hospital) fail($('#hospital'), '请选择医院');
@@ -919,7 +1066,7 @@
     if (patientIdType === '1' && patientIdNo && !/^\d{17}[\dXx]$/.test(patientIdNo)) fail($('#patientIdNo'), '身份证号格式不正确');
     if (!contactName) fail($('#contactName'), '请填写联系人姓名');
     if (!/^1[3-9]\d{9}$/.test(contactPhone)) fail($('#contactPhone'), '请填写正确的 11 位手机号');
-    if (!draft.needs.length) { $('#needs-err').style.display = 'block'; if (!first) first = $('#needs'); }
+    if (!['女', '男'].includes(staffGender)) fail($('#note'), '请选择护理员性别');
     if (!draft.agree) { $('#agree-row').classList.add('agree--error'); if (!first) first = $('#agree-row'); }
     if (first) {
       first.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -948,7 +1095,10 @@
         name: patientName, gender: patientGender, idType: patientIdType, idNo: patientIdNo,
         birthday: patientBirthday, age: patientAge, mobile: '', province: '', city: '', county: '', address: '', selfCare: ''
       },
-      needs: [...draft.needs],
+      staffGender,
+      staffNote: note,
+      materials: [...(draft.materials || [])],
+      needs: [],
       contact: { name: contactName, mobile: contactPhone, phone: contactPhone },
       emergency: { name: '', phone: '' },
       note,
@@ -1117,6 +1267,46 @@
       buttons[1].disabled = draft.days >= 30;
       return;
     }
+    if (act === 'choose-city') { openCitySheet(); return; }
+    if (act === 'choose-hospital') { openHospitalSheet(); return; }
+    if (act === 'pick-province') {
+      if (!cityPick) return;
+      const map = provinceCityMap();
+      cityPick.province = el.dataset.value;
+      cityPick.city = (map[cityPick.province] || [''])[0];
+      paintCityPicker();
+      return;
+    }
+    if (act === 'pick-city') {
+      if (!cityPick) return;
+      cityPick.city = el.dataset.value;
+      paintCityPicker();
+      return;
+    }
+    if (act === 'confirm-city') {
+      if (!cityPick) return;
+      draft.province = cityPick.province;
+      draft.city = cityPick.city;
+      draft.hospital = '';
+      if ($('#city')) $('#city').value = draft.city;
+      if ($('#province')) $('#province').value = draft.province;
+      if ($('#city-label')) $('#city-label').textContent = draft.province && draft.province !== draft.city ? `${draft.province} ${draft.city}` : draft.city;
+      if ($('#hospital')) $('#hospital').value = '';
+      if ($('#hospital-label')) $('#hospital-label').textContent = '请选择医院';
+      closeSheet();
+      return;
+    }
+    if (act === 'pick-hospital') {
+      draft.hospital = el.dataset.value;
+      const meta = D.hospitalMeta[draft.hospital] || {};
+      if ($('#hospital')) $('#hospital').value = draft.hospital;
+      if ($('#hospital-label')) $('#hospital-label').textContent = draft.hospital;
+      if (meta.province) { draft.province = meta.province; if ($('#province')) $('#province').value = meta.province; }
+      closeSheet();
+      toast('已选择医院');
+      return;
+    }
+    if (act === 'go-service') { go('/service'); return; }
     if (act === 'view-orders') { go('/orders/all'); return; }
     if (act === 'toggle-timeline') {
       const box = el.closest('.status-panel')?.querySelector('.status-timeline');
@@ -1142,6 +1332,35 @@
       else fallback();
       return;
     }
+    if (act === 'view-material') { openMaterialView(el.dataset.id, el.dataset.order || ''); return; }
+    if (act === 'edit-material') { openMaterialSheet(el.dataset.id, el.dataset.order || ''); return; }
+    if (act === 'delete-material') { openMaterialDelete(el.dataset.id, el.dataset.order || ''); return; }
+    if (act === 'save-material') {
+      if (!materialEdit) return;
+      const { id, orderId } = materialEdit;
+      const name = $('#material-name').value.trim();
+      const type = $('#material-type').value;
+      if (!name) { toast('请填写材料名称'); return; }
+      const { m, o } = findMaterial(id, orderId);
+      if (m) { m.name = name; m.type = type; }
+      if (o) { save(); closeSheet(); render(); } else { renderMaterials(); closeSheet(); }
+      toast('材料已更新');
+      return;
+    }
+    if (act === 'confirm-delete-material') {
+      if (!materialEdit) return;
+      const { id, orderId } = materialEdit;
+      if (orderId) {
+        const o = state.orders.find((x) => x.id === orderId);
+        if (o) o.materials = (o.materials || []).filter((x) => x.id !== id);
+        save(); closeSheet(); render();
+      } else if (draft) {
+        draft.materials = (draft.materials || []).filter((x) => x.id !== id);
+        renderMaterials(); closeSheet();
+      }
+      toast('材料已删除');
+      return;
+    }
     if (act === 'quick-date') {
       const date = el.dataset.date;
       const input = $('#serviceTime');
@@ -1149,6 +1368,11 @@
       draft.startDate = date;
       if (input) input.value = date + 'T' + time;
       $$('.quick-date').forEach((b) => b.classList.toggle('is-on', b.dataset.date === date));
+      return;
+    }
+    if (act === 'staff-gender') {
+      draft.staffGender = el.dataset.value;
+      $$('[data-act="staff-gender"]').forEach((b) => b.classList.toggle('is-on', b.dataset.value === draft.staffGender));
       return;
     }
     if (act === 'gender') {
@@ -1185,13 +1409,37 @@
       }
       closeSheet();
       render();
-      toast('预约已取消，服务券已返还');
+      toast('预约已取消，权益次数已返还');
       return;
     }
     if (act === 'edit-name') { editNameSheet(); return; }
   });
 
   document.addEventListener('change', (e) => {
+    if (e.target.id === 'material-input') {
+      const files = Array.from(e.target.files || []);
+      e.target.value = '';
+      if (!draft) return;
+      files.forEach((file) => {
+        if (file.size > 5 * 1024 * 1024) { toast(`${file.name} 超过 5MB，未上传`); return; }
+        const reader = new FileReader();
+        reader.onload = () => {
+          draft.materials = [...(draft.materials || []), {
+            id: 'm-' + Date.now() + '-' + Math.random().toString(16).slice(2),
+            name: file.name,
+            type: guessMaterialType(file.name),
+            size: file.size,
+            mime: file.type || '',
+            dataUrl: reader.result,
+            uploadedAt: nowText()
+          }];
+          renderMaterials();
+          toast('材料已添加');
+        };
+        reader.readAsDataURL(file);
+      });
+      return;
+    }
     if (e.target.id === 'city') {
       const city = e.target.value;
       const hospitals = D.hospitals.filter((h) => (D.hospitalMeta[h] || {}).city === city);
@@ -1219,6 +1467,7 @@
   });
 
   document.addEventListener('input', (e) => {
+    if (e.target.id === 'hospital-search') { paintHospitalResults(e.target.value); return; }
     if (e.target.id === 'patientIdNo') {
       const id = e.target.value.trim();
       const type = $('#patientIdType') ? $('#patientIdType').value : '1';
