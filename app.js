@@ -197,11 +197,7 @@
   function loginView() {
     state.loginAgree = false;
     return page(`<div class="login-page">
-      <div class="login-top">
-        <button class="login-back" type="button" data-act="login-back" aria-label="返回">${icon('chevL')}</button>
-        <h1>登录注册</h1>
-        <span class="login-top__placeholder"></span>
-      </div>
+      <button class="float-back login-float" type="button" data-act="login-back" aria-label="返回">${icon('chevL')}</button><span class="sr-only">登录注册</span>
       <div class="login-hello">
         <div class="login-hello__copy"><h2>Hello!</h2><p>欢迎使用</p></div>
         <div class="login-hello__art" aria-hidden="true">

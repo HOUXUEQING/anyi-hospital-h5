@@ -1163,3 +1163,7 @@ body { font-size: 15px; }
 .map-confirm .btn { font-size: 15px !important; }
 .map-tip { font-size: 9px !important; }
 
+.login-float { position: absolute; top: 14px; left: 16px; z-index: 9; }
+.login-hello { padding-top: 64px !important; }
+.sv-material small, .sv-feature p, .sv-svc-summary span, .sv-svc-summary em, .sv-cat__title small, .sv-service__note, .sv-cta > span { font-size: 11px !important; }
+.map-place div > small, .map-place .map-distance, .map-tip { font-size: 10.5px !important; }
