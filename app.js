@@ -726,29 +726,29 @@
       ['info', '其他材料', '能说明就医情况的材料']
     ];
     const serviceGroups = [
-      { no: '01', title: '基本生活照护', items: [
-        { no: 1, title: '饮食照护', lead: '根据服务对象实际情况，协助并完成实施：', list: ['营养膳食的获取', '协助进食'] },
-        { no: 2, title: '排泄照护', lead: '根据服务对象实际情况，协助并完成实施：', list: ['如厕照护', '床上排尿、排便（根据服务对象客观需要）', '纸尿裤、尿垫使用（根据服务对象客观需要）'] },
-        { no: 3, title: '生活技能照护', lead: '根据服务对象实际情况，协助并完成实施：', list: ['穿、脱衣服', '上、下床', '床椅移动', '室内走动', '床上更换体位'] },
-        { no: 4, title: '休憩照护', lead: '根据服务对象实际情况，协助并完成实施：', list: ['合理安排休憩/睡眠时间与适合体位', '睡眠期间对服务对象一般情况的观察，特殊情况记录并反馈客户家属及上级主管'] }
+      { title: '基本生活照护', icon: 'bed', tone: 'blue', items: [
+        { title: '饮食照护', list: ['营养膳食的获取', '协助进食'] },
+        { title: '排泄照护', list: ['如厕照护', '床上排尿、排便（根据服务对象客观需要）', '纸尿裤、尿垫使用（根据服务对象客观需要）'] },
+        { title: '生活技能照护', list: ['穿、脱衣服', '上、下床', '床椅移动', '室内走动', '床上更换体位'] },
+        { title: '休憩照护', list: ['合理安排休憩/睡眠时间与适合体位', '睡眠期间对服务对象一般情况的观察，特殊情况记录并反馈客户家属及上级主管'] }
       ] },
-      { no: '02', title: '清洁与卫生', items: [
-        { no: 5, title: '个人卫生照护', lead: '根据服务对象实际情况，协助并完成实施：', list: ['面部清洁', '口腔清洁', '洗发沐浴', '手、足清洁', '修剪指/趾甲', '会阴部清洗（根据服务对象客观需要）'] },
-        { no: 6, title: '环境卫生照护', lead: '根据服务对象康复环境，协助并完成实施：', list: ['服务对象本人康复必要的床单位整理与清洗', '服务对象本人康复必要的居室清洁与整理'] },
-        { no: 7, title: '物品清洁', lead: '根据服务对象实际情况，协助实施：', list: ['服务对象本人康复必要的生活用品的清洁'] },
-        { no: 8, title: '用具清洁', lead: '根据服务对象实际情况，协助实施：', list: ['行动辅具（轮椅、拐杖、助行器等）的清洁及收纳', '肢体支具的清洁及收纳', '胸带、腹带、加压带等的清洁及收纳'] }
+      { title: '清洁与卫生', icon: 'droplet', tone: 'teal', items: [
+        { title: '个人卫生照护', list: ['面部清洁', '口腔清洁', '洗发沐浴', '手、足清洁', '修剪指/趾甲', '会阴部清洗（根据服务对象客观需要）'] },
+        { title: '环境卫生照护', list: ['服务对象本人康复必要的床单位整理与清洗', '服务对象本人康复必要的居室清洁与整理'] },
+        { title: '物品清洁', list: ['服务对象本人康复必要的生活用品的清洁'] },
+        { title: '用具清洁', list: ['行动辅具（轮椅、拐杖、助行器等）的清洁及收纳', '肢体支具的清洁及收纳', '胸带、腹带、加压带等的清洁及收纳'] }
       ] },
-      { no: '03', title: '情况观察', items: [
-        { no: 9, title: '生命体征观察', lead: '根据服务对象实际情况，观察生命体征并记录：', list: ['测量体温并记录', '测量呼吸并记录', '测量脉搏并记录'], note: '若发现异常及时告知客户家属并上报主管。' },
-        { no: 10, title: '一般情况观察', lead: '根据服务对象实际情况，进行一般情况观察，若发现异常情况及时告知客户家属并上报主管，如：', list: ['伤口敷料渗血、渗液明显增多', '疼痛突然加剧', '突发不明原因恶心、呕吐等'] }
+      { title: '情况观察', icon: 'eye', tone: 'violet', items: [
+        { title: '生命体征观察', list: ['测量体温并记录', '测量呼吸并记录', '测量脉搏并记录'], note: '若发现异常及时告知客户家属并上报主管。' },
+        { title: '一般情况观察', list: ['伤口敷料渗血、渗液明显增多', '疼痛突然加剧', '突发不明原因恶心、呕吐等'], note: '若发现异常情况及时告知客户家属并上报主管。' }
       ] },
-      { no: '04', title: '专项照护', items: [
-        { no: 11, title: '用药照护', lead: '根据医嘱及服务对象实际情况，协助实施：', list: ['遵医嘱帮助服务对象服药'] },
-        { no: 12, title: '舒适照护', lead: '根据服务对象实际情况，必要时协助并完成实施：', list: ['翻身/拍背、协助排痰'] },
-        { no: 13, title: '安全照护', lead: '根据服务对象实际情况，必要时协助实施：', list: ['保护具的使用', '护送与搬运'] }
+      { title: '专项照护', icon: 'shield', tone: 'amber', items: [
+        { title: '用药照护', list: ['遵医嘱帮助服务对象服药'] },
+        { title: '舒适照护', list: ['翻身/拍背、协助排痰'] },
+        { title: '安全照护', list: ['保护具的使用', '护送与搬运'] }
       ] },
-      { no: '05', title: '关怀与陪同', items: [
-        { no: 14, title: '心理关怀', lead: '', list: ['与服务对象沟通，倾听需求，鼓励表达', '与服务对象交流时保持正向、积极、温暖的态度'] }
+      { title: '关怀与陪同', icon: 'chat', tone: 'rose', items: [
+        { title: '心理关怀', list: ['与服务对象沟通，倾听需求，鼓励表达', '与服务对象交流时保持正向、积极、温暖的态度'] }
       ] }
     ];
     return page(`${titlebar('院内照护服务', '#/book')}
@@ -776,8 +776,9 @@
         </section>
         <section class="sv-card">
           <div class="sv-head"><span class="sv-num">04</span><div><h2>服务内容</h2><p>五大类 14 项，按服务对象实际情况提供</p></div></div>
-          <div class="sv-svc-summary"><div><b>5</b><span>大类服务</span></div><i></i><div><b>14</b><span>项具体服务</span></div><em>具体以评估确认</em></div>
-          <div class="sv-cats">${serviceGroups.map((g) => `<details class="sv-cat" open><summary class="sv-cat__head"><span class="sv-cat__no">${g.no}</span><span class="sv-cat__title"><b>${g.title}</b><small>${g.items.length} 项服务</small></span>${icon('chevD', 'sv-cat__chev')}</summary><div class="sv-cat__body">${g.items.map((it) => `<div class="sv-service"><div class="sv-service__title"><span>${it.no}</span><b>${it.title}</b></div>${it.lead ? `<p class="sv-service__lead">${it.lead}</p>` : ''}<ul class="sv-service__list">${it.list.map((x, i) => `<li><span>${it.no}.${i + 1}</span>${x}</li>`).join('')}</ul>${it.note ? `<p class="sv-service__note">${icon('info')}${it.note}</p>` : ''}</div>`).join('')}</div></details>`).join('')}</div>
+          <div class="sv-svc-summary"><div><b>5</b><span>大类服务</span></div><i></i><div><b>14</b><span>项具体服务</span></div></div>
+          <p class="sv-svc-lead">根据服务对象实际情况，协助并完成实施：</p>
+          <div class="sv-cats">${serviceGroups.map((g) => `<details class="sv-cat" open><summary class="sv-cat__head"><span class="sv-cat__icon is-${g.tone}">${icon(g.icon)}</span><span class="sv-cat__title"><b>${g.title}</b><small>${g.items.length} 项服务</small></span>${icon('chevD', 'sv-cat__chev')}</summary><div class="sv-cat__body">${g.items.map((it) => `<div class="sv-service"><div class="sv-service__title"><span class="sv-service__mark">${icon('check')}</span><b>${it.title}</b></div><ul class="sv-service__list">${it.list.map((x) => `<li><span class="sv-service__dot"></span>${x}</li>`).join('')}</ul>${it.note ? `<p class="sv-service__note">${icon('info')}${it.note}</p>` : ''}</div>`).join('')}</div></details>`).join('')}</div>
           <p class="sv-tip">护理员不提供医疗诊疗、用药决策等医疗行为；专项照护以医嘱和评估为准。</p>
         </section>
         <section class="sv-card">

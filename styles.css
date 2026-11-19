@@ -906,7 +906,8 @@ textarea.field__box { height: auto; min-height: 74px; padding: 10px 11px; line-h
 .service-cta { margin: 14px 0 0; }
 .records-page { padding: 12px 16px 0; }
 .records-summary { padding: 15px; border-radius: 18px; background: linear-gradient(135deg, #EAF3FF, #F8FCFF); display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.records-summary > div { display: flex; align-items: baseline; gap: 3px; flex: none; }`n.records-summary b { font-family: var(--num); font-size: 28px; color: var(--brand); }
+.records-summary > div { display: flex; align-items: baseline; gap: 3px; flex: none; }
+.records-summary b { font-family: var(--num); font-size: 28px; color: var(--brand); }
 .records-summary span { display: block; font-size: 9px; color: var(--ink-3); white-space: nowrap; }
 .records-summary p { flex: 1; margin: 0; font-size: 9.5px; line-height: 1.6; color: var(--ink-3); }
 
@@ -983,12 +984,17 @@ textarea.field__box { height: auto; min-height: 74px; padding: 10px 11px; line-h
 .sv-svc-summary b { font-family: var(--num); font-size: 19px; color: var(--brand); line-height: 1; }
 .sv-svc-summary span { font-size: 8.5px; color: var(--ink-3); }
 .sv-svc-summary i { width: 1px; height: 14px; background: #DCEAF8; }
-.sv-svc-summary em { margin-left: auto; font-style: normal; font-size: 8px; color: var(--ink-3); background: #fff; padding: 3px 6px; border-radius: 6px; }
+.sv-svc-lead { margin: 0 0 9px; padding: 0 2px; font-size: 9.5px; line-height: 1.55; color: var(--ink-3); }
 .sv-cats { display: flex; flex-direction: column; gap: 7px; }
 .sv-cat { border-radius: 12px; background: #FBFDFF; border: 1px solid #EDF4FB; overflow: hidden; }
 .sv-cat__head { display: flex; align-items: center; gap: 8px; padding: 9px 10px; cursor: pointer; list-style: none; user-select: none; }
 .sv-cat__head::-webkit-details-marker { display: none; }
-.sv-cat__no { flex: none; width: 23px; height: 23px; border-radius: 7px; display: grid; place-items: center; background: linear-gradient(145deg, #2E6BFF, #57A4FF); color: #fff; font-family: var(--num); font-size: 8px; font-weight: 600; }
+.sv-cat__icon { flex: none; width: 27px; height: 27px; border-radius: 9px; display: grid; place-items: center; background: linear-gradient(145deg, #4C8DF6, #2E6BFF); color: #fff; box-shadow: 0 7px 16px -12px rgba(26,86,190,.55); }
+.sv-cat__icon .ic { width: 14px; height: 14px; }
+.sv-cat__icon.is-teal { background: linear-gradient(145deg, #43C8C3, #159EAB); }
+.sv-cat__icon.is-violet { background: linear-gradient(145deg, #9A8BFF, #6B5BE6); }
+.sv-cat__icon.is-amber { background: linear-gradient(145deg, #FFC46B, #E79A32); }
+.sv-cat__icon.is-rose { background: linear-gradient(145deg, #FF9BAD, #E76882); }
 .sv-cat__title { flex: 1; min-width: 0; }
 .sv-cat__title b { display: block; font-size: 12.5px; line-height: 1.35; }
 .sv-cat__title small { display: block; margin-top: 1px; font-size: 8.5px; color: var(--ink-3); }
@@ -998,12 +1004,13 @@ textarea.field__box { height: auto; min-height: 74px; padding: 10px 11px; line-h
 .sv-service { padding: 9px 0 8px; border-bottom: 1px dashed #EEF4FB; }
 .sv-service:last-child { border-bottom: 0; padding-bottom: 2px; }
 .sv-service__title { display: flex; align-items: center; gap: 6px; }
-.sv-service__title > span { flex: none; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; background: #EAF3FF; color: var(--brand); font-family: var(--num); font-size: 8.5px; font-weight: 700; }
+.sv-service__mark { flex: none; width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; background: #EAF3FF; color: var(--brand); }
+.sv-service__mark .ic { width: 9px; height: 9px; stroke-width: 2.4; }
 .sv-service__title b { font-size: 11.5px; }
-.sv-service__lead { margin: 5px 0 4px; font-size: 9.5px; line-height: 1.55; color: var(--ink-3); }
+
 .sv-service__list { margin: 0; padding: 0; list-style: none; }
 .sv-service__list li { display: flex; gap: 6px; padding: 2px 0; font-size: 10px; line-height: 1.55; color: var(--ink-2); }
-.sv-service__list li > span { flex: none; min-width: 23px; color: #9DB4CE; font-family: var(--num); font-size: 8.5px; line-height: 1.8; }
+.sv-service__dot { flex: none; width: 3px; height: 3px; margin: 6px 4px 0 3px; border-radius: 50%; background: #8FB4DD; }
 .sv-service__note { display: flex; align-items: flex-start; gap: 4px; margin: 5px 0 0; padding: 5px 7px; border-radius: 7px; background: #FFF8EE; color: #B27A3D; font-size: 8.3px; line-height: 1.5; }
 .sv-service__note .ic { width: 11px; height: 11px; flex: none; margin-top: 1px; }
 
