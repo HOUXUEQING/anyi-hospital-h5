@@ -1251,3 +1251,8 @@ body { font-size: 15px; }
 .field--full > .field__box { width: 100% !important; min-width: 100% !important; max-width: 100% !important; }
 .field__box[type="date"], .field__box[type="datetime-local"] { display: block !important; width: 100% !important; min-width: 0 !important; max-width: 100% !important; box-sizing: border-box; }
 #birthday, #hospitalizedTime, #serviceTime { width: 100% !important; min-width: 0 !important; max-width: 100% !important; }
+.book-hero__photo img { transform: scale(1.28) !important; transform-origin: 70% 54%; }
+.my-hero { border: 0 !important; box-shadow: none !important; }
+.my-body { background: linear-gradient(180deg, #E5FAF2 0%, #F4FBF8 220px, #F3F7FC 100%) !important; border-top: 0 !important; }
+.my-hero { background: radial-gradient(circle at 94% 0%, rgba(73, 157, 255, .22), transparent 44%), linear-gradient(180deg, #E4F2FF 0%, #F7FCFF 58%, #E5FAF2 100%) !important; border: 0 !important; box-shadow: none !important; }
+.my-body { background: linear-gradient(180deg, #E5FAF2 0%, #F4FBF8 220px, #F3F7FC 100%) !important; border-top: 0 !important; }
