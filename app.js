@@ -485,39 +485,7 @@
           <p>${isEditing ? '修改后预约将重新进入待确认状态。' : '填写信息并提交预约，照护顾问将审核评估后确认<span style="white-space:nowrap">服务安排。</span>'}</p>
         </div>
       </div>
-      <div class="book-hero__scene" aria-hidden="true">
-        <svg viewBox="0 0 390 150" preserveAspectRatio="xMidYMax slice">
-          <defs>
-            <linearGradient id="sceneBld" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F5FAFF"/><stop offset="1" stop-color="#C9E2FF"/></linearGradient>
-            <linearGradient id="sceneBldSide" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#BBD9FF"/><stop offset="1" stop-color="#8FBCF2"/></linearGradient>
-            <radialGradient id="sceneGlow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".75"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>
-          </defs>
-          <circle cx="305" cy="72" r="62" fill="url(#sceneGlow)"/>
-          <g fill="#FFFFFF" opacity=".55"><ellipse cx="68" cy="32" rx="30" ry="9"/><ellipse cx="96" cy="26" rx="20" ry="6"/><ellipse cx="330" cy="24" rx="24" ry="6"/></g>
-          <g fill="#CFE5FF" opacity=".8">
-            <rect x="18" y="86" width="38" height="60" rx="5"/><rect x="58" y="99" width="29" height="47" rx="4"/><rect x="91" y="107" width="22" height="39" rx="4"/>
-          </g>
-          <g transform="translate(252 16)">
-            <rect x="0" y="22" width="104" height="118" rx="11" fill="url(#sceneBldSide)" opacity=".75"/>
-            <rect x="13" y="0" width="76" height="140" rx="9" fill="url(#sceneBld)"/>
-            <rect x="13" y="0" width="76" height="11" rx="5" fill="#DCEEFF"/>
-            <g fill="#FFFFFF" opacity=".92">
-              <rect x="25" y="25" width="15" height="12" rx="2.5"/><rect x="48" y="25" width="15" height="12" rx="2.5"/><rect x="71" y="25" width="10" height="12" rx="2.5"/>
-              <rect x="25" y="48" width="15" height="12" rx="2.5"/><rect x="48" y="48" width="15" height="12" rx="2.5"/><rect x="71" y="48" width="10" height="12" rx="2.5"/>
-              <rect x="25" y="71" width="15" height="12" rx="2.5"/><rect x="48" y="71" width="15" height="12" rx="2.5"/><rect x="71" y="71" width="10" height="12" rx="2.5"/>
-              <rect x="25" y="94" width="15" height="12" rx="2.5"/><rect x="48" y="94" width="15" height="12" rx="2.5"/><rect x="71" y="94" width="10" height="12" rx="2.5"/>
-              <rect x="38" y="114" width="27" height="26" rx="4"/>
-            </g>
-            <rect x="44" y="37" width="30" height="28" rx="7" fill="#2E6BFF"/>
-            <path d="M59 43v16M51 51h16" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
-            <rect x="4" y="11" width="18" height="12" rx="3" fill="#EAF5FF"/><rect x="80" y="11" width="18" height="12" rx="3" fill="#EAF5FF"/>
-            <path d="M13 0v-6M84 0v-6" stroke="#A7CBF6" stroke-width="2" stroke-linecap="round"/>
-          </g>
-          <path d="M0 137 Q92 124 194 136 T390 132 V150 H0Z" fill="#F2F9FF" opacity=".65"/>
-          <g fill="#8FC2FF" opacity=".45"><path d="M138 44c-5-4-9-6-9-10 0-2 2-4 4-4 2 0 3 1 5 3 2-2 3-3 5-3 2 0 4 2 4 4 0 4-4 6-9 10z"/></g>
-          <g stroke="#9CC8F5" stroke-width="1.5" opacity=".5"><path d="M123 55v9M118.5 59.5h9"/><path d="M238 43v8M234 47h8"/><path d="M218 102v7M214.5 105.5h7"/></g>
-        </svg>
-      </div>
+      <div class="book-hero__photo" aria-hidden="true"><img src="assets/hospital-room.jpg" alt=""></div>
     </header>
     <form id="request-form" class="req-body" novalidate>
       ${activeOrders.length && !isEditing ? `<div class="banner banner--blue"><span class="banner__text">${icon('info')} 您有 ${activeOrders.length} 个进行中预约，另有 ${available.length} 次使用额度，可继续提交新的预约。</span><button class="banner__action" type="button" data-act="view-orders">查看订单${icon('chevR')}</button></div>` : ''}
