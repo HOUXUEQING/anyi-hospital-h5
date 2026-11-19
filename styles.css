@@ -1197,3 +1197,31 @@ body { font-size: 15px; }
 .timeline--panel .tl-item:not(:last-child)::after { top: 26px; bottom: 0; }
 .address-region-row { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) 56px; }
 .address-region-row .field__loc { font-size: 10px !important; }
+/* inline submit and my/records/order polish */
+.submit-block { margin: 2px 0 16px; padding: 12px 14px; border-radius: 16px; background: #fff; border: 1px solid #E4EDF9; box-shadow: 0 12px 28px -28px rgba(24, 64, 118, .4); }
+.submit-block__note { font-size: 11.5px; line-height: 1.5; color: var(--ink-3); }
+.submit-block__note b { display: block; font-size: 13.5px; color: var(--ink); font-weight: 600; }
+.submit-block .btn { width: 100%; margin-top: 10px; height: 48px; font-size: 16px !important; }
+
+.my-card { border: 1px solid #E2ECF8 !important; }
+.my-card__title { font-size: 16px !important; }
+.my-card__title .ic { width: 17px; height: 17px; }
+.my-card__more { font-size: 12.5px !important; }
+.my-card__more .ic { width: 14px; height: 14px; }
+.menu { border: 1px solid #E2ECF8 !important; }
+.menu__item { font-size: 14.5px !important; padding: 15px !important; }
+.menu__value { font-size: 13px !important; }
+
+.records-page .material-item { padding: 11px; gap: 10px; }
+.records-page .material-thumb { width: 48px; height: 48px; }
+.records-page .material-main b { font-size: 15px !important; }
+.records-page .material-main span { font-size: 12px !important; }
+.records-page .material-main .material-time { font-size: 11px !important; }
+.records-page .material-actions button { font-size: 12px !important; }
+.records-page .voucher-note { font-size: 12px !important; }
+
+.order-tabs { margin: 10px 16px 14px; padding: 6px; background: #fff; border: 1px solid #E1EBF8 !important; border-radius: 16px; box-shadow: 0 10px 24px -24px rgba(24, 64, 118, .4); gap: 4px; overflow-x: auto; }
+.order-tab { flex: 0 0 auto; min-width: 58px; height: 36px; padding: 0 10px; border: 1px solid transparent; border-radius: 10px; font-size: 13px !important; }
+.order-tab.is-on { border-color: #BBD6FF; }
+.order-tab { flex: 1 1 0; min-width: 0; padding: 0 4px; font-size: 12.5px !important; }
+.order-tabs { overflow-x: hidden; }

@@ -556,11 +556,11 @@
         <div class="form-foot-note">${icon('shield')} 服务由持证护理员提供，到院签到、护理记录全程可追溯</div>
       </div>
 
-      <div class="actionbar request-actionbar">
-        <div class="actionbar__note"><b>提交后照护顾问将审核评估</b>确认服务安排后与您联系</div>
-        <button class="btn btn--primary" type="submit">${isEditing ? '保存修改' : '提交预约'}</button>
+      <div class="submit-block">
+        <div class="submit-block__note"><b>提交后照护顾问将审核评估</b>确认服务安排后与您联系</div>
+        <button class="btn btn--primary btn--block" type="submit">${isEditing ? '保存修改' : '提交预约'}</button>
       </div>
-    </form>`, 'page--actionbar page--tabbar');
+    </form>`, 'page--tabbar');
   }
 
   function orderCard(o) {
@@ -991,7 +991,7 @@
   /* ---------------- sheets ---------------- */
   function openSheet(content) {
     const root = $('#modal-root');
-    root.innerHTML = `<div class="sheet-mask" data-act="close-sheet"><div class="sheet" role="dialog" aria-modal="true">${content}</div></div>`;
+    root.innerHTML = `<div class="sheet-mask"><div class="sheet" role="dialog" aria-modal="true">${content}</div></div>`;
     document.body.classList.add('no-scroll');
   }
   function closeSheet() {
@@ -1238,6 +1238,7 @@
   window.addEventListener('resize', updateRequestBar);
 
   document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('sheet-mask')) { closeSheet(); return; }
     const nav = e.target.closest('[data-nav]');
     if (nav && !nav.closest('form')) {
       e.preventDefault();
