@@ -1235,3 +1235,14 @@ body { font-size: 15px; }
 .form-card__num .ic { display: block; margin: 0; }
 .dcard__title .form-card__num .ic { color: inherit !important; }
 #birthday, #hospitalizedTime, #serviceTime, #patientIdType { width: 100%; }
+/* remove grid textures and refresh My page */
+.book-hero::before { background-image: none !important; -webkit-mask-image: none !important; mask-image: none !important; }
+.my-hero::after { display: none !important; }
+.my-hero { padding-bottom: 4px !important; background: radial-gradient(circle at 94% 0%, rgba(73, 157, 255, .22), transparent 44%), radial-gradient(circle at 4% 100%, rgba(55, 204, 172, .15), transparent 42%), linear-gradient(135deg, #E4F2FF 0%, #F7FCFF 48%, #E5FAF2 100%) !important; border-bottom: 0 !important; }
+.my-body { padding-top: 4px !important; background: linear-gradient(180deg, #F5FAFF 0%, #F4FBF8 220px, #F3F7FC 100%) !important; }
+.my-page { background: linear-gradient(180deg, #F5FAFF 0%, #F4FBF8 220px, #F3F7FC 100%); }
+.appt-card__title h3 { font-size: 12.5px !important; }
+.appt-line { font-size: 12px !important; }
+.appt-line__label { font-size: 12px !important; }
+.appt-line b { font-size: 12px !important; }
+.appt-card__title h3 { font-size: 12px !important; }
