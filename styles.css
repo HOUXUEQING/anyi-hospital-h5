@@ -1283,3 +1283,5 @@ body { font-size: 15px; }
 .field__box[type="date"]::-webkit-datetime-edit, .field__box[type="datetime-local"]::-webkit-datetime-edit { display: block; height: auto; line-height: normal; }
 .field__box[type="date"], .field__box[type="datetime-local"] { display: block !important; align-items: initial !important; line-height: 46px !important; padding: 0 38px !important; }
 .field__box[type="date"]::-webkit-datetime-edit, .field__box[type="datetime-local"]::-webkit-datetime-edit { display: block; height: 46px; line-height: 46px; transform: translateY(-3px); }
+.my-body { background-color: #F4F9FC !important; background-image: linear-gradient(180deg, #EEFBF5 0%, #F7FCF9 24px, rgba(244, 249, 252, 0) 72px) !important; background-repeat: no-repeat !important; background-size: 100% 72px !important; border: 0 !important; }
+.quota-cell b { font-size: 22px !important; }
