@@ -72,7 +72,7 @@
       if (!o.contact.idType) o.contact = { ...s.profile.contact, ...o.contact };
       if (!o.syncStatus) o.syncStatus = 'success';
       if (!Array.isArray(o.materials)) o.materials = [];
-      if (!o.staffGender) o.staffGender = '女';
+      if (!o.staffGender) o.staffGender = '随机分配';
       if (o.caregiver) {
         const seed = D.seedOrders.find((x) => x.id === o.id || (x.caregiver && x.caregiver.name === o.caregiver.name));
         if (seed && seed.caregiver) {
@@ -252,7 +252,7 @@
       startTime: '08:00',
       patient: { ...p, age: calcAge(p.birthday) || '78', selfCare: '' },
       needs: ['术后照护', '夜间看护'],
-      staffGender: '女',
+      staffGender: '随机分配',
       materials: [],
       contact: { name: c.name, mobile: c.mobile || (state.session ? state.session.phone : D.account.phone), phone: c.mobile || (state.session ? state.session.phone : D.account.phone) },
       emergency: { name: '', phone: '' },
@@ -281,7 +281,7 @@
       startTime: o.startTime,
       patient: { ...o.patient, age: calcAge(o.patient.birthday) || o.patient.age, selfCare: '' },
       needs: [...(o.needs || [])],
-      staffGender: o.staffGender || '女',
+      staffGender: o.staffGender || '随机分配',
       materials: [...(o.materials || [])],
       contact: { ...o.contact, mobile: o.contact.mobile || o.contact.phone, phone: o.contact.mobile || o.contact.phone },
       emergency: { name: '', phone: '' },
@@ -299,7 +299,7 @@
   function rebookOrder(id) {
     const o = state.orders.find((x) => x.id === id);
     if (!o) return;
-    if (!unusedVouchers().length) { toast('权益次数已用完，暂不可预约'); go('/book'); return; }
+    if (!unusedVouchers().length) { toast('使用额度已用完，暂不可预约'); go('/book'); return; }
     editingOrderId = null;
     draft = draftFromOrder(o);
     draft.cardId = defaultCard() ? defaultCard().id : '';
@@ -403,6 +403,27 @@
       <div class="sheet__body city-picker"><div class="city-picker__col" id="city-province-list">${provinces.map((x) => `<button type="button" class="city-option city-prov ${x === p ? 'is-on' : ''}" data-act="pick-province" data-value="${esc(x)}">${esc(x)}</button>`).join('')}</div><div class="city-picker__col" id="city-city-list">${map[p].map((x) => `<button type="button" class="city-option city-city ${x === c ? 'is-on' : ''}" data-act="pick-city" data-value="${esc(x)}">${esc(x)}</button>`).join('')}</div></div>
       <div class="sheet__foot"><button class="btn btn--ghost" data-act="close-sheet">取消</button><button class="btn btn--primary" data-act="confirm-city">确定</button></div>`);
   }
+  function paintHospitalSuggest(q = '') {
+    const box = $('#hospital-suggest');
+    if (!box) return;
+    const query = q.trim();
+    if (!query) { box.hidden = true; box.innerHTML = ''; return; }
+    const list = D.hospitals.filter((h) => (D.hospitalMeta[h] || {}).city === draft.city && h.includes(query));
+    box.hidden = false;
+    box.innerHTML = list.length ? list.map((h) => `<button type="button" class="hospital-option ${draft.hospital === h ? 'is-on' : ''}" data-act="pick-hospital-inline" data-value="${esc(h)}"><b>${esc(h)}</b><span>${esc((D.hospitalMeta[h] || {}).province || '')} ${esc((D.hospitalMeta[h] || {}).city || '')}</span></button>`).join('') : `<div class="hospital-empty">未找到可服务医院</div>`;
+  }
+  function selectHospital(name) {
+    if (!D.hospitals.includes(name)) return;
+    draft.hospital = name;
+    const meta = D.hospitalMeta[name] || {};
+    if (meta.province) draft.province = meta.province;
+    if ($('#hospital')) $('#hospital').value = name;
+    if ($('#province')) $('#province').value = draft.province || '';
+    if ($('#hospital-input')) $('#hospital-input').value = name;
+    const box = $('#hospital-suggest');
+    if (box) { box.hidden = true; box.innerHTML = ''; }
+  }
+
   function openHospitalSheet() {
     if (!draft.city) { toast('请先选择城市'); return; }
     openSheet(`<div class="sheet__handle"></div><div class="sheet__head"><div><h2>选择就诊医院</h2><p>仅可选择当前城市可服务医院</p></div><button class="sheet__close" data-act="close-sheet">${icon('close')}</button></div>
@@ -437,14 +458,14 @@
     if (!isEditing && !card) {
       return page(`${titlebar('服务预约')}<div class="no-voucher">
         <span class="no-voucher__icon">${icon('receipt')}</span>
-        <h2>暂无可用权益次数</h2>
-        <p>${activeOrders.length ? `您有 ${activeOrders.length} 个进行中预约，权益次数已全部使用。取消进行中预约可返还 1 次权益，或等待服务完成后再预约。` : '当前权益次数已全部使用，暂时无法提交新的预约。'}</p>
+        <h2>暂无可用额度</h2>
+        <p>${activeOrders.length ? `您有 ${activeOrders.length} 个进行中预约，使用额度已全部使用。取消进行中预约可返还 1 次额度，或等待服务完成后再预约。` : '当前使用额度已全部使用，暂时无法提交新的预约。'}</p>
         <div class="no-voucher__actions"><button class="btn btn--primary" data-nav="#/service">查看服务详情</button><button class="btn btn--ghost" data-nav="#/my">返回我的</button></div>
-        <div class="no-voucher__tip">${icon('info')} 每次预约使用 1 次权益</div>
+        <div class="no-voucher__tip">${icon('info')} 每次预约使用 1 次额度</div>
       </div>`, 'page--tabbar');
     }
 
-    return page(`${titlebar('服务预约')}<header class="req-head book-hero">
+    return page(`${titlebar('服务预约')}<div class="book-toplink"><button type="button" class="book-service-link" data-act="go-service">院内照护服务详情${icon('chevR')}</button></div><header class="req-head book-hero">
       <div class="req-head__row">
         <div class="book-hero__copy">
           <h1>${isEditing ? '修改预约' : '院内照护预约'}</h1>
@@ -486,15 +507,15 @@
       </div>
     </header>
     <form id="request-form" class="req-body" novalidate>
-      ${activeOrders.length && !isEditing ? `<div class="banner banner--blue"><span class="banner__text">${icon('info')} 您有 ${activeOrders.length} 个进行中预约，另有 ${available.length} 次权益可用，可继续提交新的预约。</span><button class="banner__action" type="button" data-act="view-orders">查看订单${icon('chevR')}</button></div>` : ''}
+      ${activeOrders.length && !isEditing ? `<div class="banner banner--blue"><span class="banner__text">${icon('info')} 您有 ${activeOrders.length} 个进行中预约，另有 ${available.length} 次使用额度，可继续提交新的预约。</span><button class="banner__action" type="button" data-act="view-orders">查看订单${icon('chevR')}</button></div>` : ''}
       <section class="form-card" id="quota-card">
-        <div class="form-card__head"><span class="form-card__num is-gold">${icon('shield')}</span><span class="form-card__title">权益额度</span><span class="form-card__aside">剩余 ${quota.remaining} 次</span></div>
+        <div class="form-card__head"><span class="form-card__num is-gold">${icon('shield')}</span><span class="form-card__title">使用额度</span><span class="form-card__aside">剩余 ${quota.remaining} 次</span></div>
         <div class="quota-grid">
           <div class="quota-cell"><b>${quota.total}</b><span>总次数</span></div>
           <div class="quota-cell"><b>${quota.used}</b><span>已使用</span></div>
           <div class="quota-cell is-accent"><b>${quota.remaining}</b><span>剩余次数</span></div>
         </div>
-        <div class="quota-foot"><span>每次预约使用 1 次权益，取消预约后返还</span><button type="button" class="link" data-act="go-service">服务详情${icon('chevR')}</button></div>
+        <div class="quota-foot"><span>每次预约使用 1 次额度，取消预约后返还</span></div>
       </section>
 
       <section class="form-card">
@@ -511,13 +532,21 @@
       <section class="form-card">
         <div class="form-card__head"><span class="form-card__num is-teal">${icon('hospital')}</span><span class="form-card__title">填写住院信息</span><span class="form-card__aside">用于匹配院内护理员</span></div>
         <div class="form-grid">
-          <div class="field"><label class="field__label" for="city">城市<em>*</em></label><input type="hidden" id="city" value="${esc(city)}"><input type="hidden" id="province" value="${esc(province)}"><button type="button" class="field__box field__box--picker" id="city-picker-btn" data-act="choose-city"><span id="city-label">${esc(province && province !== city ? province + ' ' + city : city)}</span>${icon('chevD')}</button><span class="field__err">请选择城市</span></div>
-          <div class="field"><label class="field__label" for="hospital">就诊医院<em>*</em></label><input type="hidden" id="hospital" value="${esc(hospital)}"><button type="button" class="field__box field__box--picker" id="hospital-picker-btn" data-act="choose-hospital"><span id="hospital-label">${hospital ? esc(hospital) : '请选择医院'}</span>${icon('chevD')}</button><span class="field__err">请选择医院</span></div>
+          <div class="field field--full"><label class="field__label" for="city">城市<em>*</em></label><input type="hidden" id="city" value="${esc(city)}"><input type="hidden" id="province" value="${esc(province)}"><button type="button" class="field__box field__box--picker" id="city-picker-btn" data-act="choose-city"><span id="city-label">${esc(province && province !== city ? province + ' ' + city : city)}</span>${icon('chevD')}</button><span class="field__err">请选择城市</span></div>
+          <div class="field field--full"><label class="field__label" for="hospital-input">就诊医院<em>*</em></label><div class="hospital-input-wrap">${icon('search')}<input class="field__box" id="hospital-input" value="${esc(hospital)}" placeholder="输入医院名称搜索" autocomplete="off"><input type="hidden" id="hospital" value="${esc(hospital)}"></div><div class="hospital-suggest" id="hospital-suggest" hidden></div><span class="field__err">请选择清单内医院</span></div>
           <div class="field field--full"><label class="field__label" for="department">科室 / 病区<em>*</em></label><select class="field__box" id="department">${D.departments.map((d) => `<option ${draft.department === d ? 'selected' : ''}>${esc(d)}</option>`).join('')}</select><span class="field__err">请选择科室</span></div>
           <div class="field field--full"><label class="field__label" for="disease">入院疾病 / 诊断<em>*</em></label><input class="field__box" id="disease" value="${esc(draft.disease)}" placeholder="如：膝关节骨性关节炎（术后）"><span class="field__err">请填写入院疾病或诊断</span></div>
           <div class="field field--full"><label class="field__label" for="hospitalizedTime">住院日期 <span class="tiny muted">选填</span></label><input class="field__box" id="hospitalizedTime" type="date" max="${today}" value="${esc(draft.hospitalizedTime)}"><span class="field__err"></span></div>
         </div>
       </section>
+
+      <section class="form-card">
+        <div class="form-card__head"><span class="form-card__num is-teal">${icon('file')}</span><span class="form-card__title">材料收集</span><span class="form-card__aside" id="material-count">${(draft.materials || []).length} 份</span></div>
+        <p class="form-note">请上传住院申请单或其他住院凭证、病历资料、检查报告、床头卡、手环等就医材料，用于顾问评估审核。</p>
+        <div class="material-list" id="material-list">${materialTiles(draft.materials || [])}</div>
+        <label class="material-upload"><input id="material-input" type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" multiple><span>${icon('plus')}上传材料</span><small>支持图片、PDF、Word，单文件不超过 5MB</small></label>
+      </section>
+
 
       <section class="form-card">
         <div class="form-card__head"><span class="form-card__num is-violet">${icon('clock')}</span><span class="form-card__title">期望服务时间</span><span class="form-card__aside">照护顾问将评估确认</span></div>
@@ -528,17 +557,11 @@
       <section class="form-card">
         <div class="form-card__head"><span class="form-card__num is-rose">${icon('care')}</span><span class="form-card__title">护理员要求</span><span class="form-card__aside">可指定护理员性别</span></div>
         <div class="form-grid">
-          <div class="field field--full"><label class="field__label">指定性别<em>*</em></label><div class="seg"><button type="button" class="seg__btn ${draft.staffGender === '女' ? 'is-on' : ''}" data-act="staff-gender" data-value="女">女</button><button type="button" class="seg__btn ${draft.staffGender === '男' ? 'is-on' : ''}" data-act="staff-gender" data-value="男">男</button></div></div>
+          <div class="field field--full"><label class="field__label">指定性别<em>*</em></label><div class="seg seg--three"><button type="button" class="seg__btn ${draft.staffGender === '随机分配' ? 'is-on' : ''}" data-act="staff-gender" data-value="随机分配">随机分配</button><button type="button" class="seg__btn ${draft.staffGender === '女' ? 'is-on' : ''}" data-act="staff-gender" data-value="女">女</button><button type="button" class="seg__btn ${draft.staffGender === '男' ? 'is-on' : ''}" data-act="staff-gender" data-value="男">男</button></div></div>
           <div class="field field--full"><label class="field__label" for="note">补充说明 <span class="tiny muted">选填</span></label><textarea class="field__box" id="note" placeholder="例如：希望护理员有骨科护理经验、夜间需要协助起夜等">${esc(draft.note)}</textarea></div>
         </div>
       </section>
 
-      <section class="form-card">
-        <div class="form-card__head"><span class="form-card__num is-teal">${icon('file')}</span><span class="form-card__title">材料收集</span><span class="form-card__aside" id="material-count">${(draft.materials || []).length} 份</span></div>
-        <p class="form-note">请上传住院申请单或其他住院凭证、病历资料、检查报告、床头卡、手环等就医材料，用于顾问评估审核。</p>
-        <div class="material-list" id="material-list">${materialTiles(draft.materials || [])}</div>
-        <label class="material-upload"><input id="material-input" type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" multiple><span>${icon('plus')}上传材料</span><small>支持图片、PDF、Word，单文件不超过 5MB</small></label>
-      </section>
 
       <section class="form-card">
         <div class="form-card__head"><span class="form-card__num is-blue">${icon('users')}</span><span class="form-card__title">填写联系人信息</span><span class="form-card__aside">用于顾问确认</span></div>
@@ -613,7 +636,6 @@
         <div class="my-orders">${active.length ? active.slice(0, 2).map(orderCard).join('') : `<div class="my-empty">${icon('receipt')}<p>暂无进行中的预约</p><button class="btn btn--soft btn--sm" data-nav="#/book">去预约</button></div>`}</div>
       </section>
       <div class="menu">
-        <button class="menu__item" data-nav="#/service"><span class="menu__ic">${icon('hospital')}</span>院内照护服务<span class="menu__value">服务详情 ${icon('chevR')}</span></button>
         <button class="menu__item" data-nav="#/records"><span class="menu__ic">${icon('file')}</span>病历资料<span class="menu__value">${materialCount} 份 ${icon('chevR')}</span></button>
         <button class="menu__item" data-nav="#/privacy"><span class="menu__ic">${icon('shield')}</span>隐私政策<span class="menu__arrow">${icon('chevR')}</span></button>
         <button class="menu__item menu__item--danger" data-act="logout"><span class="menu__ic">${icon('logout')}</span>退出登录<span class="menu__arrow">${icon('chevR')}</span></button>
@@ -675,7 +697,7 @@
   }
 
   function serviceView() {
-    return page(`${titlebar('院内照护服务', '#/my')}
+    return page(`${titlebar('院内照护服务', '#/book')}
       <div class="service-page">
         <section class="service-hero"><span class="service-hero__tag">院内照护 · 专业陪护</span><h1>让专业护理员，替您守在病床旁</h1><p>针对住院期间的生活照护与陪护需求，提供持证护理员到院服务，减轻家属陪护压力。</p></section>
         <section class="service-card"><h2>${icon('users')}适用人群</h2><ul><li>术后康复、行动不便、需要卧床照护的住院患者</li><li>失能、半失能，家属无法全天陪护的患者</li><li>需要协助进食、翻身、如厕、陪检的住院患者</li><li>夜间需要看护、家属需要临时替换的患者</li></ul><p class="service-tip">具体是否适合服务，以照护顾问评估结果为准。</p></section>
@@ -741,7 +763,7 @@
           <div class="detail-kv"><span>期望时间</span><b>${fmtDate(o.startDate)} ${esc(o.startTime)}</b></div>
         </section>
         <section class="dcard">${dhead('care', 'is-rose', '护理员要求')}
-          <div class="detail-kv"><span>指定性别</span><b>${esc(o.staffGender || '女')}</b></div>
+          <div class="detail-kv"><span>指定性别</span><b>${esc(o.staffGender || '随机分配')}</b></div>
           <div class="detail-kv"><span>补充说明</span><b style="max-width:250px">${esc(o.staffNote || o.note || '无')}</b></div>
         </section>
         <section class="dcard">${dhead('users', 'is-blue', '联系人信息')}
@@ -751,7 +773,7 @@
         <section class="dcard">${dhead('receipt', 'is-gold', '订单信息')}
           <div class="detail-kv"><span>订单编号</span><b>${esc(o.no)}</b></div>
           <div class="detail-kv"><span>下单时间</span><b>${esc(o.createdAt)}</b></div>
-          <div class="detail-kv"><span>权益消耗</span><b>1 次</b></div>
+          <div class="detail-kv"><span>额度消耗</span><b>1 次</b></div>
         </section>
         ${['pending', 'accepted'].includes(o.status) ? `<div class="detail-actions">
           <button class="btn btn--ghost" data-act="cancel" data-id="${o.id}">取消预约</button><button class="btn btn--soft" data-act="edit-order" data-id="${o.id}">修改预约</button>
@@ -1042,15 +1064,15 @@
     const contactName = $('#contactName').value.trim();
     const contactPhone = $('#contactPhone').value.trim();
     const note = $('#note').value.trim();
-    const staffGender = draft.staffGender || '女';
+    const staffGender = draft.staffGender || '随机分配';
 
     let first = null;
     const fail = (input, msg) => { const f = markError(input, msg); if (!first) first = f || input; };
     if (!card) {
-      toast('暂无可用权益次数');
+      toast('暂无可用额度');
       first = $('#quota-card');
     } else if (!isEditing && card.status === 'used') {
-      toast('该权益次数已使用');
+      toast('该使用额度已使用');
       first = $('#quota-card');
     }
     if (!city) fail($('#city'), '请选择城市');
@@ -1066,7 +1088,7 @@
     if (patientIdType === '1' && patientIdNo && !/^\d{17}[\dXx]$/.test(patientIdNo)) fail($('#patientIdNo'), '身份证号格式不正确');
     if (!contactName) fail($('#contactName'), '请填写联系人姓名');
     if (!/^1[3-9]\d{9}$/.test(contactPhone)) fail($('#contactPhone'), '请填写正确的 11 位手机号');
-    if (!['女', '男'].includes(staffGender)) fail($('#note'), '请选择护理员性别');
+    if (!['随机分配', '女', '男'].includes(staffGender)) fail($('#note'), '请选择护理员性别');
     if (!draft.agree) { $('#agree-row').classList.add('agree--error'); if (!first) first = $('#agree-row'); }
     if (first) {
       first.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1292,10 +1314,13 @@
       if ($('#province')) $('#province').value = draft.province;
       if ($('#city-label')) $('#city-label').textContent = draft.province && draft.province !== draft.city ? `${draft.province} ${draft.city}` : draft.city;
       if ($('#hospital')) $('#hospital').value = '';
-      if ($('#hospital-label')) $('#hospital-label').textContent = '请选择医院';
+      if ($('#hospital-input')) $('#hospital-input').value = '';
+      const suggest = $('#hospital-suggest');
+      if (suggest) { suggest.hidden = true; suggest.innerHTML = ''; }
       closeSheet();
       return;
     }
+    if (act === 'pick-hospital-inline') { selectHospital(el.dataset.value); return; }
     if (act === 'pick-hospital') {
       draft.hospital = el.dataset.value;
       const meta = D.hospitalMeta[draft.hospital] || {};
@@ -1409,7 +1434,7 @@
       }
       closeSheet();
       render();
-      toast('预约已取消，权益次数已返还');
+      toast('预约已取消，使用额度已返还');
       return;
     }
     if (act === 'edit-name') { editNameSheet(); return; }
@@ -1467,6 +1492,15 @@
   });
 
   document.addEventListener('input', (e) => {
+    if (e.target.id === 'hospital-input') {
+      const q = e.target.value.trim();
+      const exact = D.hospitals.find((h) => (D.hospitalMeta[h] || {}).city === draft.city && h === q);
+      if (exact) { selectHospital(exact); return; }
+      draft.hospital = '';
+      if ($('#hospital')) $('#hospital').value = '';
+      paintHospitalSuggest(q);
+      return;
+    }
     if (e.target.id === 'hospital-search') { paintHospitalResults(e.target.value); return; }
     if (e.target.id === 'patientIdNo') {
       const id = e.target.value.trim();
@@ -1566,6 +1600,16 @@
       closeSheet();
       render();
       toast('姓名已更新');
+    }
+  });
+
+  document.addEventListener('focusin', (e) => {
+    if (e.target.id === 'hospital-input') paintHospitalSuggest(e.target.value);
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest?.('.hospital-input-wrap') && !e.target.closest?.('#hospital-suggest')) {
+      const box = $('#hospital-suggest');
+      if (box) box.hidden = true;
     }
   });
 
