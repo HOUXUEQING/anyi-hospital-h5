@@ -465,10 +465,10 @@
       </div>`, 'page--tabbar');
     }
 
-    return page(`${titlebar('服务预约')}<div class="book-toplink"><button type="button" class="book-service-link" data-act="go-service">院内照护服务详情${icon('chevR')}</button></div><header class="req-head book-hero">
+    return page(`${titlebar('服务预约')}<header class="req-head book-hero">
       <div class="req-head__row">
         <div class="book-hero__copy">
-          <h1>${isEditing ? '修改预约' : '院内照护预约'}</h1>
+          <div class="book-title-row"><h1>${isEditing ? '修改预约' : '院内照护预约'}</h1><button type="button" class="book-service-link" data-act="go-service">服务详情${icon('chevR')}</button></div>
           <p>${isEditing ? '修改后预约将重新进入待确认状态。' : '填写信息并提交预约，照护顾问将审核评估后确认<span style="white-space:nowrap">服务安排。</span>'}</p>
         </div>
       </div>
@@ -697,15 +697,67 @@
   }
 
   function serviceView() {
+    const audience = ['术后康复、行动不便的住院患者', '失能、半失能，家属无法全天陪护', '需要协助进食、翻身、如厕、陪检', '夜间需要看护或家属临时替换'];
+    const flow = [
+      ['提交预约', '填写护理人、住院信息和护理员要求'],
+      ['材料审核', '上传住院凭证、病历、检查报告等材料'],
+      ['顾问评估', '照护顾问电话确认服务需求与时间'],
+      ['安排护理员', '匹配符合要求的持证护理员'],
+      ['到院服务', '护理员到院签到，开始院内照护']
+    ];
+    const materials = [
+      ['receipt', '住院申请单', '或其他住院凭证'],
+      ['file', '病历资料', '入院记录 / 出院小结'],
+      ['clipboard', '检查报告', '化验单 / 影像报告'],
+      ['bed', '床头卡 / 手环', '住院信息材料'],
+      ['info', '其他材料', '能说明就医情况的材料']
+    ];
+    const services = [
+      ['care', '生活照护', '进食、饮水、如厕、洗漱、翻身叩背'],
+      ['users', '陪同服务', '陪检、散步、治疗过程陪同'],
+      ['clock', '夜间看护', '协助起夜、观察休息情况'],
+      ['hospital', '康复协助', '在医护指导下协助简单活动'],
+      ['clipboard', '服务记录', '记录服务情况，与家属保持沟通']
+    ];
     return page(`${titlebar('院内照护服务', '#/book')}
       <div class="service-page">
-        <section class="service-hero"><span class="service-hero__tag">院内照护 · 专业陪护</span><h1>让专业护理员，替您守在病床旁</h1><p>针对住院期间的生活照护与陪护需求，提供持证护理员到院服务，减轻家属陪护压力。</p></section>
-        <section class="service-card"><h2>${icon('users')}适用人群</h2><ul><li>术后康复、行动不便、需要卧床照护的住院患者</li><li>失能、半失能，家属无法全天陪护的患者</li><li>需要协助进食、翻身、如厕、陪检的住院患者</li><li>夜间需要看护、家属需要临时替换的患者</li></ul><p class="service-tip">具体是否适合服务，以照护顾问评估结果为准。</p></section>
-        <section class="service-card"><h2>${icon('clipboard')}申请流程</h2><ol class="service-steps"><li><b>提交预约</b><span>填写护理人、住院信息和护理员要求</span></li><li><b>材料审核</b><span>上传住院凭证、病历、检查报告等材料</span></li><li><b>顾问评估</b><span>照护顾问电话确认服务需求与时间</span></li><li><b>安排护理员</b><span>匹配符合要求的持证护理员</span></li><li><b>到院服务</b><span>护理员到院签到，开始院内照护</span></li></ol></section>
-        <section class="service-card"><h2>${icon('file')}材料审核</h2><p>为完成服务评估，请准备以下材料：</p><ul><li>住院申请单或其他住院凭证</li><li>病历资料、入院记录或出院小结</li><li>检查报告、化验单、影像报告</li><li>床头卡、住院手环等住院信息材料</li><li>其他能够说明就医情况的材料</li></ul><p class="service-tip">材料仅用于服务评估与护理安排，请确保真实、清晰、完整。</p></section>
-        <section class="service-card"><h2>${icon('care')}服务内容</h2><ul><li>生活照护：协助进食、饮水、如厕、洗漱、翻身叩背</li><li>陪同服务：陪检、散步、治疗过程陪同</li><li>夜间看护：协助起夜、观察休息情况</li><li>康复协助：在医护指导下协助简单活动</li><li>服务记录：记录服务情况，与家属保持沟通</li></ul><p class="service-tip">护理员不提供医疗诊疗、用药决策、侵入性护理等医疗行为。</p></section>
-        <section class="service-card"><h2>${icon('info')}注意事项</h2><ul><li>请如实填写护理人健康状况、住院信息和护理员要求。</li><li>服务时间、护理员安排以照护顾问最终确认为准。</li><li>如需取消或修改预约，请尽早在订单详情操作。</li><li>贵重物品请家属自行保管，护理员不承担财物保管责任。</li><li>如遇病情变化，请第一时间联系医护人员。</li></ul></section>
-        <button class="btn btn--primary btn--block service-cta" data-nav="#/book">去预约院内照护</button>
+        <section class="sv-hero">
+          <span class="sv-hero__ring sv-hero__ring--a"></span><span class="sv-hero__ring sv-hero__ring--b"></span>
+          <div class="sv-hero__top"><span class="sv-hero__eyebrow">院内照护 · 专业陪护</span><span class="sv-hero__badge">服务详情</span></div>
+          <h1>让专业护理员<br><em>替您守在病床旁</em></h1>
+          <p>针对住院期间的生活照护与陪护需求，提供持证护理员到院服务，减轻家属陪护压力。</p>
+          <div class="sv-hero__chips"><span>${icon('shield')}持证护理员</span><span>${icon('hospital')}到院照护</span><span>${icon('clipboard')}全程记录</span></div>
+        </section>
+        <section class="sv-card">
+          <div class="sv-head"><span class="sv-num">01</span><div><h2>适用人群</h2><p>这些住院场景，都可以申请院内照护</p></div></div>
+          <div class="sv-tags">${audience.map((x) => `<span>${icon('check')}${x}</span>`).join('')}</div>
+          <p class="sv-tip">具体是否适合服务，以照护顾问评估结果为准。</p>
+        </section>
+        <section class="sv-card">
+          <div class="sv-head"><span class="sv-num">02</span><div><h2>申请流程</h2><p>从提交到到院，五步完成</p></div></div>
+          <div class="sv-flow">${flow.map(([t, d], i) => `<div class="sv-step ${i === flow.length - 1 ? 'is-last' : ''}"><span class="sv-step__dot">${i + 1}</span><div><b>${t}</b><p>${d}</p></div></div>`).join('')}</div>
+        </section>
+        <section class="sv-card">
+          <div class="sv-head"><span class="sv-num">03</span><div><h2>材料审核</h2><p>提前准备，评估更顺利</p></div></div>
+          <div class="sv-materials">${materials.map(([ic, t, d]) => `<div class="sv-material"><span>${icon(ic)}</span><div><b>${t}</b><small>${d}</small></div></div>`).join('')}</div>
+          <p class="sv-tip">材料仅用于服务评估与护理安排，请确保真实、清晰、完整。</p>
+        </section>
+        <section class="sv-card">
+          <div class="sv-head"><span class="sv-num">04</span><div><h2>服务内容</h2><p>围绕住院生活照护展开</p></div></div>
+          <div class="sv-grid">${services.map(([ic, t, d]) => `<div class="sv-feature"><span>${icon(ic)}</span><b>${t}</b><p>${d}</p></div>`).join('')}</div>
+          <p class="sv-tip">护理员不提供医疗诊疗、用药决策、侵入性护理等医疗行为。</p>
+        </section>
+        <section class="sv-card">
+          <div class="sv-head"><span class="sv-num">05</span><div><h2>注意事项</h2><p>请家属提前了解</p></div></div>
+          <ul class="sv-notes">
+            <li><span>1</span>请如实填写护理人健康状况、住院信息和护理员要求。</li>
+            <li><span>2</span>服务时间、护理员安排以照护顾问最终确认为准。</li>
+            <li><span>3</span>如需取消或修改预约，请尽早在订单详情操作。</li>
+            <li><span>4</span>贵重物品请家属自行保管，护理员不承担财物保管责任。</li>
+            <li><span>5</span>如遇病情变化，请第一时间联系医护人员。</li>
+          </ul>
+        </section>
+        <div class="sv-cta"><button class="btn btn--primary btn--block" data-nav="#/book">去预约院内照护</button><span>照护顾问将协助确认服务安排</span></div>
       </div>`);
   }
 
@@ -713,7 +765,6 @@
     const rows = state.orders.flatMap((o) => (o.materials || []).map((m) => ({ m, o })));
     return page(`${titlebar('病历资料', '#/my')}
       <div class="records-page">
-        <div class="records-summary"><div><b>${rows.length}</b><span>份就医材料</span></div><p>统一管理预约时上传的材料，用于服务评估审核。</p></div>
         <div class="material-list">${rows.length ? rows.map(({ m, o }) => materialTiles([m], o.id)).join('') : `<div class="appt-empty">${icon('file')}<p>暂无病历资料</p><button class="btn btn--primary btn--sm" data-nav="#/book">去预约并上传</button></div>`}</div>
         <div class="voucher-note">${icon('info')} 材料仅用于院内照护服务评估，请确保真实清晰。</div>
       </div>`);
