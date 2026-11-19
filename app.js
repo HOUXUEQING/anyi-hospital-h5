@@ -1005,7 +1005,7 @@
   }
   function logoutSheet() {
     openSheet(`<div class="sheet__handle"></div><div class="sheet__head"><div><h2>退出登录</h2><p>退出后需要重新登录才能提交需求和查看订单。</p></div><button class="sheet__close" data-act="close-sheet">${icon('close')}</button></div>
-      <div class="sheet__body"><div class="avatar logout-avatar">${esc((state.session.name || '张').slice(0, 1))}</div><b style="font-size:12px">${esc(state.session.name)}</b><div class="tiny muted" style="margin-top:3px">${phoneMask(state.session.phone)}</div></div>
+      <div class="sheet__body"><div class="avatar logout-avatar">${avatarNeutral()}</div><b style="font-size:12px">${esc(state.session.name)}</b><div class="tiny muted" style="margin-top:3px">${phoneMask(state.session.phone)}</div></div>
       <div class="sheet__foot"><button class="btn btn--ghost" data-act="close-sheet">取消</button><button class="btn btn--primary" style="background:linear-gradient(120deg,#DE5B70,#EC8292);box-shadow:none" data-act="confirm-logout">退出登录</button></div>`);
   }
   function contactSheet() {
