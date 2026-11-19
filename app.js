@@ -957,7 +957,7 @@
       syncedAt: now,
       caregiver: null,
       createdAt: now,
-      timeline: [{ title: '预约已提交', desc: '照护顾问将审核评估后确认服务安排', time: mdText(now) }]
+      timeline: [{ title: '服务申请已提交', desc: '照护顾问已收到院内照护需求，待评估后安排', time: mdText(now) }]
     };
 
     if (isEditing) {
@@ -965,12 +965,12 @@
       if (ex) {
         const old = { id: ex.id, no: ex.no, createdAt: ex.createdAt, timeline: ex.timeline || [] };
         Object.assign(ex, order, { id: old.id, no: old.no, createdAt: old.createdAt, status: 'pending', caregiver: null });
-        ex.timeline = [...old.timeline, { title: '预约已修改', desc: '修改后的预约等待照护顾问评估确认', time: mdText(now) }];
+        ex.timeline = [...old.timeline, { title: '服务申请已修改', desc: '修改后的服务申请等待照护顾问评估确认', time: mdText(now) }];
         save();
         editingOrderId = null;
         draft = null;
         go('/order/' + ex.id);
-        toast('预约已修改，等待评估确认');
+        toast('服务申请已修改，等待评估确认');
         return;
       }
     }
@@ -981,7 +981,7 @@
     save();
     draft = null;
     go('/order/' + order.id);
-    toast('预约已提交，照护顾问将审核评估');
+    toast('服务申请已提交，照护顾问将评估安排');
   }
 
   /* ---------------- events ---------------- */
@@ -1178,7 +1178,7 @@
       const o = state.orders.find((x) => x.id === el.dataset.id);
       if (o) {
         o.status = 'cancelled';
-        o.timeline.push({ title: '预约已取消', desc: '家属取消本次院内照护预约', time: mdText(nowText()) });
+        o.timeline.push({ title: '服务申请已取消', desc: '家属取消本次院内照护服务申请', time: mdText(nowText()) });
         const v = state.vouchers.find((x) => x.id === o.voucherId) || state.vouchers.find((x) => x.cardNum === o.card.cardNum);
         if (v) { v.status = 'unused'; v.orderId = null; }
         save();
