@@ -1233,8 +1233,7 @@
     const bar = $('.request-actionbar');
     if (!bar) return;
     const doc = document.documentElement;
-    const atBottom = window.scrollY + window.innerHeight >= doc.scrollHeight - 12;
-    bar.classList.toggle('is-visible', atBottom);
+    bar.classList.add('is-visible');
   }
   window.addEventListener('scroll', updateRequestBar, { passive: true });
   window.addEventListener('resize', updateRequestBar);

@@ -1167,3 +1167,11 @@ body { font-size: 15px; }
 .login-hello { padding-top: 64px !important; }
 .sv-material small, .sv-feature p, .sv-svc-summary span, .sv-svc-summary em, .sv-cat__title small, .sv-service__note, .sv-cta > span { font-size: 11px !important; }
 .map-place div > small, .map-place .map-distance, .map-tip { font-size: 10.5px !important; }
+/* bottom navigation and booking action bar alignment */
+.tabbar { height: calc(64px + env(safe-area-inset-bottom)); padding: 0 22px env(safe-area-inset-bottom); align-items: stretch; overflow: visible; }
+.tabbar__item { min-height: 64px; padding: 6px 0 4px; line-height: 1.1; white-space: nowrap; gap: 3px; }
+.page--tabbar { padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
+.page--tabbar.page--actionbar { padding-bottom: calc(196px + env(safe-area-inset-bottom)); }
+.page--tabbar .request-actionbar { bottom: calc(64px + env(safe-area-inset-bottom)); }
+.request-actionbar { transform: translate(-50%, 0) !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+.req-body > .banner { margin-left: 0; margin-right: 0; }
