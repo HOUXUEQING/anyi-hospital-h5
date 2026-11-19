@@ -182,11 +182,10 @@
   function iconSvg(name) { return icon(name); }
   function page(html, cls = '') { return `<div class="page ${cls}">${html}</div>`; }
 
-  const avatarNeutral = () => `<svg viewBox="0 0 64 64" class="avatar-art" aria-hidden="true"><rect width="64" height="64" rx="18" fill="#DDEBFF"/><circle cx="32" cy="25" r="9.5" fill="#FFFFFF"/><path d="M13 60c.8-13 9-20 19-20s18.2 7 19 20" fill="#FFFFFF"/><path d="M25 42c1.8 3 4.4 4 7 4s5.2-1 7-4" fill="none" stroke="#C8DDF5" stroke-width="1.5" stroke-linecap="round"/></svg>`;
-  const avatarFemale = () => `<svg viewBox="0 0 64 64" class="avatar-art" aria-hidden="true"><rect width="64" height="64" rx="18" fill="#FFE8DF"/><path d="M20 30c-2 8 0 13 2 16M44 30c2 8 0 13-2 16" stroke="#3D2D2B" stroke-width="3" stroke-linecap="round"/><path d="M19 27c-2-11 5-18 13-18s15 7 13 18l-3-1c0-7-4-11-10-11s-10 4-10 11z" fill="#3D2D2B"/><circle cx="32" cy="25" r="9.5" fill="#F4CDB6"/><path d="M10 64c0-13 9-20 22-20s22 7 22 20" fill="#F7FCFF"/><path d="M27 45l5 5 5-5" fill="none" stroke="#7FB6E8" stroke-width="2"/><circle cx="28.5" cy="25" r="1.2" fill="#3D2D2B"/><circle cx="35.5" cy="25" r="1.2" fill="#3D2D2B"/><path d="M29.5 30c1.5 1.2 3.5 1.2 5 0" fill="none" stroke="#D68C7B" stroke-width="1.4" stroke-linecap="round"/></svg>`;
-  const avatarMale = () => `<svg viewBox="0 0 64 64" class="avatar-art" aria-hidden="true"><rect width="64" height="64" rx="18" fill="#DCEEFF"/><circle cx="32" cy="25" r="9.5" fill="#F2C7AD"/><path d="M20 23c1-9 6-13 12-13s11 4 12 13c-3-3-7-4-12-4s-9 1-12 4z" fill="#3A2E2B"/><path d="M10 64c0-13 9-20 22-20s22 7 22 20" fill="#F7FCFF"/><path d="M27 45l5 5 5-5" fill="none" stroke="#7FB6E8" stroke-width="2"/><circle cx="28.5" cy="26" r="1.2" fill="#3A2E2B"/><circle cx="35.5" cy="26" r="1.2" fill="#3A2E2B"/><path d="M29.5 31c1.5 1.2 3.5 1.2 5 0" fill="none" stroke="#CF876F" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+  const avatarNeutral = () => `<img class="avatar-art" src="assets/avatar-default.jpg" alt="">`;
+  const avatarFemale = () => `<img class="avatar-art" src="assets/avatar-female.jpg" alt="">`;
+  const avatarMale = () => `<img class="avatar-art" src="assets/avatar-male.jpg" alt="">`;
   const caregiverAvatar = (gender) => String(gender || '').includes('男') ? avatarMale() : (String(gender || '').includes('女') ? avatarFemale() : avatarNeutral());
-
   function ph(title, { back = '#/my', right = '', sub = '' } = {}) {
     return `<div class="float-back-row">${back ? `<button class="float-back" data-nav="${back}" aria-label="返回">${icon('chevL')}</button>` : ''}<span class="sr-only">${esc(title)}</span></div>`;
   }
@@ -500,8 +499,8 @@
         <div class="form-card__head"><span class="form-card__num is-blue">${icon('user')}</span><span class="form-card__title">填写护理人信息</span><span class="form-card__aside">用于服务预约与实名</span></div>
         <div class="form-grid">
           <div class="field field--full"><label class="field__label" for="patientName">姓名<em>*</em></label><input class="field__box" id="patientName" value="${esc(draft.patient.name)}" placeholder="请输入护理人姓名"><span class="field__err">请填写护理人姓名</span></div>
-          <div class="field"><label class="field__label">性别<em>*</em></label><div class="seg"><button type="button" class="seg__btn ${draft.patient.gender === '女' ? 'is-on' : ''}" data-act="gender" data-value="女">女</button><button type="button" class="seg__btn ${draft.patient.gender === '男' ? 'is-on' : ''}" data-act="gender" data-value="男">男</button></div></div>
-          <div class="field"><label class="field__label" for="birthday">出生日期<em>*</em> <span class="field__tag" id="age-hint">${draft.patient.age ? draft.patient.age + ' 岁' : ''}</span></label><input class="field__box" id="birthday" type="date" value="${esc(draft.patient.birthday)}"><span class="field__err">请填写出生日期</span></div>
+          <div class="field field--full"><label class="field__label">性别<em>*</em></label><div class="seg"><button type="button" class="seg__btn ${draft.patient.gender === '女' ? 'is-on' : ''}" data-act="gender" data-value="女">女</button><button type="button" class="seg__btn ${draft.patient.gender === '男' ? 'is-on' : ''}" data-act="gender" data-value="男">男</button></div></div>
+          <div class="field field--full"><label class="field__label" for="birthday">出生日期<em>*</em> <span class="field__tag" id="age-hint">${draft.patient.age ? draft.patient.age + ' 岁' : ''}</span></label><input class="field__box" id="birthday" type="date" value="${esc(draft.patient.birthday)}"><span class="field__err">请填写出生日期</span></div>
           <div class="field field--full"><label class="field__label" for="patientIdType">证件类型<em>*</em></label><select class="field__box" id="patientIdType">${D.idTypes.map(([v, n]) => `<option value="${v}" ${String(draft.patient.idType) === v ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select><span class="field__err"></span></div>
           <div class="field field--full"><label class="field__label" for="patientIdNo">证件号<em>*</em></label><input class="field__box" id="patientIdNo" value="${esc(draft.patient.idNo)}" placeholder="请输入证件号码"><span class="field__err">请填写证件号码</span></div>
         </div>
@@ -599,7 +598,7 @@
     return page(`${titlebar('我的')}<header class="my-hero">
       <div class="my-hero__top">
         <div class="avatar avatar--lg">${avatarNeutral()}</div>
-        <div><div class="my-hero__name">${esc(state.session.name)}<span class="my-hero__tag">院内照护会员</span></div><div class="my-hero__phone">${phoneMask(state.session.phone)}</div></div>
+        <div><div class="my-hero__name">${phoneMask(state.session.phone)}</div></div>
       </div>
       <div class="my-stats">
         <button class="my-stat" data-nav="#/orders/all"><b>${orders.length}</b><span>全部订单</span></button>
