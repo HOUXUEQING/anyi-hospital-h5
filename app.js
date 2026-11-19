@@ -81,6 +81,19 @@
           });
         }
       }
+      o.timeline = (o.timeline || []).map((t) => {
+        const title = String(t.title || '');
+        if (/服务申请已提交|需求已提交|预约已提交/.test(title)) return { ...t, title: '服务申请已提交', desc: '照护顾问已收到院内照护需求，待评估后安排' };
+        if (/服务评估完成|护理员已接单|护理员已安排/.test(title)) {
+          const desc = o.caregiver && !String(t.desc || '').includes('·') ? `${o.caregiver.name} · ${o.caregiver.level}` : t.desc;
+          return { ...t, title: '服务评估完成，已安排护理员', desc };
+        }
+        if (title === '服务开始') return { ...t, title: '服务开始', desc: '护理员已到院签到，照护开始' };
+        if (title === '服务完成') return { ...t, title: '服务完成', desc: '照护结束，服务完成' };
+        if (title === '预约已修改') return { ...t, title: '服务申请已修改', desc: '修改后的服务申请等待照护顾问评估确认' };
+        if (title === '预约已取消') return { ...t, title: '服务申请已取消', desc: '家属取消本次院内照护服务申请' };
+        return t;
+      });
     });
     s.vouchers.forEach((v) => {
       const active = s.orders.find((o) => o.voucherId === v.id && o.status !== 'cancelled');
