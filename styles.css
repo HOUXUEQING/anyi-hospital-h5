@@ -1246,3 +1246,8 @@ body { font-size: 15px; }
 .appt-line__label { font-size: 12px !important; }
 .appt-line b { font-size: 12px !important; }
 .appt-card__title h3 { font-size: 12px !important; }
+/* make all date fields exactly match full-width select fields */
+.field--full { grid-column: 1 / -1; width: 100%; }
+.field--full > .field__box { width: 100% !important; min-width: 100% !important; max-width: 100% !important; }
+.field__box[type="date"], .field__box[type="datetime-local"] { display: block !important; width: 100% !important; min-width: 0 !important; max-width: 100% !important; box-sizing: border-box; }
+#birthday, #hospitalizedTime, #serviceTime { width: 100% !important; min-width: 0 !important; max-width: 100% !important; }
