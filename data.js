@@ -175,6 +175,39 @@ window.HOSPITAL_DATA = {
         { title: '服务开始', desc: '护理员已到院签到，照护开始', time: '10-18 08:02:00' },
         { title: '服务完成', desc: '照护结束，服务完成', time: '10-25 08:10:00' }
       ]
+    },
+    {
+      id: 'seed-h3', no: 'AYH20261118006', status: 'cancelled', auditStatus: 'rejected',
+      hospital: '复旦大学附属华东医院', hospitalCode: 'FDUH003', city: '上海市',
+      department: '消化科', bed: '8 床', hospitalNo: 'ZY2026111608', hospitalizedTime: '2026-11-16',
+      disease: '消化道出血恢复期', serviceType: '院内照护', serviceId: 'hospital',
+      startDate: '2026-11-19', startTime: '09:00', days: 3,
+      card: {
+        cardNum: 'YDK2026000199', cardType: '120', cardTypeName: '单次服务券',
+        productName: '院内照护服务券', productCode: 'FS2021036',
+        startTime: '2026-01-01', endTime: '2026-12-31'
+      },
+      voucherId: null,
+      patient: {
+        name: '徐兰英', gender: '女', idType: '1', idNo: '310107194905230021', birthday: '1949-05-23',
+        age: 77, mobile: '13600006611', province: '上海市', city: '上海市', county: '静安区',
+        address: '延安西路 188 号 5 楼', selfCare: '半自理'
+      },
+      needs: [],
+      staffGender: '随机分配',
+      staffNote: '材料不完整，审核未通过。',
+      contact: { name: '徐先生', idType: '1', idNo: '', mobile: '13600006611', phone: '13600006611' },
+      emergency: { name: '', phone: '' },
+      note: '上传的检查报告不完整，请补充材料后重新预约。',
+      caregiver: null,
+      completedAt: null,
+      syncStatus: 'success',
+      syncedAt: '2026-11-18 13:20:00',
+      createdAt: '2026-11-18 13:20:00',
+      timeline: [
+        { title: '服务申请已提交', desc: '照护顾问已收到院内照护需求，待评估后安排', time: '11-18 13:20:00' },
+        { title: '审核不通过', desc: '材料不完整，请补充检查报告后重新预约', time: '11-18 15:35:00' }
+      ]
     }
   ]
 };

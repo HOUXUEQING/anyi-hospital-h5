@@ -71,6 +71,8 @@
       if (!o.patient.idType) o.patient = { ...s.profile.patient, ...o.patient };
       if (!o.contact.idType) o.contact = { ...s.profile.contact, ...o.contact };
       if (!o.syncStatus) o.syncStatus = 'success';
+      const auditSeed = D.seedOrders.find((x) => x.id === o.id);
+      if (auditSeed && auditSeed.auditStatus && !o.auditStatus) o.auditStatus = auditSeed.auditStatus;
       if (!Array.isArray(o.materials)) o.materials = [];
       if (!o.staffGender) o.staffGender = '随机分配';
       if (o.caregiver) {
@@ -159,6 +161,7 @@
     cancelled: { label: '已取消', tone: 'gray', title: '预约已取消', desc: '如仍需院内陪护，可重新提交预约' }
   };
   function apptStatus(o) {
+    if (o.auditStatus === 'rejected') return { label: '审核不通过', tone: 'rose' };
     if (o.status === 'pending') return { label: '待确认', tone: 'blue' };
     if (o.status === 'accepted') return { label: '已预约', tone: 'blue' };
     if (o.status === 'serving') return { label: '服务中', tone: 'blue' };
@@ -771,7 +774,7 @@
   function orderDetailView(id) {
     const o = state.orders.find((x) => x.id === id);
     if (!o) return page(`${titlebar('订单详情', '#/my')}<div class="empty"><div class="empty__ic">${icon('info')}</div><h3>订单不存在</h3><p>请返回我的订单查看</p><button class="btn btn--primary" data-nav="#/my">返回我的</button></div>`, 'page--tabbar');
-    const st = STATUS[o.status] || STATUS.pending;
+    const st = o.auditStatus === 'rejected' ? { label: '审核不通过', tone: 'rose', title: '审核未通过', desc: '本次申请未通过材料审核，请补充材料后重新预约' } : (STATUS[o.status] || STATUS.pending);
     const timelineList = (o.timeline || []).slice().reverse();
     const timeline = timelineList.map((t, i) => `<div class="tl-item ${i === 0 ? 'is-latest' : ''}"><b>${esc(t.title)}</b><p>${esc(t.desc)}</p><time>${esc(t.time)}</time></div>`).join('');
     const foldable = timelineList.length > 2;
@@ -789,7 +792,7 @@
     return page(`${titlebar('订单详情', '#/my')}
       <div class="order-body detail-body">
         <section class="status-panel">
-          <div class="status-panel__top"><span class="status-panel__pill">${st.label}</span></div>
+          <div class="status-panel__top"><span class="status-panel__pill status-panel__pill--${st.tone}">${st.label}</span></div>
           <h1>${esc(st.title)}</h1>
           <div class="status-timeline ${foldable ? 'is-foldable' : ''}"><div class="timeline timeline--panel">${timeline || '<div class="tiny muted">暂无进度</div>'}</div></div>
           ${foldable ? `<button class="timeline-toggle" type="button" data-act="toggle-timeline">展开全部</button>` : ''}
@@ -821,6 +824,7 @@
         </section>
         <section class="dcard">${dhead('receipt', 'is-gold', '订单信息')}
           <div class="detail-kv"><span>订单编号</span><b>${esc(o.no)}</b></div>
+          ${o.auditStatus === 'rejected' ? '<div class="detail-kv"><span>审核状态</span><b style="color:#C95064">审核不通过</b></div>' : ''}
           <div class="detail-kv"><span>下单时间</span><b>${esc(o.createdAt)}</b></div>
           <div class="detail-kv"><span>额度消耗</span><b>1 次</b></div>
         </section>
